@@ -1,0 +1,26 @@
+{
+  "name": "eat-easer",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "ui:add": "pnpm --filter ui ui:add",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "api:dev": "turbo dev --filter=api",
+    "customer:dev": "turbo dev --filter=customer",
+    "staff:dev": "turbo dev --filter=staff",
+    "admin:dev": "turbo dev --filter=admin",
+    "kitchen:dev": "turbo dev --filter=kitchen"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "prettier": "^3.1.1",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@8.9.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
