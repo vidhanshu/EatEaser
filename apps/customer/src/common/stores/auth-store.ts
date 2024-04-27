@@ -38,10 +38,10 @@ const useAuthStore = create<IAuthStore>()(
             },
           } as IAuthStore;
         }),
-      signOut: () => set(() => ({ token: null })),
+      signOut: () => set(() => ({ token: null, user: null })),
     }),
-    { name: "auth" },
-  ),
+    { name: "auth" }
+  )
 );
 
 export default useAuthStore;

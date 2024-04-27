@@ -9,11 +9,10 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { Button } from "@ui/components";
+import { Button, ImgWithPlaceholder } from "@ui/components";
 import KeyVal from "@ui/components/custom/key-val";
 import { NSRestaurant } from "@src/types/restaurant.type";
 import useSidebarStore from "@src/common/stores/sidebar-store";
-import ImgWithPlaceholder from "@src/common/components/img-with-placeholder";
 import { HeaderSkeleton } from "@src/common/components/skeletons";
 
 export const RestaurantHeader = ({

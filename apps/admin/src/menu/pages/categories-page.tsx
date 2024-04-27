@@ -20,10 +20,10 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
   AlertDialogTrigger,
+  ImgWithPlaceholder,
 } from "@ui/components";
 import { CreateCategoryForm } from "@src/menu/components/categories";
 import useCategory from "@src/menu/hooks/use-categories";
-import ImgWithPlaceholder from "@src/common/components/img-with-placeholder";
 import { APP_ROUTES } from "@src/common/utils/app-routes";
 import GenericUrlCruDialog from "@src/common/components/generic-url-cru-dialog";
 import { GenericTable } from "@src/common/components/generic-table";

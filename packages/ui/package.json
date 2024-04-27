@@ -59,6 +59,7 @@
     "./main.css": "./main.css",
     "./postcss.config": "./postcss.config.js",
     "./tailwind.config": "./tailwind.config.js",
-    "./lib/*": "./src/lib/*.ts"
+    "./lib/*": "./src/lib/*.ts",
+    "./helpers/*": "./src/helpers/*.ts"
   }
 }

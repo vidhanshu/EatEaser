@@ -3,12 +3,18 @@ import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "@repo/ui/main.css";
+import "../main.css";
 import App from "./App.tsx";
-import { Toaster } from "@repo/ui";
-import { ThemeProvider } from "@ui/components/index.ts";
+import { Toaster, ThemeProvider } from "@repo/ui";
 
 // Create a client
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

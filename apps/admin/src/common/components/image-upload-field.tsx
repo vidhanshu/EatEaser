@@ -3,9 +3,8 @@ import { Pencil, UploadCloud, X } from "lucide-react";
 
 import useFile from "@src/common/hooks/use-file";
 import { isS3Url } from "@src/common/utils/helpers";
-import ImgWithPlaceholder from "./img-with-placeholder";
-import { Button, Progress, toast } from "@ui/components";
-import { getInitials } from "@src/restaurant/utils/helpers";
+import { Button, ImgWithPlaceholder, Progress, toast } from "@ui/components";
+import { getInitials } from "@ui/helpers";
 import { cn } from "@ui/lib/utils";
 
 const ImageUploadField = ({

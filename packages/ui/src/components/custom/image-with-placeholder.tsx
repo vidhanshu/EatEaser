@@ -1,5 +1,5 @@
-import { getInitials } from "@src/restaurant/utils/helpers";
 import { Typography, TypographyProps } from "@ui/components";
+import { getInitials } from "@ui/helpers";
 import { cn } from "@ui/lib/utils";
 
 interface ImgWithPlaceholderProps

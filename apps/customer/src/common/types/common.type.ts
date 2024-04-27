@@ -1,11 +1,16 @@
 namespace NSCommon {
   export interface ApiResponse<T> {
+    data?: T;
+    message?: string;
+    error?: string;
+    statusCode?: number;
+    token?: string;
+  }
+  export interface IListRespone<T> {
     data: {
-      data?: T;
-      message?: string;
-      error?: string;
-      statusCode?: number;
-      token?: string;
+      result: T[];
+      page: number;
+      totalPages: number;
     };
   }
 }

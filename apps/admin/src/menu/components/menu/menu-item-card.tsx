@@ -2,10 +2,9 @@ import { Link } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
 
 import { cn } from "@ui/lib/utils";
-import { Card, Typography } from "@ui/components";
+import { Card, ImgWithPlaceholder, Typography } from "@ui/components";
 import KeyVal from "@ui/components/custom/key-val";
 import { NSRestaurant } from "@src/types/restaurant.type";
-import ImgWithPlaceholder from "@src/common/components/img-with-placeholder";
 
 export const MenuItemCard = ({ menu }: { menu: NSRestaurant.IMenuItem }) => {
   return (

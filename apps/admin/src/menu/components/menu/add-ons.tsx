@@ -1,9 +1,8 @@
 import { EmptyData } from "@src/common/components/empty-data";
-import ImgWithPlaceholder from "@src/common/components/img-with-placeholder";
 import { GridSkeleton } from "@src/common/components/skeletons";
 import { APP_ROUTES } from "@src/common/utils/app-routes";
 import { NSRestaurant } from "@src/types/restaurant.type";
-import { Card, Typography } from "@ui/components";
+import { Card, ImgWithPlaceholder, Typography } from "@ui/components";
 import KeyVal from "@ui/components/custom/key-val";
 import { IndianRupee, Salad } from "lucide-react";
 import { Link, useParams } from "react-router-dom";

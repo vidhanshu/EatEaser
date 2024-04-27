@@ -10,4 +10,15 @@ export const ROUTES = {
     forgotPassword: "/auth/forgot-password",
     resetPassword: "/auth/reset-password",
   },
+  restaurant: {
+    category: {
+      list: (resturantId: string) => `/restaurant/${resturantId}/category/list`,
+      byId: (id: string) => `/restaurant/category/${id}/get`,
+    },
+    menuItem: {
+      list: (resturantId: string) =>
+        `/restaurant/${resturantId}/menu-item/list`,
+      byId: (id: string) => `/restaurant/menu/menu-item/${id}/get`,
+    },
+  },
 };

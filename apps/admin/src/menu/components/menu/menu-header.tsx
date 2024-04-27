@@ -10,11 +10,10 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { Button } from "@ui/components";
+import { Button, ImgWithPlaceholder } from "@ui/components";
 import KeyVal from "@ui/components/custom/key-val";
 import { NSRestaurant } from "@src/types/restaurant.type";
 import useSidebarStore from "@src/common/stores/sidebar-store";
-import ImgWithPlaceholder from "@src/common/components/img-with-placeholder";
 import { HeaderSkeleton } from "@src/common/components/skeletons";
 import { APP_ROUTES } from "@src/common/utils/app-routes";
 import GenericAlertDialog from "@ui/components/custom/generic-alert-dialog";

@@ -1,4 +1,5 @@
 import {
+  Navigate,
   RouteObject,
   RouterProvider,
   createBrowserRouter,
@@ -10,13 +11,12 @@ import SignInPage from "@src/auth/pages/sign-in";
 import SignUpPage from "@src/auth/pages/sign-up";
 import MenuPage from "@src/menu/pages/menu-page";
 import useAuthStore from "@src/common/stores/auth-store";
-import LandingPage from "@src/home/pages/landing-page";
 import VerifyEmail from "@src/auth/pages/verify-email";
+import CommonLayout from "./common-layout";
+import SearchPage from "@src/search/pages/search-page";
+import SettingsPage from "@src/settings/pages/settings-page";
+import CartPage from "@src/cart/pages/cart-page";
 
-/**
- * PUBLIC_ROUTES, are accessible to both authenticated and unauthenticated users
- */
-const PUBLIC_ROUTES: RouteObject[] = [];
 /**
  * ROUTES_FOR_ONLY_UNAUTHENTICATED, are accessible only to unauthenticated users
  */
@@ -27,7 +27,7 @@ const ROUTES_FOR_ONLY_UNAUTHENTICATED: RouteObject[] = [
     children: [
       {
         path: "/",
-        element: <LandingPage />,
+        element: <MenuPage />,
       },
       {
         path: "/sign-in",
@@ -36,6 +36,10 @@ const ROUTES_FOR_ONLY_UNAUTHENTICATED: RouteObject[] = [
       {
         path: "/sign-up",
         element: <SignUpPage />,
+      },
+      {
+        path: "*",
+        element: <Navigate to="/sign-in" />,
       },
     ],
   },
@@ -46,7 +50,11 @@ const ROUTES_FOR_ONLY_UNAUTHENTICATED: RouteObject[] = [
 const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
   {
     path: "/",
-    element: <ProtectedRoute />,
+    element: (
+      <ProtectedRoute>
+        <CommonLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/",
@@ -55,6 +63,18 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
       {
         path: "/profile",
         element: <div>Hello world!</div>,
+      },
+      {
+        path: "/search",
+        element: <SearchPage />,
+      },
+      {
+        path: "/settings",
+        element: <SettingsPage />,
+      },
+      {
+        path: "/cart",
+        element: <CartPage />,
       },
       {
         path: "/verify-email",
@@ -68,7 +88,6 @@ const Routes = () => {
   const token = useAuthStore((data) => data.token);
 
   const router = createBrowserRouter([
-    ...PUBLIC_ROUTES,
     ...(!token ? ROUTES_FOR_ONLY_UNAUTHENTICATED : []),
     ...ROUTES_FOR_ONLY_AUTHENTICATED,
   ]);

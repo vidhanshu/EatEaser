@@ -26,9 +26,9 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
   AlertDialogTrigger,
+  ImgWithPlaceholder,
 } from "@ui/components";
 import { CreateAddOnForm } from "@src/menu/components/add-on";
-import ImgWithPlaceholder from "@src/common/components/img-with-placeholder";
 import { APP_ROUTES } from "@src/common/utils/app-routes";
 import GenericUrlCruDialog from "@src/common/components/generic-url-cru-dialog";
 import useAddOns from "@src/menu/hooks/use-add-ons";

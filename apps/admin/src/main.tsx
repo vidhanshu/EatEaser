@@ -1,8 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import { ThemeProvider } from "@ui/components";
-import { Toaster } from "@repo/ui";
+import { ThemeProvider, Toaster } from "@ui/components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@repo/ui/main.css";
 

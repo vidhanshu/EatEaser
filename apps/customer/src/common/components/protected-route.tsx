@@ -1,12 +1,12 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import useAuthStore from "../stores/auth-store";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   const isAuth = useAuthStore((set) => set.isAuthenticated());
   if (!isAuth) {
     return <Navigate to="/sign-in" />;
   }
-  return <Outlet />;
+  return children;
 };
 
 export default ProtectedRoute;

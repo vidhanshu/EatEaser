@@ -26,6 +26,7 @@ export * from "./ui/select";
 export * from "./ui/popover";
 export * from "./ui/command";
 export * from "./ui/scroll-area";
+export * from "./ui/sheet";
 
 // Custom
 export * from "./custom/typography";
@@ -41,3 +42,4 @@ export * from "./custom/multiselect";
 export * from "./custom/multiple-key-val-input";
 export * from "./custom/custom-pagination";
 export * from "./custom/date-range-picker";
+export * from "./custom/image-with-placeholder";
