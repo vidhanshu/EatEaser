@@ -8,5 +8,3 @@ import "./src/socket";
 httpServer.listen(config.port, () => {
   console.log(`Server us up & running at http://localhost:${config.port} 🚀`);
 });
-
-export { httpServer } from "./src/app";
