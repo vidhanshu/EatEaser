@@ -28,9 +28,11 @@ const Navbar = () => {
             </Button>
           </div>
         ) : (
-          <Button size="icon" variant="secondary">
-            <LogIn size={20} />
-          </Button>
+          <Link to="/sign-in">
+            <Button size="icon" variant="secondary">
+              <LogIn size={20} />
+            </Button>
+          </Link>
         )}
       </nav>
     </header>
