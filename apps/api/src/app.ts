@@ -54,6 +54,9 @@ app.use(
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
+app.get("/api/health", (req: Request, res: Response) => {
+  res.send("Health is fine ✅");
+});
 
 // add auth limiter in production
 if (process.env.NODE_ENV === "production") {
