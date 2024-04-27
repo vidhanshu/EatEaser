@@ -19,6 +19,7 @@ import MenuDetailsPage from "@src/menu/pages/menu-details-page";
 const ROUTES_FOR_ONLY_UNAUTHENTICATED: RouteObject[] = [
   {
     path: "/",
+    element: <CommonLayout showBottomTabs={false} />,
     errorElement: <ErrorPage />,
     children: [
       {
