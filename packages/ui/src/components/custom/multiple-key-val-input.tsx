@@ -39,7 +39,7 @@ export const MultipleKeyValInput = ({
   max,
   disabled = false,
 }: MultipleKeyValInputProps) => {
-  const { error, name } = useFormField();
+  const { error } = useFormField();
   const handleFieldChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     idx: number

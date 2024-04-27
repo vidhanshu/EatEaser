@@ -3,7 +3,8 @@ import { GoHome, GoHomeFill } from "react-icons/go";
 import { RiSearchFill, RiSearchLine } from "react-icons/ri";
 import { IoSettings, IoSettingsOutline } from "react-icons/io5";
 
-export const BASE_URL = "http://localhost:4000/api";
+export const BASE_URL = import.meta.env.VITE_API_URL;
+console.log(import.meta.env.VITE_API_URL);
 
 export const BOTTOM_TABS = [
   {
