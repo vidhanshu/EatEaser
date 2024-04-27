@@ -1,9 +1,4 @@
-import {
-  Navigate,
-  RouteObject,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { Navigate, RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import ErrorPage from "../pages/error-page";
 import ProtectedRoute from "./protected-route";
@@ -16,6 +11,7 @@ import CommonLayout from "./common-layout";
 import SearchPage from "@src/search/pages/search-page";
 import SettingsPage from "@src/settings/pages/settings-page";
 import CartPage from "@src/cart/pages/cart-page";
+import MenuDetailsPage from "@src/menu/pages/menu-details-page";
 
 /**
  * ROUTES_FOR_ONLY_UNAUTHENTICATED, are accessible only to unauthenticated users
@@ -61,6 +57,10 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
         element: <MenuPage />,
       },
       {
+        path: "/menu/:id",
+        element: <MenuDetailsPage />,
+      },
+      {
         path: "/profile",
         element: <div>Hello world!</div>,
       },
@@ -87,10 +87,7 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
 const Routes = () => {
   const token = useAuthStore((data) => data.token);
 
-  const router = createBrowserRouter([
-    ...(!token ? ROUTES_FOR_ONLY_UNAUTHENTICATED : []),
-    ...ROUTES_FOR_ONLY_AUTHENTICATED,
-  ]);
+  const router = createBrowserRouter([...(!token ? ROUTES_FOR_ONLY_UNAUTHENTICATED : []), ...ROUTES_FOR_ONLY_AUTHENTICATED]);
   return <RouterProvider router={router} />;
 };
 

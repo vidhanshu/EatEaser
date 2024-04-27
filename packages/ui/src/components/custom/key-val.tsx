@@ -3,7 +3,7 @@ import React from "react";
 import { Typography } from "..";
 import { LucideIcon } from "lucide-react";
 
-const KeyVal = ({
+export const KeyVal = ({
   containerProps: { className, ...restContainerProps } = {},
   labelProps: { className: labelClassName, ...restLabelProps } = {},
   valueProps: { className: valueClassName, ...restValueProps } = {},

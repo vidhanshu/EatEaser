@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 const BottomTabs = () => {
   const pathname = useLocation().pathname;
   return (
-    <aside className="bg-white dark:bg-black px-4 py-2 border fixed bottom-0 inset-x-0 flex justify-between items-center">
+    <aside className="bg-white dark:bg-[#181a20] dark:border-t dark:border-[#1f222a] px-4 py-2 border fixed bottom-0 inset-x-0 flex justify-between items-center">
       {BOTTOM_TABS.map(({ label, href, icon }) => {
         const active = pathname === href;
         const Icon = icon(active);

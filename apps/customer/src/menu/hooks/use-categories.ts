@@ -13,7 +13,6 @@ const useCategory = ({
 }: {
   fetchCategories?: boolean;
   variables?: { categoryId?: string; filters?: ICategoryFilter };
-  onSuccess?: () => void;
 }) => {
   // Fetch Categories
   const {

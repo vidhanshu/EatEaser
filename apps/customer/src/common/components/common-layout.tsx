@@ -4,9 +4,9 @@ import Navbar from "./navbar";
 
 const CommonLayout = () => {
   return (
-    <main className="bg-gray-50">
+    <main className="bg-gray-50 dark:bg-[#181a20]">
       <Navbar />
-      <div className="pt-8 pb-[90px] min-h-[calc(100vh-120px)]">
+      <div className="pb-[90px] min-h-[calc(100vh-120px)]">
         <Outlet />
       </div>
       <BottomTabs />

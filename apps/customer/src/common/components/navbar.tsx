@@ -9,7 +9,7 @@ const Navbar = () => {
   const user = useAuthStore((store) => store.user);
 
   return (
-    <header className="shadow-sm sticky top-0 z-10 bg-white dark:bg-black">
+    <header className="shadow-sm sticky top-0 z-10 bg-white dark:bg-[#181a20] dark:border-b dark:border-[#1f222a]">
       <nav className="flex justify-between items-center px-4 py-2 gap-x-2">
         <Link to="/">
           <img className="w-10" src="/logo.svg" />

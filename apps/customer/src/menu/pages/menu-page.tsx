@@ -7,17 +7,26 @@ import Menu from "@src/menu/components/menu";
 import useMenu, { IMenuFilters } from "@src/menu/hooks/use-menu";
 import useCategory from "@src/menu/hooks/use-categories";
 import CategoriesTabs from "@src/menu/components/categories-tabs";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { PROMOTIONAL_CARDS } from "../utils/constants";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();
+
   const category = sp.get("category") ?? undefined;
+  const minPrice = sp.get("minPrice") ?? undefined;
+  const maxPrice = sp.get("maxPrice") ?? undefined;
   const isAvailable = sp.get("isAvailable") ?? undefined;
   const isVegetarian = sp.get("isVegetarian") ?? undefined;
-  const filters: IMenuFilters = { category: category === "all" ? undefined : category };
-  filters.isAvailable = isAvailable === "true";
-  filters.isVegetarian = isVegetarian === "true";
+
+  const filters: IMenuFilters = useMemo(() => {
+    const cat: IMenuFilters = { category: category === "all" ? undefined : category };
+    cat.isAvailable = isAvailable === "true" ? true : isAvailable === "false" ? false : undefined;
+    cat.isVegetarian = isVegetarian === "true" ? true : isVegetarian === "false" ? false : undefined;
+    cat.minPrice = minPrice;
+    cat.maxPrice = maxPrice;
+    return cat;
+  }, [category, isAvailable, isVegetarian, minPrice, maxPrice]);
 
   const { categories: { result: categories = [] } = {}, isLoadingCategories } = useCategory({});
   const { menuItems: { result: menuItems = [] } = {}, isLoadingMenuItems } = useMenu({
@@ -25,7 +34,7 @@ const MenuPage = () => {
   });
 
   return (
-    <div className="px-4 space-y-4">
+    <div className="px-4 space-y-4 pt-8">
       <AnimatedSearchButton />
       <PromotionalCards />
       <CategoriesTabs categories={categories} isLoading={isLoadingCategories} />
@@ -47,7 +56,11 @@ const AnimatedSearchButton = () => {
 
   return (
     <Link to="/search">
-      <Button startContent={<Search size={16} />} className="overflow-hidden justify-normal w-full rounded-full text-gray-500 bg-gray-200 hover:bg-gray-200" variant="secondary">
+      <Button
+        startContent={<Search size={16} />}
+        className="overflow-hidden justify-normal w-full rounded-full text-gray-500 dark:bg-[#1f222a] bg-gray-200 hover:bg-gray-200"
+        variant="secondary"
+      >
         Search{" "}
         {searchTerms.map((_, i) => {
           if (idx === i) {

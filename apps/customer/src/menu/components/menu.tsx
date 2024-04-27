@@ -3,12 +3,13 @@ import { IndianRupee } from "lucide-react";
 
 import { ImgWithPlaceholder, Typography } from "@repo/ui";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
+import CSkeleton from "@src/common/components/skeleton";
 
-const Menu = ({ menuItems, isLoading }: { menuItems: NSRestaurant.IMenuItem[]; isLoading: Boolean }) => {
+const Menu = ({ menuItems, isLoading, sectionTitle = "Dishes" }: { menuItems: NSRestaurant.IMenuItem[]; isLoading: Boolean; sectionTitle?: string }) => {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <h1 className="text-base font-medium">Dishes</h1>
+        <h1 className="text-base font-medium">{sectionTitle}</h1>
       </div>
       <div className="space-y-4">
         {isLoading ? (
@@ -16,10 +17,10 @@ const Menu = ({ menuItems, isLoading }: { menuItems: NSRestaurant.IMenuItem[]; i
             <div key={i} className="animate-pulse shadow-sm p-4 rounded-md">
               <div>
                 <div className="flex gap-x-2 items-center">
-                  <div className="w-24 h-24 bg-gray-200 rounded-md" />
+                  <CSkeleton className="w-24 h-24  rounded-md" />
                   <div className="flex-1 space-y-4">
-                    <div className="w-1/2 h-4 bg-gray-200 rounded-md" />
-                    <div className="w-1/4 h-4 bg-gray-200 rounded-md" />
+                    <CSkeleton className="w-1/2 h-4  rounded-md" />
+                    <CSkeleton className="w-1/4 h-4  rounded-md" />
                   </div>
                 </div>
               </div>
@@ -50,7 +51,7 @@ export default Menu;
 const MenuItem = ({ name, _id, category, isAvailable, price, image, isVegetarian }: NSRestaurant.IMenuItem) => {
   return (
     <div>
-      <Link to={`/menu/${_id}`} className="flex border-none shadow-sm rounded-md bg-white">
+      <Link to={`/menu/${_id}`} className="flex border-none shadow-sm rounded-md bg-white dark:bg-[#1f222a]">
         <div className="p-4">
           <ImgWithPlaceholder placeholder={name} className="w-24 h-24" src={image} />
         </div>

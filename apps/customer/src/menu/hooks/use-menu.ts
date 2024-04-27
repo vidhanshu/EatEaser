@@ -29,7 +29,6 @@ const useMenu = ({
   } = useQuery({
     queryKey: ["menuItems", filters],
     queryFn: () => {
-      console.log("[filtersFROMHOok]", filters);
       return menuService.getMenuItems(filters);
     },
     enabled: fetchMenuItems,

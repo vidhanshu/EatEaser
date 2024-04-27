@@ -1,5 +1,12 @@
+import { useTheme } from "@repo/ui";
+
 const SettingsPage = () => {
-  return <div>SettingsPage</div>;
+  const { toggleTheme } = useTheme();
+  return (
+    <div>
+      <button onClick={toggleTheme}>Togge theme</button>
+    </div>
+  );
 };
 
 export default SettingsPage;
