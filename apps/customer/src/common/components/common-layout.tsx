@@ -4,12 +4,13 @@ import Navbar from "./navbar";
 import { useEffect } from "react";
 
 const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) => {
-  const [sp] = useSearchParams();
+  const [sp, ssp] = useSearchParams();
   const rid = sp.get("rid");
 
   useEffect(() => {
     if (rid) {
       localStorage.setItem("restaurantId", rid);
+      ssp({});
     }
   }, [rid]);
 
