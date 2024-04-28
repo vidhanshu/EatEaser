@@ -3,7 +3,8 @@ import { GoHome, GoHomeFill } from "react-icons/go";
 import { RiSearchFill, RiSearchLine } from "react-icons/ri";
 import { IoSettings, IoSettingsOutline } from "react-icons/io5";
 
-export const BASE_URL = "https://eateaser.onrender.com/api";
+// export const BASE_URL = "https://eateaser.onrender.com/api";
+export const BASE_URL = "http://localhost:4000/api";
 
 export const BOTTOM_TABS = [
   {

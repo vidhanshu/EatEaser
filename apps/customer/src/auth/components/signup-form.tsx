@@ -58,7 +58,7 @@ const SignupForm = () => {
     mutate(values);
   }
   return (
-    <Card className="backdrop-blur-md z-10 bg-primary/5 p-4 mx-auto flex-grow max-w-xs md:max-w-md py-8 select-none">
+    <Card className="backdrop-blur-md z-10 bg-primary/5 p-4 mx-auto flex-grow max-w-xs md:max-w-md py-8 select-none dark:border-gray-700">
       <div className="space-y-2 mb-4">
         <Typography className="text-center" variant="large">
           Let&apos; Get Started!
@@ -119,14 +119,7 @@ const SignupForm = () => {
                 <FormItem>
                   <FormLabel>Phone no.</FormLabel>
                   <FormControl>
-                    <Input
-                      className="bg-transparent"
-                      startIcon={Phone}
-                      type="tel"
-                      placeholder="Phone no."
-                      iconProps={{ className: "text-primary/60" }}
-                      {...field}
-                    />
+                    <Input className="bg-transparent" startIcon={Phone} type="tel" placeholder="Phone no." iconProps={{ className: "text-primary/60" }} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,14 +132,7 @@ const SignupForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      className="bg-transparent"
-                      startIcon={Lock}
-                      type="password"
-                      placeholder="Password"
-                      iconProps={{ className: "text-primary/60" }}
-                      {...field}
-                    />
+                    <Input className="bg-transparent" startIcon={Lock} type="password" placeholder="Password" iconProps={{ className: "text-primary/60" }} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

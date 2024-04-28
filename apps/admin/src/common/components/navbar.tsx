@@ -37,7 +37,7 @@ const Navbar = () => {
           </li>
           <li>
             <Button variant="secondary" size="icon">
-              <Bell size={16} />
+              <Bell className="text-gray-600 dark:text-gray-100" size={16} />
             </Button>
           </li>
           <li>

@@ -12,6 +12,7 @@ import SearchPage from "@src/search/pages/search-page";
 import SettingsPage from "@src/settings/pages/settings-page";
 import CartPage from "@src/cart/pages/cart-page";
 import MenuDetailsPage from "@src/menu/pages/menu-details-page";
+import ProfilePage from "@src/profile/pages/profile-page";
 
 /**
  * ROUTES_FOR_ONLY_UNAUTHENTICATED, are accessible only to unauthenticated users
@@ -19,12 +20,12 @@ import MenuDetailsPage from "@src/menu/pages/menu-details-page";
 const ROUTES_FOR_ONLY_UNAUTHENTICATED: RouteObject[] = [
   {
     path: "/",
-    element: <CommonLayout showBottomTabs={false} />,
     errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
-        element: <MenuPage />,
+        element: <CommonLayout showBottomTabs={false} />,
+        children: [{ path: "/", element: <MenuPage /> }],
       },
       {
         path: "/sign-in",
@@ -63,7 +64,7 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
       },
       {
         path: "/profile",
-        element: <div>Hello world!</div>,
+        element: <ProfilePage />,
       },
       {
         path: "/search",

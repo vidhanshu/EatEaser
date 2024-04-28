@@ -64,7 +64,7 @@ const LoginForm = () => {
     mutate(values);
   }
   return (
-    <Card className="backdrop-blur-md z-10  bg-primary/5 p-4 mx-auto flex-grow max-w-xs md:max-w-md py-8 select-none">
+    <Card className="backdrop-blur-md z-10  bg-primary/5 p-4 mx-auto flex-grow max-w-xs md:max-w-md py-8 select-none dark:border-gray-700">
       <div className="space-y-2 mb-4">
         <Typography className="text-center" variant="large">
           Welcome back!
@@ -126,15 +126,7 @@ const LoginForm = () => {
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center gap-x-2">
-                        <Checkbox
-                          disabled={isPending}
-                          checked={value}
-                          onCheckedChange={(val) =>
-                            form.setValue("rememberMe", !!val)
-                          }
-                          id="rememberMe"
-                          {...field}
-                        />
+                        <Checkbox disabled={isPending} checked={value} onCheckedChange={(val) => form.setValue("rememberMe", !!val)} id="rememberMe" {...field} />
                         <label className="text-sm" htmlFor="rememberMe">
                           Remeber me
                         </label>

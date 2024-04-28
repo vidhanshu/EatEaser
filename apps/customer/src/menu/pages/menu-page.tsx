@@ -1,14 +1,14 @@
-import { Link, useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import { motion } from "framer-motion";
-
-import { Button, Typography } from "@repo/ui";
-import Menu from "@src/menu/components/menu";
-import useMenu, { IMenuFilters } from "@src/menu/hooks/use-menu";
-import useCategory from "@src/menu/hooks/use-categories";
-import CategoriesTabs from "@src/menu/components/categories-tabs";
+import { Link, useSearchParams } from "react-router-dom";
 import React, { useEffect, useMemo, useState } from "react";
-import { PROMOTIONAL_CARDS } from "../utils/constants";
+
+import Menu from "@src/menu/components/menu";
+import useCategory from "@src/menu/hooks/use-categories";
+import { PROMOTIONAL_CARDS } from "@src/menu/utils/constants";
+import useMenu, { IMenuFilters } from "@src/menu/hooks/use-menu";
+import CategoriesTabs from "@src/menu/components/categories-tabs";
+import { Button, Typography, Carousel, CarouselContent, CarouselItem, CarouselApi } from "@repo/ui";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();
@@ -78,26 +78,43 @@ const AnimatedSearchButton = () => {
 };
 
 const PromotionalCards = () => {
+  const [api, setApi] = React.useState<CarouselApi>();
+
+  React.useEffect(() => {
+    if (!api) return;
+
+    const id = setInterval(() => {
+      api.scrollNext();
+    }, 3000);
+    return () => clearInterval(id);
+  }, [api]);
+
   return (
-    <div className="no-scrollbar flex gap-x-4 overflow-scroll max-w-[calc(100vw-30px)]">
-      {PROMOTIONAL_CARDS.map(({ title, description, img, bgImg }, i) => (
-        <div key={i} className="relative p-4 rounded-xl overflow-hidden bg-no-repeat bg-cover flex gap-x-2 min-w-[calc(100vw-32px)]" style={{ backgroundImage: `url(${bgImg})` }}>
-          <Typography className="z-[2] text-white absolute right-4 top-2">View all</Typography>
-          <div>
-            <Typography variant="h1" className="text-white">
-              {title}
-            </Typography>
-            <Typography
-              variant="md"
-              className="text-white max-w-[200px]"
-              dangerouslySetInnerHTML={{
-                __html: description.replace("\n", "<br/>"),
-              }}
-            />
-          </div>
-          <img className="w-28 h-28 absolute right-8" src={img} />
-        </div>
-      ))}
+    <div>
+      <Carousel setApi={setApi} opts={{ loop: true, align: "center" }}>
+        <CarouselContent>
+          {PROMOTIONAL_CARDS.map(({ title, description, img, bgImg }, i) => (
+            <CarouselItem key={i}>
+              <div className="relative p-4 rounded-xl overflow-hidden bg-no-repeat bg-cover flex gap-x-2 w-full" style={{ backgroundImage: `url(${bgImg})` }}>
+                <Typography className="z-[2] text-white absolute right-4 top-2">View all</Typography>
+                <div>
+                  <Typography variant="h1" className="text-white">
+                    {title}
+                  </Typography>
+                  <Typography
+                    variant="md"
+                    className="text-white max-w-[200px]"
+                    dangerouslySetInnerHTML={{
+                      __html: description.replace("\n", "<br/>"),
+                    }}
+                  />
+                </div>
+                <img className="w-28 h-28 absolute right-8" src={img} />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
     </div>
   );
 };

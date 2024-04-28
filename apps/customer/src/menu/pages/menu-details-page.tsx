@@ -6,10 +6,12 @@ import { CheckCircle, ChevronLeft, IndianRupee, Minus, Plus, ShoppingCart, XCirc
 import SeeMoreText from "@src/common/components/see-more-text";
 import { GoStarFill } from "react-icons/go";
 import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";
+import useCartStore from "@src/cart/stores/cart-store";
 
 const MenuDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const { getMenuItem, menuItem, isLoadingMenuItem } = useMenu({ variables: { menuItemId: id } });
 
@@ -45,7 +47,7 @@ const MenuDetailsPage = () => {
             ))}
           </div>
         </div>
-        <Separator />
+        {menuItem?.description && <Separator />}
         {menuItem?.description && (
           <div>
             <Typography variant="h5">Details</Typography>
@@ -103,7 +105,7 @@ const MenuDetailsPage = () => {
         <div className="border-b dark:border-[#1f222a]" />
         <div className="space-y-4">
           <div className="flex gap-x-2 items-center justify-between">
-            <Typography>Choose Quanitity</Typography>
+            <Typography>Choose Quantity</Typography>
             <div className="w-fit flex gap-x-3 items-center">
               <Button disabled={quantity < 2} onClick={() => setQuantity((q) => q - 1)} className="min-w-8" size="icon-sm">
                 <Minus size={20} />
@@ -115,7 +117,15 @@ const MenuDetailsPage = () => {
             </div>
           </div>
           <div className="flex gap-x-4 items-center">
-            <Button disabled={!menuItem?.isAvailable} endContent={<ShoppingCart size={16} />} className="flex-1" variant="outline">
+            <Button
+              onClick={() => {
+                if (menuItem) addToCart({ ...menuItem, quantity });
+              }}
+              disabled={!menuItem?.isAvailable}
+              endContent={<ShoppingCart size={16} />}
+              className="flex-1"
+              variant="outline"
+            >
               Add to cart
             </Button>
             <Button

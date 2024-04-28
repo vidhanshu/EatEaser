@@ -27,6 +27,7 @@ export * from "./ui/popover";
 export * from "./ui/command";
 export * from "./ui/scroll-area";
 export * from "./ui/sheet";
+export * from "./ui/carousel";
 
 // Custom
 export * from "./custom/typography";

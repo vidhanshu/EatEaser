@@ -17,7 +17,7 @@ const Navbar = () => {
         {user ? (
           <div className="flex gap-x-4">
             <Button className="relative" size="icon" variant="secondary">
-              <Bell className="text-gray-600" size={20} />
+              <Bell className="text-white" size={20} />
               <div className="w-2 h-2 rounded-full bg-emerald-500 absolute top-0 right-0" />
             </Button>
             <Button size="icon" variant="secondary">
