@@ -11,7 +11,7 @@ import useCartStore from "@src/cart/stores/cart-store";
 const MenuDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCartStore();
+  const { addToCart, addAddon, getCartItem, removeAddon, cart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const { getMenuItem, menuItem, isLoadingMenuItem } = useMenu({ variables: { menuItemId: id } });
 
@@ -22,6 +22,10 @@ const MenuDetailsPage = () => {
   if (isLoadingMenuItem) {
     return <MenuDetailsPageSkeleton />;
   }
+
+  const itemInCart = getCartItem(menuItem?._id!);
+
+  console.log(cart);
 
   return (
     <main className="space-y-4">
@@ -35,7 +39,7 @@ const MenuDetailsPage = () => {
         {menuItem?.isVegetarian ? <img className="absolute top-0 right-4 w-6 h-6" src="/veg.png" /> : <img className="absolute top-0 right-4 w-6 h-6" src="/non-veg.png" />}
         <Typography variant="h3">{menuItem?.name}</Typography>
         <div className="flex justify-start">
-          <Typography className="flex gap-x-2 items-center text-emerald-500" variant="large">
+          <Typography className="flex gap-x-2 items-center text-primary" variant="large">
             <IndianRupee size={20} /> {menuItem?.price}
           </Typography>
         </div>
@@ -43,7 +47,7 @@ const MenuDetailsPage = () => {
           <Typography>4.5 Rating (1245 Users)</Typography>
           <div className="flex gap-x-2">
             {[1, 2, 3, 4, 5].map((star) => (
-              <GoStarFill className="fill-emerald-500" size={20} key={star} />
+              <GoStarFill className="fill-primary" size={20} key={star} />
             ))}
           </div>
         </div>
@@ -58,26 +62,38 @@ const MenuDetailsPage = () => {
         {!!menuItem?.addOns?.length && (
           <div>
             <Typography variant="h5">Add ons</Typography>
-            <div className="mt-4 max-w-[calc(100vw-30px)] no-scrollbar overflow-auto flex gap-x-4">
-              {menuItem.addOns.map(({ _id, name, price, description, image }) => (
-                <div className="p-2 rounded-md shadow-sm border dark:border-[#1f222a] min-w-[calc(100vw-34px)] flex gap-x-2" key={_id}>
+            <div className="mt-4 w-full no-scrollbar overflow-auto flex gap-x-4">
+              {menuItem.addOns.map(({ _id, name, price, description, image, restaurant }) => (
+                <div className="bg-input p-2 rounded-md shadow-sm border dark:border-input min-w-[calc(100%-30px)] flex gap-x-2" key={_id}>
                   <ImgWithPlaceholder className="max-w-32 max-h-32" placeholder={name} src={image} />
                   <div className="flex flex-col gap-1 justify-between flex-1">
-                    <Typography className="max-w-[150px] truncate" variant="h5">
+                    <Typography className="max-w-[100px] sm:max-w-[150px] truncate" variant="h5">
                       {name}
                     </Typography>
                     <div className="flex gap-x-1 items-center">
-                      <IndianRupee className="text-emerald-500" size={15} />
-                      <Typography className="text-emerald-500">{price}</Typography>
+                      <IndianRupee className="text-primary" size={15} />
+                      <Typography className="text-primary">{price}</Typography>
                     </div>
-                    <Typography className="max-w-[150px] truncate" variant="muted">
+                    <Typography className="max-w-[100px] sm:max-w-[150px] truncate" variant="muted">
                       {description}
                     </Typography>
-                    <div className="flex justify-end">
-                      <Button disabled={!menuItem?.isAvailable} size="icon-sm">
-                        <Plus size={16} />
-                      </Button>
-                    </div>
+                    {itemInCart?.addOns?.map(({ _id }) => _id)?.includes(_id) ? (
+                      <div className="flex justify-end">
+                        <Button onClick={() => removeAddon(menuItem?._id, _id)} variant="destructive" disabled={!menuItem?.isAvailable || !itemInCart} size="icon-sm">
+                          <Minus size={16} />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex justify-end">
+                        <Button
+                          onClick={() => addAddon(menuItem?._id, { _id, name, price, description, image, restaurant })}
+                          disabled={!menuItem?.isAvailable || !itemInCart}
+                          size="icon-sm"
+                        >
+                          <Plus size={16} />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -92,7 +108,7 @@ const MenuDetailsPage = () => {
               <TableBody>
                 {menuItem?.moreInfo.map(({ value, label }, idx) => {
                   return (
-                    <TableRow key={idx} className="dark:border-[#1f222a]">
+                    <TableRow key={idx} className="dark:border-input">
                       <TableCell>{label}</TableCell>
                       <TableCell>{value}</TableCell>
                     </TableRow>
@@ -102,7 +118,7 @@ const MenuDetailsPage = () => {
             </Table>
           </div>
         )}
-        <div className="border-b dark:border-[#1f222a]" />
+        <div className="border-b dark:border-input" />
         <div className="space-y-4">
           <div className="flex gap-x-2 items-center justify-between">
             <Typography>Choose Quantity</Typography>
@@ -119,7 +135,9 @@ const MenuDetailsPage = () => {
           <div className="flex gap-x-4 items-center">
             <Button
               onClick={() => {
-                if (menuItem) addToCart({ ...menuItem, quantity });
+                if (menuItem) {
+                  addToCart({ ...menuItem, addOns: [], quantity });
+                }
               }}
               disabled={!menuItem?.isAvailable}
               endContent={<ShoppingCart size={16} />}

@@ -1,6 +1,6 @@
 import { GenericAlertDialog, Switch, useTheme } from "@repo/ui";
 import SignOutBtn from "@src/common/components/sign-out-btn";
-import { ChevronRight, LogOut, Palette, User2 } from "lucide-react";
+import { ChevronRight, LogOut, Palette, Truck, User2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SettingsPage = () => {
@@ -18,7 +18,15 @@ const SettingsPage = () => {
           <ChevronRight />
         </button>
       </Link>
-      <div className="flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
+      <Link to="/orders">
+        <button className="flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
+          <span className="flex gap-x-4 items-center">
+            <Truck size={16} /> Orders
+          </span>{" "}
+          <ChevronRight />
+        </button>
+      </Link>
+      <div className="cursor-pointer flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
         <span className="flex gap-x-4 items-center">
           <Palette size={16} /> Toggle Theme
         </span>{" "}
@@ -28,13 +36,13 @@ const SettingsPage = () => {
         <SignOutBtn>
           {(signOut) => (
             <GenericAlertDialog
-              className="max-w-[95vw] rounded-md p-4 dark:border-gray-800"
+              className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
               title="Are you sure?"
               description="You'll be signed out of the account!"
               onOk={signOut}
               okBtnTitle="Sign out"
             >
-              <div className="flex py-4 justify-between items-center w-full border-b dark:border-gray-800 text-rose-500">
+              <div className="cursor-pointer flex py-4 justify-between items-center w-full border-b dark:border-gray-800 text-rose-500">
                 <span className="flex gap-x-4 items-center">
                   <LogOut size={16} /> Sign out
                 </span>{" "}

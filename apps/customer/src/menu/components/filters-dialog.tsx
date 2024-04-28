@@ -69,11 +69,11 @@ export const FilterDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className={cn("p-2 rounded-full min-w-16 bg-transparent border border-emerald-500")}>
-          <SlidersHorizontal className="mx-auto text-emerald-500" size={16} />
+        <button className={cn("p-2 rounded-full min-w-16 bg-transparent border border-primary")}>
+          <SlidersHorizontal className="mx-auto text-primary" size={16} />
         </button>
       </DialogTrigger>
-      <DialogContent className="dark:bg-[#181a20] border border-[#1f222a] rounded-md max-w-[95vw] p-4">
+      <DialogContent className="dark:bg-background border border-input rounded-md max-w-[95vw] w-fit p-4">
         <div>
           <Typography variant="h4">Apply filters</Typography>
           <Typography variant="muted">Get more specific results for your delicious dish by applying filters</Typography>

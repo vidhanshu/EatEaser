@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
-import { IndianRupee, Minus, Plus } from "lucide-react";
+import { ArrowRight, IndianRupee, Minus, Plus } from "lucide-react";
 
-import { Button, ImgWithPlaceholder, Input, Typography, GenericAlertDialog } from "@repo/ui";
+import { Button, ImgWithPlaceholder, Input, Typography, GenericAlertDialog, Separator } from "@repo/ui";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import CSkeleton from "@src/common/components/skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
+import Empty from "@src/common/components/empty";
+import { IoFastFoodOutline } from "react-icons/io5";
+import React from "react";
 
 const Menu = ({
   menuItems,
@@ -21,6 +24,8 @@ const Menu = ({
   notFoundTitle?: string;
   notFoundDescription?: string;
 }) => {
+  const { removeAddon } = useCartStore();
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -42,19 +47,52 @@ const Menu = ({
             </div>
           ))
         ) : !menuItems.length ? (
-          <div className="flex flex-col gap-4">
-            <img className="w-60 mx-auto h-auto" src="/not-found-food.svg" />
-            <div className="space-y-2">
-              <Typography className="text-center" variant="h4">
-                {notFoundTitle}
-              </Typography>
-              <Typography className="text-center" variant="muted">
-                {notFoundDescription}
-              </Typography>
-            </div>
-          </div>
+          <Empty notFoundTitle={notFoundTitle} notFoundDescription={notFoundDescription}>
+            {forCart && (
+              <Link to="/" className="max-w-fit mx-auto">
+                <Button size="sm" endContent={<ArrowRight size={16} />}>
+                  Explore
+                </Button>
+              </Link>
+            )}
+          </Empty>
         ) : (
-          menuItems.map((mi) => <MenuItem key={mi._id} {...mi} forCart={forCart} />)
+          menuItems.map((mi, idx) => {
+            if (!forCart) return <MenuItem key={mi._id} {...mi} />;
+            else {
+              return (
+                <React.Fragment key={mi._id}>
+                  <MenuItem {...mi} />
+                  {mi.addOns?.length > 0 && (
+                    <>
+                      <div className="space-y-4">
+                        <Typography variant="muted">
+                          Add ons for {mi.name}({mi.addOns.length})
+                        </Typography>
+                        {mi.addOns.map(({ _id, name, price, image }) => (
+                          <div key={_id} className="bg-white dark:bg-input shadow-sm p-2 rounded-md justify-between flex gap-x-4">
+                            <div className="flex gap-x-4">
+                              <ImgWithPlaceholder placeholder={name} src={image} className="w-16 h-16" />
+                              <div>
+                                <Typography>{name}</Typography>
+                                <Typography className="flex gap-x-2 items-center text-primary">
+                                  <IndianRupee size={20} /> {price}
+                                </Typography>
+                              </div>
+                            </div>
+                            <Button className="w-6 h-6" onClick={() => removeAddon(mi._id, _id)} variant="destructive" size="icon-sm">
+                              <Minus size={16} />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {idx < menuItems?.length! - 1 && <Separator />}
+                </React.Fragment>
+              );
+            }
+          })
         )}
       </div>
     </div>
@@ -63,30 +101,28 @@ const Menu = ({
 
 export default Menu;
 
-const MenuItem = ({ name, _id, category, isAvailable, price, image, isVegetarian, forCart }: NSRestaurant.IMenuItem & { forCart?: boolean }) => {
-  const { removeFromCart, getCartItem, changeQuantity } = useCartStore();
+const MenuItem = (item: NSRestaurant.IMenuItem & { forCart?: boolean }) => {
+  const { name, _id, category, isAvailable, price, image, isVegetarian, forCart, addOns } = item;
+  const { removeFromCart, getCartItem, addToCart, changeQuantity, isInCart } = useCartStore();
   const itemQty = getCartItem(_id)?.quantity!;
-
-  const Comp = forCart ? "div" : Link;
-  const Comp2 = !forCart ? "div" : Link;
 
   return (
     <div>
-      <Comp to={`/menu/${_id}`} className="flex border-none shadow-sm rounded-md bg-white dark:bg-[#1f222a]">
-        <Comp2 to={`/menu/${_id}`}>
+      <div className="flex border-none shadow-sm rounded-md bg-white dark:bg-input">
+        <Link to={`/menu/${_id}`}>
           <div className="p-4">
             <ImgWithPlaceholder placeholder={name} className="w-24 h-24" src={image} />
           </div>
-        </Comp2>
+        </Link>
         <div className="p-4 pl-0 flex-1 flex flex-col justify-between">
           <div className="flex justify-between items-center">
             <Typography variant="md" className="truncate max-w-[180px]">
               {name}
             </Typography>
-            {forCart && (
+            {isInCart(_id) ? (
               <GenericAlertDialog
                 onOk={() => removeFromCart(_id)}
-                className="max-w-[95vw] rounded-md p-4 dark:border-gray-800"
+                className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
                 title="Are you sure?"
                 description={`Do you really want to remove "${name}" from cart?`}
                 okBtnTitle="Yes, remove it"
@@ -95,26 +131,29 @@ const MenuItem = ({ name, _id, category, isAvailable, price, image, isVegetarian
                   <Minus size={16} />
                 </Button>
               </GenericAlertDialog>
+            ) : (
+              <Button onClick={() => addToCart({ ...item, quantity: 1 })} className="w-6 h-6" size="icon-sm">
+                <Plus size={16} />
+              </Button>
             )}
           </div>
-          {!forCart && <Typography className="w-fit text-sm max-w-[180px] whitespace-nowrap truncate text-emerald-500">{category.name}</Typography>}
+          {!forCart && <Typography className="w-fit text-sm max-w-[180px] whitespace-nowrap truncate text-primary">{category.name}</Typography>}
           <div className="flex gap-x-1 items-center">
             <IndianRupee size={15} />
             <Typography>{price}</Typography>
           </div>
           {!forCart && (
-            <div className="flex gap-x-2 items-end">
-              {isAvailable ? (
-                <span className="text-xs h-[16px] w-fit px-1 rounded-sm bg-emerald-500 text-white">Available</span>
-              ) : (
-                <span className="text-xs h-[16px] w-fit px-1 rounded-sm bg-rose-500 text-white">Not available</span>
-              )}
-              {isVegetarian ? (
-                <span className="text-xs h-[16px] w-fit px-1 rounded-sm bg-emerald-500 text-white">Veg</span>
-              ) : (
-                <span className="text-xs h-[16px] w-fit px-1 rounded-sm bg-rose-500 text-white">Non-veg</span>
-              )}
-            </div>
+            <>
+              <div className="flex gap-x-2 items-end">
+                {isAvailable ? (
+                  <span className="text-xs h-[16px] w-fit px-1 rounded-sm bg-primary text-white">Available</span>
+                ) : (
+                  <span className="text-xs h-[16px] w-fit px-1 rounded-sm bg-rose-500 text-white">Not available</span>
+                )}
+                {isVegetarian ? <img className="size-4" src="/veg.png" /> : <img className="size-4" src="/non-veg.png" />}
+                {addOns?.length > 0 && <IoFastFoodOutline className="size-4 text-primary" />}
+              </div>
+            </>
           )}
           {forCart && (
             <div className="flex gap-x-2 items-center justify-end">
@@ -122,13 +161,13 @@ const MenuItem = ({ name, _id, category, isAvailable, price, image, isVegetarian
                 <button
                   disabled={itemQty < 2}
                   onClick={() => changeQuantity(_id, itemQty - 1)}
-                  className="min-w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-primary-foreground"
+                  className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground"
                 >
                   <Minus size={15} />
                 </button>
                 <Input
                   min={1}
-                  className="max-w-16 text-center h-7"
+                  className="max-w-16 text-center h-7 appearance-none"
                   sizeVariant="sm"
                   value={itemQty}
                   onChange={(e) => {
@@ -137,17 +176,14 @@ const MenuItem = ({ name, _id, category, isAvailable, price, image, isVegetarian
                   type="number"
                   placeholder="Enter quantity"
                 />
-                <button
-                  onClick={() => changeQuantity(_id, itemQty + 1)}
-                  className="min-w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-primary-foreground"
-                >
+                <button onClick={() => changeQuantity(_id, itemQty + 1)} className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground">
                   <Plus size={15} />
                 </button>
               </div>
             </div>
           )}
         </div>
-      </Comp>
+      </div>
     </div>
   );
 };

@@ -9,9 +9,24 @@ import { PROMOTIONAL_CARDS } from "@src/menu/utils/constants";
 import useMenu, { IMenuFilters } from "@src/menu/hooks/use-menu";
 import CategoriesTabs from "@src/menu/components/categories-tabs";
 import { Button, Typography, Carousel, CarouselContent, CarouselItem, CarouselApi } from "@repo/ui";
+import useAuthStore from "@src/common/stores/auth-store";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@src/common/utils/axios";
+import { ROUTES } from "@src/common/utils/api-routes";
+import CSkeleton from "@src/common/components/skeleton";
+import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { getGreeting } from "@ui/helpers";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();
+  const user = useAuthStore((store) => store.user);
+  const id = localStorage.getItem("restaurantId");
+  const { data: restaurant, isLoading } = useQuery({
+    queryKey: ["restaurant"],
+    queryFn: async () => {
+      if (id) return (await axiosInstance.get(ROUTES.restaurant.byId(id))).data as NSCommon.ApiResponse<NSRestaurant.IResturant>;
+    },
+  });
 
   const category = sp.get("category") ?? undefined;
   const minPrice = sp.get("minPrice") ?? undefined;
@@ -35,6 +50,14 @@ const MenuPage = () => {
 
   return (
     <div className="px-4 space-y-4 pt-8">
+      <div className="pb-4">
+        <Typography variant="h4">
+          Hello, <span className="text-primary">{user?.name ? user.name : getGreeting()}!</span>
+        </Typography>
+        <Typography variant="muted" className="flex gap-x-2 items-center text-base">
+          Welcome to <span>{isLoading ? <CSkeleton as="span" className="w-28 h-4" /> : restaurant?.data?.name}</span>
+        </Typography>
+      </div>
       <AnimatedSearchButton />
       <PromotionalCards />
       <CategoriesTabs categories={categories} isLoading={isLoadingCategories} />
@@ -56,11 +79,7 @@ const AnimatedSearchButton = () => {
 
   return (
     <Link to="/search">
-      <Button
-        startContent={<Search size={16} />}
-        className="overflow-hidden justify-normal w-full rounded-full text-gray-500 dark:bg-[#1f222a] bg-gray-200 hover:bg-gray-200"
-        variant="secondary"
-      >
+      <Button startContent={<Search size={16} />} className="overflow-hidden justify-normal w-full rounded-full text-gray-500 bg-input hover:bg-input" variant="secondary">
         Search{" "}
         {searchTerms.map((_, i) => {
           if (idx === i) {

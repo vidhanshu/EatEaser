@@ -39,7 +39,7 @@ const CategoriesTabs = ({ categories, isLoading }: { categories: NSRestaurant.IC
                   <Link
                     to={href}
                     key={_id}
-                    className={cn("p-2 rounded-full min-w-16", active ? "bg-emerald-500 text-white" : "bg-transparent border text-emerald-500 border-emerald-500")}
+                    className={cn("p-2 rounded-full min-w-16", active ? "bg-primary text-white" : "bg-transparent border text-primary border-primary")}
                   >
                     <p className="text-xs text-center truncate">{name}</p>
                   </Link>

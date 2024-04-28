@@ -13,6 +13,7 @@ import SettingsPage from "@src/settings/pages/settings-page";
 import CartPage from "@src/cart/pages/cart-page";
 import MenuDetailsPage from "@src/menu/pages/menu-details-page";
 import ProfilePage from "@src/profile/pages/profile-page";
+import OrderPage from "@src/orders/pages/order-page";
 
 /**
  * ROUTES_FOR_ONLY_UNAUTHENTICATED, are accessible only to unauthenticated users
@@ -73,6 +74,10 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
       {
         path: "/settings",
         element: <SettingsPage />,
+      },
+      {
+        path: "/orders",
+        element: <OrderPage />,
       },
       {
         path: "/cart",

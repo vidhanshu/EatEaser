@@ -20,7 +20,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <div className="relative max-w-[450px] mx-auto">
+          <App />
+        </div>
         <Toaster position="top-right" />
       </QueryClientProvider>
     </ThemeProvider>

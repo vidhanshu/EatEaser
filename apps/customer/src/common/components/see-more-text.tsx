@@ -11,7 +11,7 @@ const SeeMoreText = ({ text, limit = 200 }: { text: string; limit?: number }) =>
           {text.length > limit && (
             <>
               ...
-              <span onClick={() => setWrapped(false)} className="text-base text-emerald-500">
+              <span onClick={() => setWrapped(false)} className="text-base text-primary">
                 Read more
               </span>
             </>
@@ -20,7 +20,7 @@ const SeeMoreText = ({ text, limit = 200 }: { text: string; limit?: number }) =>
       ) : (
         <>
           {text}{" "}
-          <span onClick={() => setWrapped(true)} className="text-base text-emerald-500">
+          <span onClick={() => setWrapped(true)} className="text-base text-primary">
             Read less
           </span>
         </>

@@ -5,20 +5,26 @@ export const ROUTES = {
     signOut: "/auth/sign-out",
     signOutAll: "/auth/sign-out-all",
     profile: "/auth/profile",
+    update: "/auth/profile/update",
     verifyEmail: "/auth/verify-email",
     resendEmailVerificationOTP: "/auth/resend-email-verification-otp",
     forgotPassword: "/auth/forgot-password",
     resetPassword: "/auth/reset-password",
   },
   restaurant: {
+    list: "/restaurant/list",
+    byId: (id: string) => `/restaurant/${id}/get`,
     category: {
       list: (resturantId: string) => `/restaurant/${resturantId}/category/list`,
       byId: (id: string) => `/restaurant/category/${id}/get`,
     },
     menuItem: {
-      list: (resturantId: string) =>
-        `/restaurant/${resturantId}/menu-item/list`,
+      list: (resturantId: string) => `/restaurant/${resturantId}/menu-item/list`,
       byId: (id: string) => `/restaurant/menu/menu-item/${id}/get`,
     },
+  },
+  file: {
+    upload: "/file/upload",
+    delete: "/file/delete",
   },
 };

@@ -33,10 +33,10 @@ const SearchPage = () => {
         }}
         placeholder="Search"
         startIcon={Search}
-        className="bg-gray-200 dark:bg-[#1f222a]  placeholder:text-gray-500 rounded-full"
+        className="bg-input rounded-full"
       />
       {isLoadingMenuItems ? (
-        <Loader2 className="animate-spin w-8 h-8 mx-auto text-emerald-500" />
+        <Loader2 className="animate-spin w-8 h-8 mx-auto text-primary" />
       ) : q?.length && !result.length ? (
         <div className="flex flex-col gap-4">
           <img className="w-60 mx-auto h-auto" src={theme === "dark" ? "/not-found-food-dark.svg" : "/not-found-food.svg"} />
@@ -57,7 +57,7 @@ const SearchPage = () => {
             <>
               <div className="flex items-center justify-between">
                 <Typography>Recent Searches</Typography>
-                <span onClick={() => setRecentSearches([])} className="text-sm underline text-emerald-500">
+                <span onClick={() => setRecentSearches([])} className="text-sm underline text-primary">
                   Clear
                 </span>
               </div>
@@ -69,7 +69,7 @@ const SearchPage = () => {
                       ssp({ q: search });
                     }}
                     key={idx}
-                    className="px-2 py-1 rounded-full min-w-16 bg-transparent border border-emerald-500 text-sm text-emerald-500"
+                    className="px-2 py-1 rounded-full min-w-16 bg-transparent border border-primary text-sm text-primary"
                   >
                     {search}
                   </button>
@@ -88,7 +88,7 @@ const SearchPage = () => {
                     ssp({ q: search });
                   }}
                   key={idx}
-                  className="px-2 py-1 rounded-full min-w-16 bg-transparent border border-emerald-500 text-sm text-emerald-500"
+                  className="px-2 py-1 rounded-full min-w-16 bg-transparent border border-primary text-sm text-primary"
                 >
                   {search}
                 </button>
