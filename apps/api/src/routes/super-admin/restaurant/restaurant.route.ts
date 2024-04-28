@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { ROUTES } from "../../../utils/routes";
 import { validate, authMiddleware, RBACMiddleware } from "../../../middlewares";
-import { superAdminRestaurantController } from "../../../controllers";
+import {
+  commonRestaurantController,
+  superAdminRestaurantController,
+} from "../../../controllers";
 import {
   restaurantValidation,
   commonValidation,
@@ -21,5 +24,5 @@ superAdminRestaurantRouter.get(
   authMiddleware,
   RBACMiddleware(["super-admin"]),
   validate(commonValidation.listDataSchema),
-  superAdminRestaurantController.handleListRestaurant
+  commonRestaurantController.handleListRestaurant("super-admin")
 );

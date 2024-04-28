@@ -27,6 +27,7 @@ import {
   customerOrderRouter,
   customerCategoryRouter,
   customerMenuItemRouter,
+  customerRestaurantRouter,
 } from "./routes";
 
 const app: Express = express();
@@ -83,7 +84,8 @@ app
   .use("/api", customerAuthRouter)
   .use("/api", customerOrderRouter)
   .use("/api", customerCategoryRouter)
-  .use("/api", customerMenuItemRouter);
+  .use("/api", customerMenuItemRouter)
+  .use("/api", customerRestaurantRouter);
 
 // s3 routes
 app.use("/api/file", s3Router);

@@ -40,6 +40,15 @@ export namespace NSAuth {
     password: string;
   };
 
+  export type IUpdateProfilePayload = {
+    name?: string;
+    email?: string;
+    currentPassword?: string;
+    newPassword?: string;
+    phone?: string;
+    image?: string;
+  };
+
   export type ROLES =
     | "customer"
     | "admin"

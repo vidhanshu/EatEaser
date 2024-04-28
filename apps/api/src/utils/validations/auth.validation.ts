@@ -11,6 +11,19 @@ const SignUpSchema = {
   }),
 };
 
+const UpdateProfileSchema = {
+  body: Joi.object<NSAuth.IUpdateProfilePayload>()
+    .keys({
+      email: Joi.string(),
+      name: Joi.string().min(3).max(50),
+      phone: Joi.string().min(10).max(15).pattern(MOBILE_REGEX),
+      image: Joi.string().uri().allow(""),
+      newPassword: Joi.string().min(8),
+      currentPassword: Joi.string().min(8),
+    })
+    .min(1),
+};
+
 const SignInSchema = {
   body: Joi.object<NSAuth.IUserSigninPayload>().keys({
     email: Joi.string().email().required(),
@@ -45,6 +58,7 @@ const ResetPasswordSchema = {
 export const authValidation = {
   SignUpSchema,
   SignInSchema,
+  UpdateProfileSchema,
   VerifyEmailOTPSchema,
   GenerateEmailOTPSchema,
   ForgotPasswordSchema,

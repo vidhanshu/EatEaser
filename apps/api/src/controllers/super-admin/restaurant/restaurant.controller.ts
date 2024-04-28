@@ -40,30 +40,6 @@ const handleCreateRestaurant = async (
   }
 };
 
-const handleListRestaurant = async (
-  req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload>,
-  res: Response
-) => {
-  try {
-    const { resultPerPage = 10, page = 1 } = req.query;
-    const limit = resultPerPage;
-    const skip = resultPerPage * (page - 1);
-    const resultCount = await Restaurant.countDocuments();
-    const totalPages = Math.ceil(resultCount / resultPerPage);
-    const result = await Restaurant.find({}, {}, { limit, skip });
-    sendResponse(res, {
-      data: {
-        result,
-        page,
-        totalPages,
-      },
-    });
-  } catch (error) {
-    sendErrorResponse(res, error);
-  }
-};
-
 export const superAdminRestaurantController = {
   handleCreateRestaurant,
-  handleListRestaurant,
 };

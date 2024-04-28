@@ -7,8 +7,8 @@ import {
   Utensils,
 } from "lucide-react";
 
-// export const BASE_URL = "http://localhost:4000/api";
-export const BASE_URL = "https://eateaser.onrender.com/api";
+export const BASE_URL = "http://localhost:4000/api";
+// export const BASE_URL = "https://eateaser.onrender.com/api";
 
 // Sidebar
 export const SIDEBAR = [

@@ -365,12 +365,64 @@ const handleResetPassword = (role: NSAuth.ROLES) => {
   };
 };
 
+const handleUpdateProfile = (role: NSAuth.ROLES) => {
+  return async (
+    req: NSCommon.TypedRequest<NSAuth.IUpdateProfilePayload> &
+      NSCommon.IAuthRequest,
+    res: Response
+  ) => {
+    try {
+      const { name, email, phone, image, newPassword, currentPassword } =
+        req.body;
+      const user = await User.findById(req._id);
+      if (!user) {
+        throw new ResponseError("User not found", httpStatus.NOT_FOUND);
+      }
+      if (email && email !== user.email) {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+          throw new ResponseError(
+            "Email already exists",
+            httpStatus.BAD_REQUEST
+          );
+        }
+      }
+      if (name) user.name = name;
+      if (email) user.email = email;
+      if (phone) user.phone = phone;
+      if (image) user.image = image;
+
+      if (newPassword && currentPassword) {
+        const passwordMatched = await bcrypt.compare(
+          currentPassword,
+          user.password
+        );
+        if (!passwordMatched) {
+          throw new ResponseError(
+            "Invalid current password",
+            httpStatus.BAD_REQUEST
+          );
+        }
+        user.password = newPassword;
+      }
+      const newUser = await user.save();
+      sendResponse(res, {
+        message: "Profile updated successfully",
+        data: newUser,
+      });
+    } catch (error) {
+      sendErrorResponse(res, error);
+    }
+  };
+};
+
 export const commonAuthController = {
   handleSignIn,
   handleGetProfile,
   handleSignOut,
   handleSignOutAll,
   handleVerifyEmailOtp,
+  handleUpdateProfile,
   handleGenerateEmailOTP,
   handleForgotPassword,
   handleResetPassword,

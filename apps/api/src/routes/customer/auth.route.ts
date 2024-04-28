@@ -9,52 +9,59 @@ export const customerAuthRouter = Router();
 customerAuthRouter.post(
   ROUTES.customer.auth.signUp,
   validate(authValidation.SignUpSchema),
-  authController.handleSignUp,
+  authController.handleSignUp
 );
 customerAuthRouter.post(
   ROUTES.customer.auth.signIn,
   validate(authValidation.SignInSchema),
-  commonAuthController.handleSignIn("customer"),
+  commonAuthController.handleSignIn("customer")
 );
 customerAuthRouter.get(
   ROUTES.customer.auth.profile,
   authMiddleware,
   RBACMiddleware(["customer"]),
-  commonAuthController.handleGetProfile("customer"),
+  commonAuthController.handleGetProfile("customer")
 );
 customerAuthRouter.post(
   ROUTES.customer.auth.signOut,
   authMiddleware,
   RBACMiddleware(["customer"]),
-  commonAuthController.handleSignOut("customer"),
+  commonAuthController.handleSignOut("customer")
 );
 customerAuthRouter.post(
   ROUTES.customer.auth.signOutAll,
   authMiddleware,
   RBACMiddleware(["customer"]),
-  commonAuthController.handleSignOutAll("customer"),
+  commonAuthController.handleSignOutAll("customer")
 );
 customerAuthRouter.post(
   ROUTES.customer.auth.verifyEmail,
   authMiddleware,
   RBACMiddleware(["customer"]),
   validate(authValidation.VerifyEmailOTPSchema),
-  commonAuthController.handleVerifyEmailOtp("customer"),
+  commonAuthController.handleVerifyEmailOtp("customer")
 );
 customerAuthRouter.post(
   ROUTES.customer.auth.resendEmailVerificationOTP,
   authMiddleware,
   RBACMiddleware(["customer"]),
   validate(authValidation.GenerateEmailOTPSchema),
-  commonAuthController.handleGenerateEmailOTP("customer"),
+  commonAuthController.handleGenerateEmailOTP("customer")
 );
 customerAuthRouter.post(
   ROUTES.customer.auth.forgotPassword,
   validate(authValidation.ForgotPasswordSchema),
-  commonAuthController.handleForgotPassword("customer"),
+  commonAuthController.handleForgotPassword("customer")
 );
 customerAuthRouter.patch(
   ROUTES.customer.auth.resetPassword,
   validate(authValidation.ResetPasswordSchema),
-  commonAuthController.handleResetPassword("customer"),
+  commonAuthController.handleResetPassword("customer")
+);
+customerAuthRouter.patch(
+  ROUTES.customer.auth.update,
+  authMiddleware,
+  RBACMiddleware(["customer"]),
+  validate(authValidation.UpdateProfileSchema),
+  commonAuthController.handleUpdateProfile("customer")
 );

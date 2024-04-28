@@ -6,6 +6,7 @@ export const ROUTES = {
       signOut: "/auth/sign-out",
       signOutAll: "/auth/sign-out-all",
       profile: "/auth/profile",
+      update: "/auth/profile/update",
       verifyEmail: "/auth/verify-email",
       resendEmailVerificationOTP: "/auth/resend-email-verification-otp",
       forgotPassword: "/auth/forgot-password",
