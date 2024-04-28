@@ -1,18 +1,20 @@
-import { Outlet, useSearchParams } from "react-router-dom";
+import { Outlet, Navigate, useSearchParams, useLocation } from "react-router-dom";
 import BottomTabs from "./bottom-tabs";
 import Navbar from "./navbar";
 import { useEffect } from "react";
 
 const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) => {
-  const [sp, ssp] = useSearchParams();
-  const rid = sp.get("rid");
+  const [sp] = useSearchParams();
+  const { pathname } = useLocation();
+  const rid = sp.get("rid") ?? localStorage.getItem("restaurantId");
 
   useEffect(() => {
     if (rid) {
       localStorage.setItem("restaurantId", rid);
-      ssp({});
     }
-  }, [rid]);
+  }, [rid, pathname]);
+
+  if (!rid && pathname !== "/restaurants") return <Navigate to="/restaurants" />;
 
   return (
     <main className="bg-background">
@@ -20,7 +22,7 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
       <div className="pb-4 min-h-[calc(100vh-120px)]">
         <Outlet />
       </div>
-      {showBottomTabs && <BottomTabs />}
+      {!showBottomTabs || !rid ? null : <BottomTabs />}
     </main>
   );
 };

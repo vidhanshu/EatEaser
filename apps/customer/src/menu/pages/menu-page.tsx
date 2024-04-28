@@ -20,13 +20,7 @@ import { getGreeting } from "@ui/helpers";
 const MenuPage = () => {
   const [sp] = useSearchParams();
   const user = useAuthStore((store) => store.user);
-  const id = localStorage.getItem("restaurantId");
-  const { data: restaurant, isLoading } = useQuery({
-    queryKey: ["restaurant"],
-    queryFn: async () => {
-      if (id) return (await axiosInstance.get(ROUTES.restaurant.byId(id))).data as NSCommon.ApiResponse<NSRestaurant.IResturant>;
-    },
-  });
+  const restaurantId = localStorage.getItem("restaurantId");
 
   const category = sp.get("category") ?? undefined;
   const minPrice = sp.get("minPrice") ?? undefined;
@@ -43,9 +37,16 @@ const MenuPage = () => {
     return cat;
   }, [category, isAvailable, isVegetarian, minPrice, maxPrice]);
 
-  const { categories: { result: categories = [] } = {}, isLoadingCategories } = useCategory({});
+  const { categories: { result: categories = [] } = {}, isLoadingCategories } = useCategory({ deps: [restaurantId!] });
   const { menuItems: { result: menuItems = [] } = {}, isLoadingMenuItems } = useMenu({
     variables: { filters },
+    deps: [restaurantId!],
+  });
+  const { data: restaurant, isLoading } = useQuery({
+    queryKey: ["restaurant", restaurantId],
+    queryFn: async () => {
+      if (restaurantId) return (await axiosInstance.get(ROUTES.restaurant.byId(restaurantId))).data as NSCommon.ApiResponse<NSRestaurant.IResturant>;
+    },
   });
 
   return (
@@ -55,7 +56,16 @@ const MenuPage = () => {
           Hello, <span className="text-primary">{user?.name ? user.name : getGreeting()}!</span>
         </Typography>
         <Typography variant="muted" className="flex gap-x-2 items-center text-base">
-          Welcome to <span>{isLoading ? <CSkeleton as="span" className="w-28 h-4" /> : restaurant?.data?.name}</span>
+          Welcome to{" "}
+          <span>
+            {isLoading ? (
+              <CSkeleton as="span" className="w-28 h-4" />
+            ) : (
+              <Link className="text-sm" to={`/restaurants/${restaurant?.data?._id}`}>
+                {restaurant?.data?.name}
+              </Link>
+            )}
+          </span>
         </Typography>
       </div>
       <AnimatedSearchButton />

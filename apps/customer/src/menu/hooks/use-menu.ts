@@ -15,9 +15,11 @@ export interface IMenuFilters {
 const useMenu = ({
   fetchMenuItems = true,
   variables: { menuItemId, filters = {} } = {},
+  deps = [],
 }: {
   fetchMenuItems?: boolean;
   variables?: { menuItemId?: string; filters?: IMenuFilters };
+  deps?: string[];
 }) => {
   // Feth menu items
   const {
@@ -27,7 +29,7 @@ const useMenu = ({
     isRefetching: isRefetchingMenuItems, // this works on only refetching
     refetch: getMenuItems,
   } = useQuery({
-    queryKey: ["menuItems", filters],
+    queryKey: ["menuItems", filters, ...deps],
     queryFn: () => {
       return menuService.getMenuItems(filters);
     },
@@ -42,7 +44,7 @@ const useMenu = ({
     isLoading: isLoadingMenuItem,
     refetch: getMenuItem,
   } = useQuery({
-    queryKey: ["menuItem", menuItemId],
+    queryKey: ["menuItem", menuItemId, ...deps],
     queryFn: async ({ queryKey }) => {
       const [, menuItemId] = queryKey;
       if (menuItemId) {

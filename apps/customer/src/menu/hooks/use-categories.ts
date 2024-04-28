@@ -10,9 +10,11 @@ export interface ICategoryFilter {
 const useCategory = ({
   fetchCategories = true,
   variables: { categoryId, filters = {} } = {},
+  deps = [],
 }: {
   fetchCategories?: boolean;
   variables?: { categoryId?: string; filters?: ICategoryFilter };
+  deps?: string[];
 }) => {
   // Fetch Categories
   const {
@@ -22,7 +24,7 @@ const useCategory = ({
     isLoading: isLoadingCategories,
     refetch: getCategories,
   } = useQuery({
-    queryKey: ["categories", filters],
+    queryKey: ["categories", filters, ...deps],
     queryFn: () => {
       return categoryService.getCategories(filters);
     },
@@ -37,7 +39,7 @@ const useCategory = ({
     isRefetching: isRefetchingCategory,
     refetch: getCategory,
   } = useQuery({
-    queryKey: ["category", categoryId],
+    queryKey: ["category", categoryId, ...deps],
     queryFn: async ({ queryKey }) => {
       const [, categoryId] = queryKey;
       if (categoryId) {

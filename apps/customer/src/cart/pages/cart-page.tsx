@@ -39,9 +39,13 @@ const CartPage = () => {
                       </div>
                     </TableCell>
                   </TableRow>
-                  {item.addOns.map((addon) => (
+                  {item.addOns.map((addon, idx) => (
                     <TableRow key={addon._id}>
-                      <TableCell />
+                      <TableCell>
+                        <p className="text-muted-foreground text-xs">
+                          Add on-{idx + 1}({item.name})
+                        </p>
+                      </TableCell>
                       <TableCell>{addon.name}</TableCell>
                       <TableCell colSpan={2}>
                         <div className="flex gap-x-2 items-center">
