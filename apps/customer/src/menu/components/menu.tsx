@@ -8,6 +8,7 @@ import CSkeleton from "@src/common/components/skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
 import Empty from "@src/common/components/empty";
 import { IoFastFoodOutline } from "react-icons/io5";
+import { cn } from "@ui/lib/utils";
 
 const Menu = ({
   menuItems,
@@ -30,8 +31,6 @@ const Menu = ({
   isFetchingNextPage?: boolean;
   hasNextMenuPage?: boolean;
 }) => {
-  const { removeAddon } = useCartStore();
-
   return (
     <div className="space-y-2">
       <h1 className="text-base font-medium w-full">{sectionTitle}</h1>
@@ -66,32 +65,7 @@ const Menu = ({
             else {
               return (
                 <React.Fragment key={mi._id}>
-                  <MenuItem {...mi} />
-                  {mi.addOns?.length > 0 && (
-                    <>
-                      <div className="space-y-4">
-                        <Typography variant="muted">
-                          Add ons for {mi.name}({mi.addOns.length})
-                        </Typography>
-                        {mi.addOns.map(({ _id, name, price, image }) => (
-                          <div key={_id} className="bg-white dark:bg-input shadow-sm p-2 rounded-md justify-between flex gap-x-4">
-                            <div className="flex gap-x-4">
-                              <ImgWithPlaceholder placeholder={name} src={image} className="w-16 h-16" />
-                              <div>
-                                <Typography>{name}</Typography>
-                                <Typography className="flex gap-x-2 items-center text-primary">
-                                  <IndianRupee size={20} /> {price}
-                                </Typography>
-                              </div>
-                            </div>
-                            <Button className="w-6 h-6" onClick={() => removeAddon(mi._id, _id)} variant="destructive" size="icon-sm">
-                              <Minus size={16} />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
+                  <MenuItem forCart={forCart} {...mi} />
                   {idx < menuItems?.length! - 1 && <Separator />}
                 </React.Fragment>
               );
@@ -101,7 +75,7 @@ const Menu = ({
         {!forCart && (
           <>
             {isFetchingNextPage && <Loader2 className="mx-auto animate-spin mt-4" />}
-            {!hasNextMenuPage && <div className="text-center text-sm text-muted-foreground"></div>}
+            {!hasNextMenuPage && <div className="text-center text-sm text-muted-foreground">You reached the end of the page!</div>}
           </>
         )}
       </div>
@@ -112,14 +86,14 @@ const Menu = ({
 export default Menu;
 
 const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: boolean; endRef?: Ref<HTMLDivElement> }) => {
-  const { name, _id, category, isAvailable, price, image, isVegetarian, forCart, addOns } = item;
-  const { removeFromCart, getCartItem, addToCart, changeQuantity, isInCart } = useCartStore();
-  const itemQty = getCartItem(_id)?.quantity!;
+  const { name, _id: itemId, category, isAvailable, price, image, isVegetarian, forCart, addOns } = item;
+  const { removeFromCart, getCartItem, addToCart, changeQuantity, isInCart, removeAddon } = useCartStore();
+  const itemQty = getCartItem(itemId)?.quantity!;
 
   return (
-    <div>
-      <div className="flex border-none shadow-sm rounded-md bg-white dark:bg-input">
-        <Link to={`/menu/${_id}`}>
+    <div className={cn("border-none shadow-sm rounded-md bg-white dark:bg-input", addOns.length && forCart && "pb-4")}>
+      <div className="flex">
+        <Link to={`/menu/${itemId}`}>
           <div className="p-4">
             <ImgWithPlaceholder placeholder={name} className="w-24 h-24" src={image} />
           </div>
@@ -129,9 +103,9 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
             <Typography variant="md" className="truncate max-w-[180px]">
               {name}
             </Typography>
-            {isInCart(_id) ? (
+            {isInCart(itemId) ? (
               <GenericAlertDialog
-                onOk={() => removeFromCart(_id)}
+                onOk={() => removeFromCart(itemId)}
                 className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
                 title="Are you sure?"
                 description={`Do you really want to remove "${name}" from cart?`}
@@ -170,7 +144,7 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
               <div className="w-fit flex gap-x-3 items-center">
                 <button
                   disabled={itemQty < 2}
-                  onClick={() => changeQuantity(_id, itemQty - 1)}
+                  onClick={() => changeQuantity(itemId, itemQty - 1)}
                   className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground"
                 >
                   <Minus size={15} />
@@ -181,12 +155,15 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
                   sizeVariant="sm"
                   value={itemQty}
                   onChange={(e) => {
-                    changeQuantity(_id, Number(e.target.value));
+                    changeQuantity(itemId, Number(e.target.value));
                   }}
                   type="number"
                   placeholder="Enter quantity"
                 />
-                <button onClick={() => changeQuantity(_id, itemQty + 1)} className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground">
+                <button
+                  onClick={() => changeQuantity(itemId, itemQty + 1)}
+                  className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground"
+                >
                   <Plus size={15} />
                 </button>
               </div>
@@ -194,6 +171,33 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
           )}
         </div>
       </div>
+      {forCart && (
+        <div className="px-4">
+          {addOns.length > 0 && (
+            <div className="space-y-4">
+              <Typography variant="muted">
+                Add ons for {name}({addOns.length})
+              </Typography>
+              {addOns.map(({ _id, name, price, image }) => (
+                <div key={_id} className="bg-white dark:bg-input border border-input dark:border-gray-800 p-2 rounded-md justify-between flex gap-x-4">
+                  <div className="flex gap-x-4">
+                    <ImgWithPlaceholder placeholder={name} src={image} className="w-16 h-16" />
+                    <div>
+                      <Typography>{name}</Typography>
+                      <Typography className="flex gap-x-2 items-center text-primary">
+                        <IndianRupee size={20} /> {price}
+                      </Typography>
+                    </div>
+                  </div>
+                  <Button className="w-6 h-6" onClick={() => removeAddon(itemId, _id)} variant="destructive" size="icon-sm">
+                    <Minus size={16} />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

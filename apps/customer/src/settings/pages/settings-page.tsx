@@ -26,11 +26,11 @@ const SettingsPage = () => {
           <ChevronRight />
         </button>
       </Link>
-      <div className="cursor-pointer flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
+      <div onClick={toggleTheme} className="cursor-pointer flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
         <span className="flex gap-x-4 items-center">
           <Palette size={16} /> Toggle Theme
         </span>{" "}
-        <Switch checked={theme === "dark" ? true : false} onCheckedChange={toggleTheme} />
+        <Switch checked={theme === "dark" ? true : false} />
       </div>
       {
         <SignOutBtn>

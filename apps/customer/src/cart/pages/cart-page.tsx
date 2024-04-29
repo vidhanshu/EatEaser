@@ -79,8 +79,8 @@ const CartPage = () => {
               </TableRow>
             </TableBody>
           </Table>
-          <Button onClick={() => {}} className="w-full" endContent={<CheckCircle size={16} />}>
-            Checkout
+          <Button disabled onClick={() => {}} className="w-full" endContent={<CheckCircle size={16} />}>
+            Checkout (comming soon)
           </Button>
         </>
       )}

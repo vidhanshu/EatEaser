@@ -1,6 +1,7 @@
 import { Input, Separator, Typography, useTheme } from "@repo/ui";
+import useInfinte from "@src/common/hooks/use-infinite";
 import Menu from "@src/menu/components/menu";
-import useInfiniteMenu from "@src/menu/hooks/use-infinite-menu";
+import { menuService } from "@src/menu/services/menu";
 import { Loader2, Search } from "lucide-react";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -12,7 +13,13 @@ const SearchPage = () => {
   const sq = sp.get("q") ?? undefined;
   const [q, setQ] = useDebounceValue("", 1000);
   const [recentSearches, setRecentSearches] = useLocalStorage("recentSearches", []);
-  const { hasNextMenuPage, isFetchingNextMenuPage, isLoadingMenuItemsFirstTime, menuItems, refMenu } = useInfiniteMenu({ filters: { q } });
+  const {
+    ref: refMenu,
+    hasNextPage: hasNextMenuPage,
+    data: menuItems,
+    isLoading: isLoadingMenuItemsFirstTime,
+    isFetchingNextPage: isFetchingNextMenuPage,
+  } = useInfinte({ fetcher: menuService.getMenuItems, queryKey: ["menuItems"], filters: { q } });
 
   useEffect(() => {
     if (sq) setQ(sq);

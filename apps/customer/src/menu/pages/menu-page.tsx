@@ -15,8 +15,9 @@ import { ROUTES } from "@src/common/utils/api-routes";
 import CSkeleton from "@src/common/components/skeleton";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { getGreeting } from "@ui/helpers";
-import useInfiniteCateory from "../hooks/use-infinite-category";
-import useInfiniteMenu from "../hooks/use-infinite-menu";
+import { categoryService } from "../services/category";
+import useInfinte from "@src/common/hooks/use-infinite";
+import { menuService } from "../services/menu";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();
@@ -39,8 +40,19 @@ const MenuPage = () => {
     return cat;
   }, [category, isAvailable, isVegetarian, minPrice, maxPrice]);
 
-  const { categories, isFetchingNextCatPage, isLoadingCategoriesFirstTime, refCat } = useInfiniteCateory();
-  const { hasNextMenuPage, isFetchingNextMenuPage, isLoadingMenuItemsFirstTime, menuItems, refMenu } = useInfiniteMenu({ filters });
+  const {
+    ref: refCat,
+    data: categories,
+    isLoading: isLoadingCategoriesFirstTime,
+    isFetchingNextPage: isFetchingNextCatPage,
+  } = useInfinte({ fetcher: categoryService.getCategories, queryKey: ["categories", restaurantId!] });
+  const {
+    ref: refMenu,
+    hasNextPage: hasNextMenuPage,
+    data: menuItems,
+    isLoading: isLoadingMenuItemsFirstTime,
+    isFetchingNextPage: isFetchingNextMenuPage,
+  } = useInfinte({ fetcher: menuService.getMenuItems, queryKey: ["menuItems", restaurantId!], filters });
 
   const { data: restaurant, isLoading } = useQuery({
     queryKey: ["restaurant", restaurantId],

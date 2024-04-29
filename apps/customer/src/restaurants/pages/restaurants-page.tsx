@@ -1,15 +1,15 @@
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { ROUTES } from "@src/common/utils/api-routes";
 import axiosInstance from "@src/common/utils/axios";
-import { useQuery } from "@tanstack/react-query";
 import { Button, ImgWithPlaceholder, Typography } from "@repo/ui";
 import { ArrowDown, ArrowRight, Info } from "lucide-react";
 import { Link } from "react-router-dom";
+import useInfinte from "@src/common/hooks/use-infinite";
 
 const RestaurantsPage = () => {
-  const { data: { result = [] } = {} } = useQuery({
+  const { data } = useInfinte({
+    fetcher: async () => (await axiosInstance.get(ROUTES.restaurant.list)).data?.data as NSCommon.IListRespone<NSRestaurant.IResturant>["data"],
     queryKey: ["restaurants"],
-    queryFn: async () => (await axiosInstance.get(ROUTES.restaurant.list)).data?.data as NSCommon.IListRespone<NSRestaurant.IResturant>["data"],
   });
 
   return (
@@ -33,7 +33,7 @@ const RestaurantsPage = () => {
           Choose the restaurant You are in
         </Typography>
         <div className="space-y-4">
-          {result.map((restaurant, idx) => (
+          {data.map((restaurant, idx) => (
             <div key={idx} className="bg-input rounded-md p-4">
               <ImgWithPlaceholder className="w-full" placeholder={restaurant.name} src={restaurant.image} />
               <div className="py-4 space-y-4">
