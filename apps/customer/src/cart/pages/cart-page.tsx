@@ -1,11 +1,12 @@
+import React from "react";
+import { CheckCircle } from "lucide-react";
+
 import Menu from "@src/menu/components/menu";
 import useCartStore from "../stores/cart-store";
-import { Separator, TableBody, TableCell, TableRow, Table, Button } from "@repo/ui";
-import { CheckCircle } from "lucide-react";
-import React from "react";
+import { Separator, TableBody, TableCell, TableRow, Table, Button, GenericAlertDialog } from "@repo/ui";
 
 const CartPage = () => {
-  const { cart, calculateTotal } = useCartStore();
+  const { cart, calculateTotal, clearCart } = useCartStore();
 
   return (
     <div className="pt-8 px-4 space-y-4">
@@ -15,7 +16,22 @@ const CartPage = () => {
         forCart
         isLoading={false}
         menuItems={cart}
-        sectionTitle={`Cart (${cart.length} Items)`}
+        sectionTitle={
+          <div className="flex justify-between items-center">
+            <span>Cart ({cart.length} Items)</span>
+            {cart.length > 0 && (
+              <GenericAlertDialog
+                onOk={() => clearCart()}
+                className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
+                title="Are you sure?"
+                description="Do you really want to clear the cart?"
+                okBtnTitle="Yes, clear it"
+              >
+                <span className="cursor-pointer text-xs underline text-rose-500">Empty cart</span>
+              </GenericAlertDialog>
+            )}
+          </div>
+        }
       />
       {cart.length > 0 && (
         <>
@@ -63,8 +79,8 @@ const CartPage = () => {
               </TableRow>
             </TableBody>
           </Table>
-          <Button className="w-full" endContent={<CheckCircle size={16} />}>
-            Place order
+          <Button onClick={() => {}} className="w-full" endContent={<CheckCircle size={16} />}>
+            Checkout
           </Button>
         </>
       )}

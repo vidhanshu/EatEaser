@@ -111,7 +111,7 @@ export function GenericTable<TData, TValue>({
               </TableCell>
             </TableRow>
           )}
-          {totalPages > 10 && (
+          {totalPages > 1 && (
             <TableRow>
               <TableCell colSpan={columns.length}>
                 <CustomPagination

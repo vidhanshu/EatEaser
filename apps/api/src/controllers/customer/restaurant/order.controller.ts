@@ -5,14 +5,18 @@ import {
   sendErrorResponse,
   sendResponse,
 } from "../../../utils/response";
-import { MenuItem, Order, Restaurant, Table } from "../../../models";
+import { AddOn, MenuItem, Order, Restaurant, Table } from "../../../models";
 import { FilterQuery } from "mongoose";
 import httpStatus from "http-status";
+import { razorPay } from "../../../configs/rzrpay";
 
 const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
   const { _id } = req;
   const { restaurantId, tableId } = req.query;
-  const { items } = req.body as { items: NSRestaurant.IOrderItem[] };
+  const { items, paymentMethod } = req.body as {
+    items: NSRestaurant.IOrderItem[];
+    paymentMethod: any;
+  };
   try {
     const restaurantExists = await Restaurant.findById(restaurantId, { id: 1 });
     if (!restaurantExists) {
@@ -30,19 +34,29 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
     }
 
     // calculate total
-    let total = 0;
     const itemIds = items.map((item) => item.item);
+    const addOnIds = items.map((item) => item.addons).flat();
     const menuItems = await MenuItem.find(
       { _id: { $in: itemIds } },
       { price: 1, isAvailable: 1 }
     );
+    if (menuItems?.length === 0 || menuItems.length !== items.length) {
+      throw new ResponseError("Invalid item(s)", 400);
+    }
     // check if all items are available
     if (menuItems.some((item) => !item.isAvailable)) {
       throw new ResponseError("One or more items are not available", 400);
     }
-    menuItems.forEach(({ price }) => {
-      total += price;
-    });
+    const addOns = await AddOn.find(
+      { _id: { $in: addOnIds } },
+      { price: 1, isAvailable: true }
+    );
+    if (addOns.length !== addOnIds.length) {
+      throw new ResponseError("Invalid addOn(s)", 400);
+    }
+    const total =
+      menuItems.reduce((acc, item) => acc + item.price, 0) +
+      addOns.reduce((acc, item) => acc + item.price, 0);
 
     // create order
     const order = new Order({
@@ -51,10 +65,25 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
       table: tableId,
       items,
       total,
+      patment: { method: paymentMethod },
     });
+
+    // create rzrpay order
+    // const rzrpayOrder = await razorPay.orders.create({
+    //   amount: total * 100,
+    //   currency: "INR",
+    //   receipt: order._id.toString(),
+    //   method: paymentMethod.toLowerCase(),
+    // });
+    // if (!rzrpayOrder) {
+    //   throw new ResponseError("Failed to create order", 500);
+    // }
     await order.save();
     sendResponse(res, {
-      data: order,
+      data: {
+        order,
+        // rzrpayOrder,
+      },
       message: "Order created successfully",
       statusCode: httpStatus.CREATED,
     });

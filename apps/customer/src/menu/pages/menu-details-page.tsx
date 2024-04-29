@@ -11,7 +11,7 @@ import useCartStore from "@src/cart/stores/cart-store";
 const MenuDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart, addAddon, getCartItem, removeAddon, cart } = useCartStore();
+  const { addToCart, addAddon, getCartItem, removeAddon } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const { getMenuItem, menuItem, isLoadingMenuItem } = useMenu({ variables: { menuItemId: id } });
 
@@ -24,8 +24,6 @@ const MenuDetailsPage = () => {
   }
 
   const itemInCart = getCartItem(menuItem?._id!);
-
-  console.log(cart);
 
   return (
     <main className="space-y-4">
@@ -141,7 +139,7 @@ const MenuDetailsPage = () => {
               }}
               disabled={!menuItem?.isAvailable}
               endContent={<ShoppingCart size={16} />}
-              className="flex-1"
+              className="flex-1 bg-white dark:bg-input"
               variant="outline"
             >
               Add to cart

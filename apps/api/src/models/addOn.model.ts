@@ -5,6 +5,7 @@ const AddOnSchema = new Schema<NSRestaurant.IAddon>(
   {
     name: { type: String, required: true, maxlength: 100, trim: true },
     image: { type: String },
+    isAvailable: { type: Boolean, default: true },
     description: { type: String, maxlength: 1000 },
     price: { type: Number, required: true },
     restaurant: { type: Schema.Types.ObjectId, ref: "Restaurant" },

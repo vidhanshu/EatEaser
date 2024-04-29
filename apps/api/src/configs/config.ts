@@ -16,6 +16,8 @@ const envSchema = Joi.object().keys({
   S3_BUCKET_NAME: Joi.string().required(),
   S3_ACCESS_KEY: Joi.string().required(),
   S3_SECRET_KEY: Joi.string().required(),
+  RAZORPAY_KEY_id: Joi.string().required(),
+  RAZORPAY_KEY_SECRET: Joi.string().required(),
 });
 
 const { value: validatedEnv, error } = envSchema
@@ -54,5 +56,9 @@ export const config = {
     bucket_name: validatedEnv.S3_BUCKET_NAME,
     access_key: validatedEnv.S3_ACCESS_KEY,
     secret_key: validatedEnv.S3_SECRET_KEY,
+  },
+  rzrpay: {
+    RAZORPAY_KEY_id: validatedEnv.RAZORPAY_KEY_id,
+    RAZORPAY_KEY_SECRET: validatedEnv.RAZORPAY_KEY_SECRET,
   },
 };

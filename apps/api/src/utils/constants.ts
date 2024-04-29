@@ -12,7 +12,7 @@ export const ROLES = ["customer", "admin", "staff", "kitchen", "super-admin"];
 export const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 export const PAYMENT_STATUS = ["PENDING", "COMPLETED", "FAILED"];
 export const ORDER_STATUS = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"];
-export const PAYMENT_METHODS = ["CASH", "CARD", "ONLINE"];
+export const PAYMENT_METHODS = ["CASH", "CARD", "UPI", "NETBANKING"];
 
 // S3
 export const S3_VALID_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];

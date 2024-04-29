@@ -4,9 +4,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import React, { useEffect, useMemo, useState } from "react";
 
 import Menu from "@src/menu/components/menu";
-import useCategory from "@src/menu/hooks/use-categories";
 import { PROMOTIONAL_CARDS } from "@src/menu/utils/constants";
-import useMenu, { IMenuFilters } from "@src/menu/hooks/use-menu";
+import { IMenuFilters } from "@src/menu/hooks/use-menu";
 import CategoriesTabs from "@src/menu/components/categories-tabs";
 import { Button, Typography, Carousel, CarouselContent, CarouselItem, CarouselApi } from "@repo/ui";
 import useAuthStore from "@src/common/stores/auth-store";
@@ -16,9 +15,12 @@ import { ROUTES } from "@src/common/utils/api-routes";
 import CSkeleton from "@src/common/components/skeleton";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { getGreeting } from "@ui/helpers";
+import useInfiniteCateory from "../hooks/use-infinite-category";
+import useInfiniteMenu from "../hooks/use-infinite-menu";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();
+
   const user = useAuthStore((store) => store.user);
   const restaurantId = localStorage.getItem("restaurantId");
 
@@ -37,11 +39,9 @@ const MenuPage = () => {
     return cat;
   }, [category, isAvailable, isVegetarian, minPrice, maxPrice]);
 
-  const { categories: { result: categories = [] } = {}, isLoadingCategories } = useCategory({ deps: [restaurantId!] });
-  const { menuItems: { result: menuItems = [] } = {}, isLoadingMenuItems } = useMenu({
-    variables: { filters },
-    deps: [restaurantId!],
-  });
+  const { categories, isFetchingNextCatPage, isLoadingCategoriesFirstTime, refCat } = useInfiniteCateory();
+  const { hasNextMenuPage, isFetchingNextMenuPage, isLoadingMenuItemsFirstTime, menuItems, refMenu } = useInfiniteMenu({ filters });
+
   const { data: restaurant, isLoading } = useQuery({
     queryKey: ["restaurant", restaurantId],
     queryFn: async () => {
@@ -70,8 +70,8 @@ const MenuPage = () => {
       </div>
       <AnimatedSearchButton />
       <PromotionalCards />
-      <CategoriesTabs categories={categories} isLoading={isLoadingCategories} />
-      <Menu menuItems={menuItems} isLoading={isLoadingMenuItems} />
+      <CategoriesTabs endRef={refCat} categories={categories} isLoading={isLoadingCategoriesFirstTime} isFetchingNextCatPage={isFetchingNextCatPage} />
+      <Menu isFetchingNextPage={isFetchingNextMenuPage} hasNextMenuPage={hasNextMenuPage} endRef={refMenu} menuItems={menuItems} isLoading={isLoadingMenuItemsFirstTime} />
     </div>
   );
 };

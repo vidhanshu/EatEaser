@@ -75,6 +75,7 @@ export namespace NSRestaurant {
     name: string;
     price: number;
     description?: string;
+    isAvailable?: boolean;
     restaurant: string | Schema.Types.ObjectId;
   }
 
@@ -107,6 +108,6 @@ export namespace NSRestaurant {
     transactionId: string;
   }
 
-  export type PAYMENT_METHOD = "CASH" | "CARD" | "ONLINE";
+  export type PAYMENT_METHOD = "CASH" | "CARD" | "NETBANKING" | "UPI";
   export type PAYMENT_STATUS = "PENDING" | "COMPLETED" | "FAILED";
 }

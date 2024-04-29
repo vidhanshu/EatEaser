@@ -49,10 +49,10 @@ const RestaurantsPage = () => {
                     className="dark:bg-transparent border border-gray-200 bg-white dark:border-gray-800 hover:dark:bg-transparent"
                     startContent={<Info size={16} />}
                   >
-                    About restaurant
+                    Details
                   </Button>
                 </Link>
-                <Link to={`/#top?rid=${restaurant._id}`}>
+                <Link to={`/?rid=${restaurant._id}`}>
                   <Button size="sm" className="text-white" endContent={<ArrowRight size={16} />}>
                     View Menu
                   </Button>

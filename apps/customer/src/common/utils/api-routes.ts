@@ -22,6 +22,13 @@ export const ROUTES = {
       list: (resturantId: string) => `/restaurant/${resturantId}/menu-item/list`,
       byId: (id: string) => `/restaurant/menu/menu-item/${id}/get`,
     },
+    order: {
+      list: "/restaurant/order/list",
+      byId: "/restaurant/order/:id/get",
+      create: "/restaurant/order/create",
+      cancel: "/restaurant/order/:id/cancel",
+      update: "/restaurant/order/:id/update",
+    },
   },
   file: {
     upload: "/file/upload",

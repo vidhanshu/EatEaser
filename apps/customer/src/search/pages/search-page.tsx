@@ -1,6 +1,6 @@
 import { Input, Separator, Typography, useTheme } from "@repo/ui";
 import Menu from "@src/menu/components/menu";
-import useMenu from "@src/menu/hooks/use-menu";
+import useInfiniteMenu from "@src/menu/hooks/use-infinite-menu";
 import { Loader2, Search } from "lucide-react";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -12,15 +12,15 @@ const SearchPage = () => {
   const sq = sp.get("q") ?? undefined;
   const [q, setQ] = useDebounceValue("", 1000);
   const [recentSearches, setRecentSearches] = useLocalStorage("recentSearches", []);
-  const { menuItems: { result = [] } = {}, isLoadingMenuItems } = useMenu({ variables: { filters: { q } } });
+  const { hasNextMenuPage, isFetchingNextMenuPage, isLoadingMenuItemsFirstTime, menuItems, refMenu } = useInfiniteMenu({ filters: { q } });
 
   useEffect(() => {
     if (sq) setQ(sq);
   }, [sq]);
 
   useEffect(() => {
-    if (result?.length && q) setRecentSearches((prev) => [...new Set([q, ...prev])].slice(0, 5) as any);
-  }, [result, q]);
+    if (menuItems?.length && q) setRecentSearches((prev) => [...new Set([q, ...prev])].slice(0, 5) as any);
+  }, [menuItems, q]);
 
   return (
     <div className="pt-8 px-4 space-y-4">
@@ -35,9 +35,9 @@ const SearchPage = () => {
         startIcon={Search}
         className="bg-input rounded-full"
       />
-      {isLoadingMenuItems ? (
+      {isLoadingMenuItemsFirstTime ? (
         <Loader2 className="animate-spin w-8 h-8 mx-auto text-primary" />
-      ) : q?.length && !result.length ? (
+      ) : q?.length && !menuItems.length ? (
         <div className="flex flex-col gap-4">
           <img className="w-60 mx-auto h-auto" src={theme === "dark" ? "/not-found-food-dark.svg" : "/not-found-food.svg"} />
           <div className="space-y-2">
@@ -49,8 +49,15 @@ const SearchPage = () => {
             </Typography>
           </div>
         </div>
-      ) : result.length && q?.length ? (
-        <Menu sectionTitle={`Results for "${q}"`} isLoading={isLoadingMenuItems} menuItems={result} />
+      ) : menuItems.length && q?.length ? (
+        <Menu
+          endRef={refMenu}
+          menuItems={menuItems}
+          isFetchingNextPage={isFetchingNextMenuPage}
+          hasNextMenuPage={hasNextMenuPage}
+          sectionTitle={`Results for "${q}"`}
+          isLoading={isLoadingMenuItemsFirstTime}
+        />
       ) : (
         <>
           {recentSearches?.length > 0 && (

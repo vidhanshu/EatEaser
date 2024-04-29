@@ -1,9 +1,8 @@
 import Joi from "joi";
-import { NSRestaurant } from "../../../types";
 import { commonValidation } from "../common.validation";
 
 const createOrderSchema = {
-  body: Joi.object<NSRestaurant.IOrder>().keys({
+  body: Joi.object().keys({
     items: Joi.array()
       .items(
         Joi.object({
@@ -13,6 +12,9 @@ const createOrderSchema = {
         })
       )
       .min(1)
+      .required(),
+    paymentMethod: Joi.string()
+      .valid("CASH", "CARD", "NETBANKING", "UPI")
       .required(),
   }),
   query: Joi.object().keys({
@@ -33,7 +35,7 @@ const updateOrderSchema = {
           })
         )
         .min(1),
-      paymentMethod: Joi.string().valid("CASH", "CARD", "ONLINE"),
+      paymentMethod: Joi.string().valid("CASH", "CARD", "NETBANKING", "UPI"),
     })
     .min(1),
   ...commonValidation.idParamPayloadSchema,

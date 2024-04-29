@@ -16,7 +16,7 @@ const orderSchema = new Schema<NSRestaurant.IOrder>(
     payment: {
       method: {
         type: String,
-        enum: ["CASH", "CARD", "ONLINE"],
+        enum: ["CASH", "CARD", "NETBANKING", "UPI"],
         default: "CASH",
       },
       status: {
