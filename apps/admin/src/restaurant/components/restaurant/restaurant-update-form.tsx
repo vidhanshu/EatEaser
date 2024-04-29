@@ -31,6 +31,8 @@ const defaultValues = {
   image: "",
   name: "",
   phone: "",
+  googleMapLink: "",
+  website: "",
 };
 
 export const RestaurantUpdateForm = () => {
@@ -50,6 +52,9 @@ export const RestaurantUpdateForm = () => {
     }
     if (Object.keys(changedValues).length === 0)
       return toast.error("No changes made");
+    Object.keys(changedValues).forEach((key) => {
+      if (changedValues[key] === "") delete changedValues[key];
+    });
     await updateRestaurant(changedValues);
   }
 
@@ -136,6 +141,38 @@ export const RestaurantUpdateForm = () => {
                 <FormLabel>Restaurant Address</FormLabel>
                 <FormControl>
                   <Input placeholder="address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="googleMapLink"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Google map embedd url for your restaurant (optional)
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="url"
+                    placeholder="Google map embedd url"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Restaurant website (optional)</FormLabel>
+                <FormControl>
+                  <Input type="url" placeholder="Website link" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

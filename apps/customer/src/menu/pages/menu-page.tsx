@@ -61,7 +61,7 @@ const MenuPage = () => {
             {isLoading ? (
               <CSkeleton as="span" className="w-28 h-4" />
             ) : (
-              <Link className="text-sm" to={`/restaurants/${restaurant?.data?._id}`}>
+              <Link className="text-sm  underline" to={`/restaurants/${restaurant?.data?._id}`}>
                 {restaurant?.data?.name}
               </Link>
             )}

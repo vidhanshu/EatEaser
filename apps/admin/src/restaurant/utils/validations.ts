@@ -10,16 +10,16 @@ export const updateRestaurantSchema = z
     email: z.string().email(),
     phone: z.string(),
     acceptsReservations: z.boolean(),
+    googleMapLink: z.string().optional(),
+    website: z.string().optional(),
   })
   .partial();
 
 export const createTableSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(1000).optional(),
-  capacity: z
-    .string()
-    .refine((val) => parseInt(val) > 0, {
-      message: "Capacity should be greater than 0",
-    }),
+  capacity: z.string().refine((val) => parseInt(val) > 0, {
+    message: "Capacity should be greater than 0",
+  }),
   status: z.enum(["AVAILABLE", "RESERVED", "OCCUPIED"]).default("AVAILABLE"),
 });
