@@ -104,22 +104,26 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
             <Typography variant="md" className="truncate max-w-[180px]">
               {name}
             </Typography>
-            {isInCart(itemId) ? (
-              <GenericAlertDialog
-                onOk={() => removeFromCart(itemId)}
-                className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
-                title="Are you sure?"
-                description={`Do you really want to remove "${name}" from cart?`}
-                okBtnTitle="Yes, remove it"
-              >
-                <Button variant="destructive" className="w-6 h-6" size="icon-sm">
-                  <Minus size={16} />
-                </Button>
-              </GenericAlertDialog>
-            ) : (
-              <Button onClick={() => addToCart({ ...item, quantity: 1 })} className="w-6 h-6" size="icon-sm">
-                <Plus size={16} />
-              </Button>
+            {isAvailable && (
+              <>
+                {isInCart(itemId) ? (
+                  <GenericAlertDialog
+                    onOk={() => removeFromCart(itemId)}
+                    className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
+                    title="Are you sure?"
+                    description={`Do you really want to remove "${name}" from cart?`}
+                    okBtnTitle="Yes, remove it"
+                  >
+                    <Button variant="destructive" className="w-6 h-6" size="icon-sm">
+                      <Minus size={16} />
+                    </Button>
+                  </GenericAlertDialog>
+                ) : (
+                  <Button onClick={() => addToCart({ ...item, quantity: 1 })} className="w-6 h-6" size="icon-sm">
+                    <Plus size={16} />
+                  </Button>
+                )}
+              </>
             )}
           </div>
           {!forCart && <Typography className="w-fit text-sm max-w-[180px] whitespace-nowrap truncate text-primary">{category.name}</Typography>}

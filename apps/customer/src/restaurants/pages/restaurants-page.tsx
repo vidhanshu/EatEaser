@@ -55,7 +55,7 @@ const RestaurantsPage = () => {
                     Details
                   </Button>
                 </Link>
-                <Link to={`/?rid=${restaurant._id}`}>
+                <Link to={`/?restaurantId=${restaurant._id}`}>
                   <Button size="sm" className="text-white" endContent={<ArrowRight size={16} />}>
                     View Menu
                   </Button>

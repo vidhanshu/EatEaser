@@ -1,18 +1,19 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { Button, ImgWithPlaceholder, Typography, Separator, Progress } from "@repo/ui";
-import { ChevronLeft } from "lucide-react";
-import SeeMoreText from "@src/common/components/see-more-text";
-import axiosInstance from "@src/common/utils/axios";
-import { useQuery } from "@tanstack/react-query";
-import { ROUTES } from "@src/common/utils/api-routes";
-import { NSRestaurant } from "@src/common/types/restaurant.type";
-import { FaPhone, FaStar, FaStarHalf } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
 import { MdMail } from "react-icons/md";
+import { ChevronLeft, MousePointerSquare } from "lucide-react";
 import { RiReservedFill } from "react-icons/ri";
+import { FaLocationDot } from "react-icons/fa6";
+import { useParams, useNavigate } from "react-router-dom";
+import { FaPhone, FaStar, FaStarHalf } from "react-icons/fa";
+
+import { Button, ImgWithPlaceholder, Typography, Separator, Progress, GenericDialog, toast } from "@repo/ui";
+import SeeMoreText from "@src/common/components/see-more-text";
 import RestaurantDetailsPageSkeleton from "../components/skeletons/restaurant-details-page-skeleton";
 import PageMeta from "@src/common/components/page-meta";
 import { PAGES } from "@src/common/utils/pages";
+import useRestaurant from "../hooks/use-restaurant";
+import { TableCard } from "../components/table-card";
+import { TableStatusBadge } from "../components/status-badge";
+import { useState } from "react";
 
 // -----------------------------------------------------------------------------------------------
 const dayFullMap = {
@@ -30,16 +31,16 @@ type dfmKeyType = keyof typeof dayFullMap;
 
 const RestaurantDetailsPage = () => {
   const { id } = useParams();
+
+  const [tableModalControl, setTableModalControl] = useState<{ open: boolean; id?: string }>({ open: false, id: undefined });
+
   const navigate = useNavigate();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["restaurant", id],
-    queryFn: async () => {
-      if (id) return (await axiosInstance.get(ROUTES.restaurant.byId(id))).data as NSCommon.ApiResponse<NSRestaurant.IResturant>;
-    },
-  });
+  const { restaurant: data, isLoadingRestaurant: isLoading } = useRestaurant({ id, filters: { includeTables: true } });
 
   const restaurant = data?.data;
+
+  const table = restaurant?.tables?.find((table) => table._id === tableModalControl.id);
 
   return (
     <main className="space-y-4">
@@ -74,6 +75,50 @@ const RestaurantDetailsPage = () => {
                 ))}
             </section>
             <Separator />
+            <section className="space-y-4">
+              <Typography variant="h4">Choose the table</Typography>
+              <div className="flex gap-x-4 items-center max-w-full overflow-auto no-scrollbar">
+                {!!restaurant?.tables?.length &&
+                  restaurant.tables.length > 0 &&
+                  restaurant.tables.map((table, idx) => (
+                    <TableCard
+                      onViewClick={(id) => {
+                        setTableModalControl({ open: true, id });
+                      }}
+                      {...table}
+                      key={idx}
+                    />
+                  ))}
+              </div>
+            </section>
+            <Separator />
+            <section className="space-y-4">
+              <Typography variant="h4">Address</Typography>
+              <Typography variant="muted">
+                <FaLocationDot size={24} className="text-primary inline mr-2" />
+                {restaurant?.address}
+              </Typography>
+              {restaurant?.googleMapLink && (
+                <iframe className="w-full h-60 rounded-md" src={restaurant.googleMapLink} allowFullScreen={false} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+              )}
+            </section>
+            <Separator />
+            <section className="space-y-4">
+              <Typography variant="h4">Contact Information</Typography>
+              <Typography variant="muted">
+                <FaPhone size={16} className="text-primary inline mr-2" />
+                {restaurant?.phone}
+              </Typography>
+              <Typography variant="muted">
+                <MdMail size={16} className="text-primary inline mr-2" />
+                {restaurant?.email}
+              </Typography>
+              <Typography variant="muted">
+                <RiReservedFill size={18} className="text-primary inline mr-2" />
+                {restaurant?.acceptsReservations ? "Accepts reserversations" : "Doesn't accept reservations"}
+              </Typography>
+            </section>
+            <Separator />
             <section className="grid grid-cols-5 items-center">
               <div className="col-span-2 space-y-2">
                 <Typography className="text-4xl font-semibold text-center">4.8</Typography>
@@ -106,35 +151,52 @@ const RestaurantDetailsPage = () => {
                 </div>
               </div>
             </section>
-            <Separator />
-            <section className="space-y-4">
-              <Typography variant="h4">Address</Typography>
-              <Typography variant="muted">
-                <FaLocationDot size={24} className="text-primary inline mr-2" />
-                {restaurant?.address}
-              </Typography>
-              {restaurant?.googleMapLink && (
-                <iframe className="w-full h-60 rounded-md" src={restaurant.googleMapLink} allowFullScreen={false} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-              )}
-            </section>
-            <Separator />
-            <section className="space-y-4">
-              <Typography variant="h4">Contact Information</Typography>
-              <Typography variant="muted">
-                <FaPhone size={16} className="text-primary inline mr-2" />
-                {restaurant?.phone}
-              </Typography>
-              <Typography variant="muted">
-                <MdMail size={16} className="text-primary inline mr-2" />
-                {restaurant?.email}
-              </Typography>
-              <Typography variant="muted">
-                <RiReservedFill size={18} className="text-primary inline mr-2" />
-                {restaurant?.acceptsReservations ? "Accepts reserversations" : "Doesn't accept reservations"}
-              </Typography>
-            </section>
           </div>
         </>
+      )}
+
+      {/* Table dialog */}
+      {table && (
+        <GenericDialog
+          dialogContentProps={{ className: "max-w-[calc(100%-32px)] sm:max-w-[380px] rounded-md" }}
+          queryControlled={{
+            open: tableModalControl.open,
+            setOpen: (open) => setTableModalControl((prev) => ({ ...prev, open })),
+          }}
+          dialogTitle={`Table: ${table?.name}`}
+          content={
+            <div className="space-y-4">
+              <img className="w-24 h-24 mx-auto" alt="qr" src={table?.qrCode} />
+              <div>
+                <Typography>Name: {table?.name}</Typography>
+              </div>
+              <div>
+                <Typography>Description:</Typography>
+                <Typography variant="muted">{<SeeMoreText readMoreBtnClassName="text-sm" className="text-sm" text={table?.description} limit={100} /> ?? "-"}</Typography>
+              </div>
+              <div>
+                <Typography>Capacity: {table?.capacity}</Typography>
+              </div>
+              <div>
+                <Typography as="h1" className="flex items-center gap-x-2">
+                  Status: <TableStatusBadge className="mx-0" status={table?.status} />
+                </Typography>
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => {
+                    if (table.status !== "AVAILABLE") return toast.error(`This table is already ${table.status.toLowerCase()}!`);
+                    navigate(`${PAGES.MenuPage.href}?restaurantId=${id}&tableId=${tableModalControl.id}`);
+                  }}
+                  endContent={<MousePointerSquare size={16} />}
+                  size="xs"
+                >
+                  Choose
+                </Button>
+              </div>
+            </div>
+          }
+        />
       )}
     </main>
   );

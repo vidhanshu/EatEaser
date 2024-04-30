@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Restaurant } from "../../../models";
+import { Restaurant, Table } from "../../../models";
 import { NSAuth, NSCommon, NSRestaurant } from "../../../types";
 import {
   ResponseError,
@@ -10,16 +10,24 @@ import httpStatus from "http-status";
 
 const handleListRestaurant = (role: NSAuth.ROLES) => {
   return async (
-    req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload>,
+    req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload> &
+      NSCommon.IAuthRequest,
     res: Response
   ) => {
     try {
-      const { resultPerPage = 10, page = 1 } = req.query;
+      const { resultPerPage = 10, page = 1, q } = req.query;
       const limit = resultPerPage;
       const skip = resultPerPage * (page - 1);
       const resultCount = await Restaurant.countDocuments();
       const totalPages = Math.ceil(resultCount / resultPerPage);
-      const result = await Restaurant.find({}, {}, { limit, skip });
+      const filters: Record<string, any> = {};
+      if (q) {
+        filters["$or"] = [
+          { name: { $regex: new RegExp(q as string, "i") } },
+          { description: { $regex: new RegExp(q as string, "i") } },
+        ];
+      }
+      const result = await Restaurant.find(filters, {}, { limit, skip });
       sendResponse(res, {
         data: {
           result,
@@ -40,13 +48,22 @@ const handleGetRestaurantById = (role: NSAuth.ROLES) => {
   ) => {
     try {
       const { id } = req.params;
+      const { includeTables } = req.query;
       // check if restaurant exists
-      const restaurant = await Restaurant.findById(id);
+      let responseData: Record<any, any> = {};
+      const restaurant: any = await Restaurant.findById(id);
       if (!restaurant) {
         throw new ResponseError("restaurant not found", httpStatus.NOT_FOUND);
       }
+      if (includeTables) {
+        responseData = { ...restaurant.toJSON() };
+        const tables = await Table.find({ restaurant: id });
+        responseData.tables = tables;
+      } else {
+        responseData = restaurant;
+      }
       sendResponse(res, {
-        data: restaurant,
+        data: responseData,
         statusCode: 200,
       });
     } catch (error) {

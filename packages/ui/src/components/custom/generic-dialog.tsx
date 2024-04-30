@@ -39,7 +39,10 @@ export const GenericDialog = ({
       <Dialog {...dialogProps}>
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent
-          className={cn("sm:max-w-[500px]", className)}
+          className={cn(
+            "sm:max-w-[500px] max-h-[calc(100vh-32px)] overflow-y-scroll no-scrollbar",
+            className
+          )}
           onInteractOutside={
             !dissmissable ? (e) => e.preventDefault() : undefined
           }

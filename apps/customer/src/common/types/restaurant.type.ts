@@ -15,6 +15,7 @@ export namespace NSRestaurant {
     googleMapLink?: string;
     website?: string;
     acceptsReservations?: boolean;
+    tables?: ITable[];
   }
 
   // Table
@@ -62,7 +63,7 @@ export namespace NSRestaurant {
 
   // Categories
   export interface ICategory {
-    _id:string;
+    _id: string;
     name: string;
     image?: string;
     description?: string;

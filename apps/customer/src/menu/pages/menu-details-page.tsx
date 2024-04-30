@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Button, ImgWithPlaceholder, Typography, Table, TableCell, TableRow, TableBody, Separator, Input } from "@repo/ui";
 import { CheckCircle, ChevronLeft, IndianRupee, Minus, Plus, ShoppingCart, XCircle } from "lucide-react";
 import SeeMoreText from "@src/common/components/see-more-text";
-import { GoStarFill } from "react-icons/go";
 import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
 import PageMeta from "@src/common/components/page-meta";
 import { PAGES } from "@src/common/utils/pages";
+import { FaStar, FaStarHalf } from "react-icons/fa6";
 
 const MenuDetailsPage = () => {
   const { id } = useParams();
@@ -47,9 +47,13 @@ const MenuDetailsPage = () => {
         <div>
           <Typography>4.5 Rating (1245 Users)</Typography>
           <div className="flex gap-x-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <GoStarFill className="fill-primary" size={20} key={star} />
-            ))}
+            <div className="flex gap-x-2 items-center w-fit mt-2">
+              <FaStar className="text-yellow-500" />
+              <FaStar className="text-yellow-500" />
+              <FaStar className="text-yellow-500" />
+              <FaStar className="text-yellow-500" />
+              <FaStarHalf className="text-yellow-500" />
+            </div>
           </div>
         </div>
         {menuItem?.description && <Separator />}

@@ -22,6 +22,10 @@ export const ROUTES = {
       list: (resturantId: string) => `/restaurant/${resturantId}/menu-item/list`,
       byId: (id: string) => `/restaurant/menu/menu-item/${id}/get`,
     },
+    table: {
+      list: "/admin/restaurant/table/list",
+      byId: (id: string) => `/admin/restaurant/table/${id}/get`,
+    },
     order: {
       list: "/restaurant/order/list",
       byId: "/restaurant/order/:id/get",

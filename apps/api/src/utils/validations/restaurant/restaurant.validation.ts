@@ -1,6 +1,7 @@
 import Joi from "joi";
 import { NSRestaurant } from "../../../types";
 import { DAYS, MOBILE_REGEX } from "../../constants";
+import { commonValidation } from "../common.validation";
 
 const createRestaurantSchema = {
   body: Joi.object<NSRestaurant.ICreateRestaurantPayload>().keys({
@@ -47,7 +48,24 @@ const updateRestaurantSchema = {
     .min(1),
 };
 
+const listRestaurantSchema = {
+  query: Joi.object().keys({
+    resultPerPage: Joi.number().integer().min(1).default(10).optional(),
+    page: Joi.number().integer().min(1).default(1).optional(),
+    q: Joi.string().optional(), // search query
+  }),
+};
+
+const getRestaurantByIdSchema = {
+  ...commonValidation.idParamPayloadSchema,
+  query: Joi.object().keys({
+    includeTables: Joi.boolean().optional(),
+  }),
+};
+
 export const restaurantValidation = {
   createRestaurantSchema,
   updateRestaurantSchema,
+  listRestaurantSchema,
+  getRestaurantByIdSchema,
 };
