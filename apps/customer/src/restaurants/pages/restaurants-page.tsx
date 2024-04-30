@@ -1,17 +1,23 @@
-import { NSRestaurant } from "@src/common/types/restaurant.type";
-import { ROUTES } from "@src/common/utils/api-routes";
-import axiosInstance from "@src/common/utils/axios";
-import { Button, ImgWithPlaceholder, Typography } from "@repo/ui";
-import { ArrowDown, ArrowRight, Info } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Button, ImgWithPlaceholder, Input, Typography } from "@repo/ui";
+import { ArrowDown, ArrowRight, Info, Search } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { PAGES, RestaurantDetailsPage } from "@src/common/utils/pages";
 import PageMeta from "@src/common/components/page-meta";
+import { useDebounceValue } from "usehooks-ts";
+import { restaurantService } from "../services/restaurant";
+import Empty from "@src/common/components/empty";
+import CSkeleton from "@src/common/components/skeleton";
 
 const RestaurantsPage = () => {
-  const { data } = useInfinte({
-    fetcher: async () => (await axiosInstance.get(ROUTES.restaurant.list)).data?.data as NSCommon.IListRespone<NSRestaurant.IResturant>["data"],
+  const [sp, ssp] = useSearchParams();
+  const sq = sp.get("q") ?? "";
+  const [q, setQ] = useDebounceValue("", 1000);
+
+  const { data, isLoading } = useInfinte({
+    fetcher: restaurantService.getRestaurantsList,
     queryKey: ["restaurants"],
+    filters: { q },
   });
 
   return (
@@ -35,34 +41,55 @@ const RestaurantsPage = () => {
         <Typography className="text-center" variant="h4">
           Choose the restaurant You are in
         </Typography>
+        <div>
+          <Input
+            value={sq}
+            type="search"
+            onChange={(e) => {
+              setQ(e.target.value);
+              ssp({ q: e.target.value });
+            }}
+            startIcon={Search}
+            className="bg-input rounded-full"
+            placeholder="Search for a restaurat"
+          />
+        </div>
         <div className="space-y-4">
-          {data.map((restaurant, idx) => (
-            <div key={idx} className="bg-input rounded-md p-4">
-              <ImgWithPlaceholder className="w-full" placeholder={restaurant.name} src={restaurant.image} />
-              <div className="py-4 space-y-4">
-                <Typography variant="h5">{restaurant.name}</Typography>
-                <Typography className="max-h-[83px] truncate whitespace-pre-wrap" variant="muted">
-                  {restaurant.description?.substring(0, 155)}...
-                </Typography>
+          {isLoading ? (
+            <CSkeleton className="h-[300px] w-full rounded-md" />
+          ) : q?.length && !data.length ? (
+            <Empty className="min-h-[300px]" notFoundDescription={`Sorry, no result found for "${q}"`} />
+          ) : data.length === 0 ? (
+            <Empty className="min-h-[300px]" notFoundDescription="Sory no restaurants found in the system!" />
+          ) : (
+            data.map((restaurant, idx) => (
+              <div key={idx} className="bg-input rounded-md p-4">
+                <ImgWithPlaceholder className="w-full" placeholder={restaurant.name} src={restaurant.image} />
+                <div className="py-4 space-y-4">
+                  <Typography variant="h5">{restaurant.name}</Typography>
+                  <Typography className="max-h-[83px] truncate whitespace-pre-wrap" variant="muted">
+                    {restaurant.description?.substring(0, 155)}...
+                  </Typography>
+                </div>
+                <div className="flex justify-between items-center">
+                  <Link to={RestaurantDetailsPage(restaurant._id).href}>
+                    <Button
+                      variant="outline"
+                      className="dark:bg-transparent border border-gray-200 bg-white dark:border-gray-800 hover:dark:bg-transparent"
+                      startContent={<Info size={16} />}
+                    >
+                      Details
+                    </Button>
+                  </Link>
+                  <Link to={`/?restaurantId=${restaurant._id}`}>
+                    <Button size="sm" className="text-white" endContent={<ArrowRight size={16} />}>
+                      View Menu
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <Link to={RestaurantDetailsPage(restaurant._id).href}>
-                  <Button
-                    variant="outline"
-                    className="dark:bg-transparent border border-gray-200 bg-white dark:border-gray-800 hover:dark:bg-transparent"
-                    startContent={<Info size={16} />}
-                  >
-                    Details
-                  </Button>
-                </Link>
-                <Link to={`/?restaurantId=${restaurant._id}`}>
-                  <Button size="sm" className="text-white" endContent={<ArrowRight size={16} />}>
-                    View Menu
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </main>

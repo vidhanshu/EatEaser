@@ -16,6 +16,8 @@ import ProfilePage from "@src/profile/pages/profile-page";
 import OrderPage from "@src/orders/pages/order-page";
 import RestaurantsPage from "@src/restaurants/pages/restaurants-page";
 import RestaurantDetailsPage from "@src/restaurants/pages/restaurant-details-page";
+import { PAGES } from "../utils/pages";
+import NotFoundPage from "../pages/not-found-page";
 
 /**
  * ROUTES_FOR_ONLY_UNAUTHENTICATED, are accessible only to unauthenticated users
@@ -24,31 +26,36 @@ const ROUTES_FOR_ONLY_UNAUTHENTICATED: RouteObject[] = [
   {
     path: "/",
     errorElement: <ErrorPage />,
+    element: <CommonLayout showBottomTabs={false} />,
     children: [
       {
         path: "/",
-        element: <CommonLayout showBottomTabs={false} />,
-        children: [{ path: "/", element: <MenuPage /> }],
+        element: <MenuPage />,
       },
       {
-        path: "/sign-in",
+        path: PAGES.LoginPage.href,
         element: <SignInPage />,
       },
       {
-        path: "/sign-up",
+        path: PAGES.RegisterPage.href,
         element: <SignUpPage />,
       },
       {
-        path: "/restaurant",
+        path: PAGES.RestaurantsPage.href,
         element: <RestaurantsPage />,
       },
       {
+        path: "/restaurants/:id",
+        element: <RestaurantDetailsPage />,
+      },
+      {
         path: "*",
-        element: <Navigate to="/sign-in" />,
+        element: <Navigate to={PAGES.LoginPage.href} />,
       },
     ],
   },
 ];
+
 /**
  * ROUTES_FOR_ONLY_AUTHENTICATED, are accessible only to authenticated users
  */
@@ -101,14 +108,18 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
         path: "/verify-email",
         element: <VerifyEmail />,
       },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
     ],
     errorElement: <ErrorPage />,
   },
 ];
 const Routes = () => {
-  const token = useAuthStore((data) => data.token);
+  const isAuth = useAuthStore((data) => data.isAuthenticated());
 
-  const router = createBrowserRouter([...(!token ? ROUTES_FOR_ONLY_UNAUTHENTICATED : []), ...ROUTES_FOR_ONLY_AUTHENTICATED]);
+  const router = createBrowserRouter(!isAuth ? ROUTES_FOR_ONLY_UNAUTHENTICATED : ROUTES_FOR_ONLY_AUTHENTICATED);
   return <RouterProvider router={router} />;
 };
 

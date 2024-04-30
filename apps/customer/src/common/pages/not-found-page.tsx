@@ -3,7 +3,7 @@ import { Home } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const ErrorPage = () => {
+const NotFoundPage = () => {
   const [time, setTime] = useState(5);
   const ref = useRef<number>(5);
   const navigate = useNavigate();
@@ -26,9 +26,9 @@ const ErrorPage = () => {
     <div className="min-h-[calc(100vh-200px)] flex flex-col gap-4 items-center justify-center">
       <img src="/logo.svg" />
       <div className="flex flex-col items-center">
-        <Typography variant="h1">500</Typography>
+        <Typography variant="h1">404</Typography>
         <Typography variant="muted" className="text-lg">
-          Something Went wrong!
+          Page not found!
         </Typography>
         <Typography variant="muted" className="text-sm">
           redirecting to home in <span className="text-primary">{time} secs</span>
@@ -43,4 +43,4 @@ const ErrorPage = () => {
   );
 };
 
-export default ErrorPage;
+export default NotFoundPage;

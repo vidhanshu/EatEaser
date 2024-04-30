@@ -75,7 +75,7 @@ const RestaurantDetailsPage = () => {
                 ))}
             </section>
             <Separator />
-            <section className="space-y-4">
+            <section id="tables" className="space-y-4">
               <Typography variant="h4">Choose the table</Typography>
               <div className="flex gap-x-4 items-center max-w-full overflow-auto no-scrollbar">
                 {!!restaurant?.tables?.length &&
@@ -172,7 +172,9 @@ const RestaurantDetailsPage = () => {
               </div>
               <div>
                 <Typography>Description:</Typography>
-                <Typography variant="muted">{<SeeMoreText readMoreBtnClassName="text-sm" className="text-sm" text={table?.description} limit={100} /> ?? "-"}</Typography>
+                <Typography as="h1" variant="muted">
+                  {<SeeMoreText readMoreBtnClassName="text-sm" className="text-sm" text={table?.description} limit={100} /> ?? "-"}
+                </Typography>
               </div>
               <div>
                 <Typography>Capacity: {table?.capacity}</Typography>

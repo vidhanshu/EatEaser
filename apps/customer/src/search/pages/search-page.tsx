@@ -1,4 +1,5 @@
-import { Input, Separator, Typography, useTheme } from "@repo/ui";
+import { Input, Separator, Typography } from "@repo/ui";
+import Empty from "@src/common/components/empty";
 import PageMeta from "@src/common/components/page-meta";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { PAGES } from "@src/common/utils/pages";
@@ -10,7 +11,6 @@ import { useSearchParams } from "react-router-dom";
 import { useDebounceValue, useLocalStorage } from "usehooks-ts";
 
 const SearchPage = () => {
-  const { theme } = useTheme();
   const [sp, ssp] = useSearchParams();
   const sq = sp.get("q") ?? "";
   const [q, setQ] = useDebounceValue("", 1000);
@@ -49,17 +49,7 @@ const SearchPage = () => {
       {isLoadingMenuItemsFirstTime ? (
         <Loader2 className="animate-spin w-8 h-8 mx-auto text-primary" />
       ) : q?.length && !menuItems.length ? (
-        <div className="flex flex-col gap-4">
-          <img className="w-60 mx-auto h-auto" src={theme === "dark" ? "/not-found-food-dark.svg" : "/not-found-food.svg"} />
-          <div className="space-y-2">
-            <Typography className="text-center" variant="h4">
-              Not Found
-            </Typography>
-            <Typography className="text-center" variant="muted">
-              Sorry, no result found for "{q}"
-            </Typography>
-          </div>
-        </div>
+        <Empty notFoundDescription={`Sorry, no result found for "${q}"`} />
       ) : menuItems.length && q?.length ? (
         <Menu
           endRef={refMenu}

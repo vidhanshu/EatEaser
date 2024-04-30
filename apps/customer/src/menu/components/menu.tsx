@@ -10,6 +10,7 @@ import Empty from "@src/common/components/empty";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { cn } from "@ui/lib/utils";
 import { MenuDetailsPage, MenuPage } from "@src/common/utils/pages";
+import useAuthStore from "@src/common/stores/auth-store";
 
 const Menu = ({
   menuItems,
@@ -88,6 +89,7 @@ export default Menu;
 
 const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: boolean; endRef?: Ref<HTMLDivElement> }) => {
   const { name, _id: itemId, category, isAvailable, price, image, isVegetarian, forCart, addOns } = item;
+  const isAuth = useAuthStore((store) => store.isAuthenticated());
   const { removeFromCart, getCartItem, addToCart, changeQuantity, isInCart, removeAddon } = useCartStore();
   const itemQty = getCartItem(itemId)?.quantity!;
 
@@ -104,7 +106,7 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
             <Typography variant="md" className="truncate max-w-[180px]">
               {name}
             </Typography>
-            {isAvailable && (
+            {isAvailable && isAuth && (
               <>
                 {isInCart(itemId) ? (
                   <GenericAlertDialog

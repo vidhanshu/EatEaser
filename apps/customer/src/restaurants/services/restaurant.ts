@@ -13,4 +13,10 @@ export const restaurantService = {
     const res = await axiosInstance.get<NSCommon.ApiResponse<NSRestaurant.IResturant>>(path);
     return res.data;
   },
+  async getRestaurantsList({ q }: { q?: string }) {
+    let path = ROUTES.restaurant.list;
+    if (q) path += `?q=${q}`;
+    const res = await axiosInstance.get<NSCommon.IListRespone<NSRestaurant.IResturant[]>>(path);
+    return res.data.data;
+  },
 };
