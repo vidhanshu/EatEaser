@@ -18,6 +18,8 @@ import { getGreeting } from "@ui/helpers";
 import { categoryService } from "../services/category";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { menuService } from "../services/menu";
+import { PAGES, RestaurantDetailsPage, SearchPage } from "@src/common/utils/pages";
+import PageMeta from "@src/common/components/page-meta";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();
@@ -63,6 +65,7 @@ const MenuPage = () => {
 
   return (
     <div className="px-4 space-y-4 pt-8">
+      <PageMeta title={PAGES.MenuPage.title} description={PAGES.MenuPage.description} />
       <div className="pb-4">
         <Typography variant="h4">
           Hello, <span className="text-primary">{user?.name ? user.name : getGreeting()}!</span>
@@ -73,7 +76,7 @@ const MenuPage = () => {
             {isLoading ? (
               <CSkeleton as="span" className="w-28 h-4" />
             ) : (
-              <Link className="text-sm  underline" to={`/restaurants/${restaurant?.data?._id}`}>
+              <Link className="text-sm  underline" to={RestaurantDetailsPage(restaurant?.data?._id!).href}>
                 {restaurant?.data?.name}
               </Link>
             )}
@@ -100,7 +103,7 @@ const AnimatedSearchButton = () => {
   }, []);
 
   return (
-    <Link to="/search">
+    <Link to={SearchPage().href}>
       <Button startContent={<Search size={16} />} className="overflow-hidden justify-normal w-full rounded-full text-gray-500 bg-input hover:bg-input" variant="secondary">
         Search{" "}
         {searchTerms.map((_, i) => {

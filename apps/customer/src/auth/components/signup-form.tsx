@@ -5,24 +5,14 @@ import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, User, Mail, Phone } from "lucide-react";
+import ReactHelmet from "react-helmet";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  Button,
-  Card,
-  Typography,
-  toast,
-} from "@repo/ui";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Button, Card, Typography, toast } from "@repo/ui";
 import { signUpFormSchema } from "../utils/validations";
 import axiosInstance from "@src/common/utils/axios";
 import { ROUTES } from "@src/common/utils/api-routes";
 import useAuthStore from "@src/common/stores/auth-store";
+import { LoginPage } from "@src/common/utils/pages";
 
 const SignupForm = () => {
   const { signIn } = useAuthStore();
@@ -59,6 +49,10 @@ const SignupForm = () => {
   }
   return (
     <Card className="backdrop-blur-md z-10 bg-primary/5 p-4 mx-auto flex-grow max-w-xs md:max-w-md py-8 select-none dark:border-gray-700">
+      <ReactHelmet>
+        <title>{LoginPage.title}</title>
+        <meta name="description" content={LoginPage.description} />
+      </ReactHelmet>
       <div className="space-y-2 mb-4">
         <Typography className="text-center" variant="large">
           Let&apos; Get Started!
@@ -146,7 +140,7 @@ const SignupForm = () => {
       </Form>
       <Typography className="text-center text-sm mt-4">
         Already have an account?{" "}
-        <Link to="/sign-in" className="font-semibold">
+        <Link to={LoginPage.href} className="font-semibold">
           Sign in
         </Link>
       </Typography>

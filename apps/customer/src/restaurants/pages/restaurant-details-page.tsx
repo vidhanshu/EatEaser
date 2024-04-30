@@ -11,6 +11,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { MdMail } from "react-icons/md";
 import { RiReservedFill } from "react-icons/ri";
 import RestaurantDetailsPageSkeleton from "../components/skeletons/restaurant-details-page-skeleton";
+import PageMeta from "@src/common/components/page-meta";
+import { PAGES } from "@src/common/utils/pages";
 
 // -----------------------------------------------------------------------------------------------
 const dayFullMap = {
@@ -41,6 +43,7 @@ const RestaurantDetailsPage = () => {
 
   return (
     <main className="space-y-4">
+      <PageMeta title={restaurant?.name!} description={restaurant?.description ?? PAGES.RestaurantDetailsPage(id!).description} ogImg={restaurant?.image} />
       {isLoading ? (
         <RestaurantDetailsPageSkeleton />
       ) : (

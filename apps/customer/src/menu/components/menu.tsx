@@ -9,6 +9,7 @@ import useCartStore from "@src/cart/stores/cart-store";
 import Empty from "@src/common/components/empty";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { cn } from "@ui/lib/utils";
+import { MenuDetailsPage, MenuPage } from "@src/common/utils/pages";
 
 const Menu = ({
   menuItems,
@@ -52,7 +53,7 @@ const Menu = ({
         ) : !menuItems.length ? (
           <Empty notFoundTitle={notFoundTitle} notFoundDescription={notFoundDescription}>
             {forCart && (
-              <Link to="/" className="max-w-fit mx-auto">
+              <Link to={MenuPage.href} className="max-w-fit mx-auto">
                 <Button size="sm" endContent={<ArrowRight size={16} />}>
                   Explore
                 </Button>
@@ -93,7 +94,7 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
   return (
     <div className={cn("border-none shadow-sm rounded-md bg-white dark:bg-input", addOns.length && forCart && "pb-4")}>
       <div className="flex">
-        <Link to={`/menu/${itemId}`}>
+        <Link to={MenuDetailsPage(itemId).href}>
           <div className="p-4">
             <ImgWithPlaceholder placeholder={name} className="w-24 h-24" src={image} />
           </div>

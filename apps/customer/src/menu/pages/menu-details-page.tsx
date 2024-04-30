@@ -7,6 +7,8 @@ import SeeMoreText from "@src/common/components/see-more-text";
 import { GoStarFill } from "react-icons/go";
 import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
+import PageMeta from "@src/common/components/page-meta";
+import { PAGES } from "@src/common/utils/pages";
 
 const MenuDetailsPage = () => {
   const { id } = useParams();
@@ -27,6 +29,7 @@ const MenuDetailsPage = () => {
 
   return (
     <main className="space-y-4">
+      <PageMeta title={menuItem?.name!} description={menuItem?.description ?? PAGES.MenuDetailsPage(id!).description} ogImg={menuItem?.image} />
       <div className="relative">
         <div className="bg-black/30 py-2 absolute inset-x-0 w-full">
           <Button onClick={() => navigate(-1)} className="hover:bg-transparent" variant="ghost" endContent={<ChevronLeft className="text-white" />} size="icon-sm" />

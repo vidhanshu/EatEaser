@@ -5,6 +5,8 @@ import { Button, ImgWithPlaceholder, Typography } from "@repo/ui";
 import { ArrowDown, ArrowRight, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import useInfinte from "@src/common/hooks/use-infinite";
+import { PAGES, RestaurantDetailsPage } from "@src/common/utils/pages";
+import PageMeta from "@src/common/components/page-meta";
 
 const RestaurantsPage = () => {
   const { data } = useInfinte({
@@ -14,6 +16,7 @@ const RestaurantsPage = () => {
 
   return (
     <main className="pt-8 px-4">
+      <PageMeta title={PAGES.RestaurantsPage.title} description={PAGES.RestaurantsPage.description} />
       <div className="h-[calc(100vh-200px)] flex flex-col items-center justify-center">
         <img src="/logo.svg" className="mx-auto size-16" />
         <h1 className="text-4xl font-semibold text-center text-primary">Welcome to EatEaser!</h1>
@@ -43,7 +46,7 @@ const RestaurantsPage = () => {
                 </Typography>
               </div>
               <div className="flex justify-between items-center">
-                <Link to={`/restaurants/${restaurant._id}`}>
+                <Link to={RestaurantDetailsPage(restaurant._id).href}>
                   <Button
                     variant="outline"
                     className="dark:bg-transparent border border-gray-200 bg-white dark:border-gray-800 hover:dark:bg-transparent"

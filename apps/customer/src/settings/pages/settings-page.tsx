@@ -1,5 +1,7 @@
 import { GenericAlertDialog, Switch, useTheme } from "@repo/ui";
+import PageMeta from "@src/common/components/page-meta";
 import SignOutBtn from "@src/common/components/sign-out-btn";
+import { PAGES, ProfilePage } from "@src/common/utils/pages";
 import { ChevronRight, LogOut, Palette, Truck, User2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -7,10 +9,11 @@ const SettingsPage = () => {
   const { toggleTheme, theme } = useTheme();
   return (
     <main className="px-4 pt-8">
+      <PageMeta title={PAGES.SettingsPage.title} description={PAGES.SettingsPage.description} />
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-base font-medium">Settings</h1>
       </div>
-      <Link to="/profile">
+      <Link to={ProfilePage.href}>
         <button className="flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
           <span className="flex gap-x-4 items-center">
             <User2 size={16} /> Profile

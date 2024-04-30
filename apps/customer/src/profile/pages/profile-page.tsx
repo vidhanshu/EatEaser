@@ -10,6 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import ImageUploadField from "@src/common/components/image-upload-field";
 import useAuthStore from "@src/common/stores/auth-store";
+import PageMeta from "@src/common/components/page-meta";
+import { PAGES } from "@src/common/utils/pages";
 
 const formSchema = z.object({
   name: z.string(),
@@ -79,6 +81,7 @@ const ProfilePage = () => {
 
   return (
     <main className="pt-8 px-4">
+      <PageMeta title={user?.data?.name} description={PAGES.ProfilePage.description} ogImg={image} />
       <div className="flex gap-x-4 items-center mb-4">
         <button onClick={() => navigate(-1)}>
           <ChevronLeft />

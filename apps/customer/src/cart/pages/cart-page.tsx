@@ -4,12 +4,15 @@ import { CheckCircle } from "lucide-react";
 import Menu from "@src/menu/components/menu";
 import useCartStore from "../stores/cart-store";
 import { Separator, TableBody, TableCell, TableRow, Table, Button, GenericAlertDialog } from "@repo/ui";
+import PageMeta from "@src/common/components/page-meta";
+import { PAGES } from "@src/common/utils/pages";
 
 const CartPage = () => {
   const { cart, calculateTotal, clearCart } = useCartStore();
 
   return (
     <div className="pt-8 px-4 space-y-4">
+      <PageMeta title={PAGES.CartPage.title} description={PAGES.CartPage.description} />
       <Menu
         notFoundTitle="Cart is empty!"
         notFoundDescription="Please add items to cart to continue..."

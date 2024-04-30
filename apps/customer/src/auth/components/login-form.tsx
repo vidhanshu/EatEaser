@@ -24,15 +24,13 @@ import useAuthStore from "@src/common/stores/auth-store";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@src/common/utils/axios";
 import { ROUTES } from "@src/common/utils/api-routes";
+import { PAGES } from "@src/common/utils/pages";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const signIn = useAuthStore((data) => data.signIn);
   const { mutate, isPending } = useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: z.infer<typeof loginFormSchema>) => {
+    mutationFn: async ({ email, password }: z.infer<typeof loginFormSchema>) => {
       const res = await axiosInstance.post(ROUTES.auth.signIn, {
         email,
         password,
@@ -148,7 +146,7 @@ const LoginForm = () => {
       </Form>
       <Typography className="text-center text-sm mt-4">
         Don&apos;t have an account?{" "}
-        <Link to="/sign-up" className="font-semibold">
+        <Link to={PAGES.RegisterPage.href} className="font-semibold">
           Sign up
         </Link>
       </Typography>

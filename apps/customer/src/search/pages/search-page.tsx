@@ -1,5 +1,7 @@
 import { Input, Separator, Typography, useTheme } from "@repo/ui";
+import PageMeta from "@src/common/components/page-meta";
 import useInfinte from "@src/common/hooks/use-infinite";
+import { PAGES } from "@src/common/utils/pages";
 import Menu from "@src/menu/components/menu";
 import { menuService } from "@src/menu/services/menu";
 import { Loader2, Search } from "lucide-react";
@@ -32,6 +34,7 @@ const SearchPage = () => {
 
   return (
     <div className="pt-8 px-4 space-y-4">
+      <PageMeta title={q ? `Search for ${q}` : PAGES.SearchPage().title} description={PAGES.SearchPage().description} />
       <Input
         value={sq}
         type="search"

@@ -4,7 +4,7 @@
  * - If the user verifies the email, the user will be redirected to the home page.
  * - If the user refreshes the page, the timer will persist, and instead of starting from 15 minutes, it starts from the remaining time.
  * - If the user doesn't verify the email within 15 minutes, the user will be redirected to the home page.
-*/
+ */
 import * as z from "zod";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
@@ -36,6 +36,7 @@ import AuthLayout from "@src/auth/components/layout";
 import { ROUTES } from "@src/common/utils/api-routes";
 import useAuthStore from "@src/common/stores/auth-store";
 import { userPersistingTimer } from "@src/common/hooks/use-persting-timer";
+import { MenuPage } from "@src/common/utils/pages";
 
 const FormSchema = z.object({
   pin: z.string().min(4, {
@@ -48,8 +49,7 @@ const VerifyEmailPage = () => {
   const navigate = useNavigate();
   const { setUser, user } = useAuthStore();
   const [skiped, setSkipped] = useLocalStorage("skiped", false);
-  const { remainingTime, formatTime, startTimer, clearTimer, resetTimer } =
-    userPersistingTimer();
+  const { remainingTime, formatTime, startTimer, clearTimer, resetTimer } = userPersistingTimer();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: { pin: "" },
@@ -144,12 +144,11 @@ const VerifyEmailPage = () => {
 
         <div className="flex justify-end">
           <Link
-            preventScrollReset={true}
             onClick={() => {
               setSkipped(true);
             }}
             className="mt-6 w-fit"
-            to="/"
+            to={MenuPage.href}
           >
             <Button variant="link">Skip</Button>
           </Link>
