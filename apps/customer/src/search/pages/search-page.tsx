@@ -10,10 +10,11 @@ import { useDebounceValue, useLocalStorage } from "usehooks-ts";
 const SearchPage = () => {
   const { theme } = useTheme();
   const [sp, ssp] = useSearchParams();
-  const sq = sp.get("q") ?? undefined;
+  const sq = sp.get("q") ?? "";
   const [q, setQ] = useDebounceValue("", 1000);
   const [recentSearches, setRecentSearches] = useLocalStorage("recentSearches", []);
   const {
+    status,
     ref: refMenu,
     hasNextPage: hasNextMenuPage,
     data: menuItems,
@@ -26,8 +27,8 @@ const SearchPage = () => {
   }, [sq]);
 
   useEffect(() => {
-    if (menuItems?.length && q) setRecentSearches((prev) => [...new Set([q, ...prev])].slice(0, 5) as any);
-  }, [menuItems, q]);
+    if (status === "success" && q?.length) setRecentSearches((prev) => [...new Set([q, ...prev])].slice(0, 5) as any);
+  }, [status, q]);
 
   return (
     <div className="pt-8 px-4 space-y-4">

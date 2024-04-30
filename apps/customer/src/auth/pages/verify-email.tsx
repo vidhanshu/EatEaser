@@ -107,17 +107,10 @@ const VerifyEmailPage = () => {
           </Typography>
         </div>
         <Typography className="text-center" variant="large">
-          {remainingTime <= 60 ? (
-            <span className="text-rose">{formatTime(remainingTime)}</span>
-          ) : (
-            formatTime(remainingTime)
-          )}
+          {remainingTime <= 60 ? <span className="text-rose">{formatTime(remainingTime)}</span> : formatTime(remainingTime)}
         </Typography>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((data) => mutate(data.pin))}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit((data) => mutate(data.pin))} className="space-y-6">
             <FormField
               control={form.control}
               name="pin"
@@ -130,31 +123,20 @@ const VerifyEmailPage = () => {
                       render={({ slots }) => (
                         <InputOTPGroup>
                           {slots.map((slot, index) => (
-                            <InputOTPSlot
-                              className="p-6 border border-slate-300"
-                              key={index}
-                              {...slot}
-                            />
+                            <InputOTPSlot className="p-6 border border-slate-300" key={index} {...slot} />
                           ))}{" "}
                         </InputOTPGroup>
                       )}
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Please enter the one-time password sent to your phone.
-                  </FormDescription>
+                  <FormDescription>Please enter the one-time password sent to your phone.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button
-              type="submit"
-              loading={isPending}
-              startContent={<ShieldCheck size={18} />}
-              className="w-full"
-            >
+            <Button type="submit" loading={isPending} startContent={<ShieldCheck size={18} />} className="w-full">
               Verify
             </Button>
           </form>
@@ -162,6 +144,7 @@ const VerifyEmailPage = () => {
 
         <div className="flex justify-end">
           <Link
+            preventScrollReset={true}
             onClick={() => {
               setSkipped(true);
             }}

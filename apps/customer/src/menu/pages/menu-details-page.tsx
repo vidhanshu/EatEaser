@@ -11,7 +11,7 @@ import useCartStore from "@src/cart/stores/cart-store";
 const MenuDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart, addAddon, getCartItem, removeAddon } = useCartStore();
+  const { addToCart, addAddon, getCartItem, removeAddon, isInCart, removeFromCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const { getMenuItem, menuItem, isLoadingMenuItem } = useMenu({ variables: { menuItemId: id } });
 
@@ -131,19 +131,36 @@ const MenuDetailsPage = () => {
             </div>
           </div>
           <div className="flex gap-x-4 items-center">
-            <Button
-              onClick={() => {
-                if (menuItem) {
-                  addToCart({ ...menuItem, addOns: [], quantity });
-                }
-              }}
-              disabled={!menuItem?.isAvailable}
-              endContent={<ShoppingCart size={16} />}
-              className="flex-1 bg-white dark:bg-input"
-              variant="outline"
-            >
-              Add to cart
-            </Button>
+            {isInCart(menuItem?._id!) ? (
+              <Button
+                onClick={() => {
+                  if (menuItem) {
+                    removeFromCart(menuItem?._id!);
+                  }
+                }}
+                disabled={!menuItem?.isAvailable}
+                size="sm"
+                endContent={<Minus size={16} />}
+                variant="destructive"
+                className="flex-1"
+              >
+                Remove
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  if (menuItem) {
+                    addToCart({ ...menuItem, addOns: [], quantity });
+                  }
+                }}
+                disabled={!menuItem?.isAvailable}
+                endContent={<ShoppingCart size={16} />}
+                className="flex-1 bg-white dark:bg-input"
+                variant="outline"
+              >
+                Add to cart
+              </Button>
+            )}
             <Button
               variant={!menuItem?.isAvailable ? "destructive" : "default"}
               disabled={!menuItem?.isAvailable}

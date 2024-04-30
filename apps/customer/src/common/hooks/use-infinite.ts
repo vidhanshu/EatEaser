@@ -1,8 +1,8 @@
-import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const useInfinte = ({ fetcher, queryKey, filters = {} }: { fetcher: Function; filters?: Object; queryKey: string[] }) => {
+const useInfinte = ({ fetcher, queryKey, filters }: { fetcher: Function; filters?: Record<string, any>; queryKey: string[] }) => {
   const { ref, inView } = useInView();
 
   const {
@@ -11,8 +11,9 @@ const useInfinte = ({ fetcher, queryKey, filters = {} }: { fetcher: Function; fi
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    status,
   } = useInfiniteQuery<any>({
-    queryKey,
+    queryKey: [...queryKey, filters],
     queryFn: async (props) => {
       const result = (await fetcher({ page: props.pageParam!.toString(), ...filters })).result;
       return result.length === 0 ? undefined : result;
@@ -35,6 +36,7 @@ const useInfinte = ({ fetcher, queryKey, filters = {} }: { fetcher: Function; fi
     ref,
     data,
     isLoading,
+    status,
     hasNextPage,
     isFetchingNextPage,
   };

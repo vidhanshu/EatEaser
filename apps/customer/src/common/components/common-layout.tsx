@@ -20,7 +20,7 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
   return (
     <main className="bg-background">
       <Navbar />
-      <div className="pb-4 min-h-[calc(100vh-130px)]">
+      <div className="pb-4 min-h-[calc(100vh-125px)]">
         <Outlet />
       </div>
       {!showBottomTabs || !rid ? null : <BottomTabs />}
