@@ -55,7 +55,13 @@ const handleListItems = (role: NSAuth.ROLES) => {
         minPrice,
         maxPrice,
         q,
+        sort,
       } = req.query;
+      const sortQuery: { [key: string]: number } = {};
+      if (sort) {
+        const [key, order] = (sort as string).split(":");
+        sortQuery[key] = order === "asc" ? 1 : -1;
+      }
       const filter: FilterQuery<NSRestaurant.IMenuItem> = {
         restaurant: restaurantId,
       };
@@ -95,7 +101,11 @@ const handleListItems = (role: NSAuth.ROLES) => {
       const skip = resultPerPage * (page - 1);
       const resultCount = await MenuItem.countDocuments(filter);
       const totalPages = Math.ceil(resultCount / resultPerPage);
-      const result = await MenuItem.find(filter, {}, { limit, skip })
+      const result = await MenuItem.find(
+        filter,
+        {},
+        { limit, skip, sort: sortQuery }
+      )
         .populate("restaurant", { _id: 1, name: 1 })
         .populate("category", { _id: 1, name: 1 })
         .populate("addOns", { _id: 1, name: 1 });

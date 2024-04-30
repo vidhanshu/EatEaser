@@ -32,6 +32,7 @@ const MenuPage = () => {
   const maxPrice = sp.get("maxPrice") ?? undefined;
   const isAvailable = sp.get("isAvailable") ?? undefined;
   const isVegetarian = sp.get("isVegetarian") ?? undefined;
+  const sortBy = sp.get("sortBy") ?? undefined;
 
   const filters: IMenuFilters = useMemo(() => {
     const cat: IMenuFilters = { category: category === "all" ? undefined : category };
@@ -39,8 +40,9 @@ const MenuPage = () => {
     cat.isVegetarian = isVegetarian === "true" ? true : isVegetarian === "false" ? false : undefined;
     cat.minPrice = minPrice;
     cat.maxPrice = maxPrice;
+    cat.sortBy = sortBy;
     return cat;
-  }, [category, isAvailable, isVegetarian, minPrice, maxPrice]);
+  }, [category, isAvailable, isVegetarian, minPrice, maxPrice, sortBy]);
 
   const {
     ref: refCat,
@@ -139,26 +141,36 @@ const PromotionalCards = () => {
         <CarouselContent>
           {PROMOTIONAL_CARDS.map(({ title, description, img, bgImg }, i) => (
             <CarouselItem key={i}>
-              <div className="relative p-4 rounded-xl overflow-hidden bg-no-repeat bg-cover flex gap-x-2 w-full" style={{ backgroundImage: `url(${bgImg})` }}>
-                <Typography className="z-[2] text-white absolute right-4 top-2">View all</Typography>
-                <div>
-                  <Typography variant="h1" className="text-white">
-                    {title}
-                  </Typography>
-                  <Typography
-                    variant="md"
-                    className="text-white max-w-[200px]"
-                    dangerouslySetInnerHTML={{
-                      __html: description.replace("\n", "<br/>"),
-                    }}
-                  />
-                </div>
-                <img className="w-28 h-28 absolute right-8" src={img} />
-              </div>
+              <OfferCard title={title} description={description} img={img} bgImg={bgImg} />
             </CarouselItem>
           ))}
         </CarouselContent>
       </Carousel>
+    </div>
+  );
+};
+
+export const OfferCard = ({ title, description, img, bgImg }: { title: string; description: string; img: string; bgImg: string }) => {
+  return (
+    <div>
+      <div className="relative p-4 rounded-xl overflow-hidden bg-no-repeat bg-cover flex gap-x-2 w-full" style={{ backgroundImage: `url(${bgImg})` }}>
+        <Link to={PAGES.OffersPage.href}>
+          <Typography className="z-[2] text-white absolute right-4 top-2">View all</Typography>
+        </Link>
+        <div>
+          <Typography variant="h1" className="text-white">
+            {title}
+          </Typography>
+          <Typography
+            variant="md"
+            className="text-white max-w-[200px]"
+            dangerouslySetInnerHTML={{
+              __html: description.replace("\n", "<br/>"),
+            }}
+          />
+        </div>
+        <img className="w-32 h-32 object-contain absolute right-8" src={img} />
+      </div>
     </div>
   );
 };

@@ -77,7 +77,7 @@ const Menu = ({
         {!forCart && (
           <>
             {isFetchingNextPage && <Loader2 className="mx-auto animate-spin mt-4" />}
-            {!hasNextMenuPage && <div className="text-center text-sm text-muted-foreground">You reached the end of the page!</div>}
+            {!hasNextMenuPage && menuItems.length > 10 && <div className="text-center text-sm text-muted-foreground">You reached the end of the page!</div>}
           </>
         )}
       </div>

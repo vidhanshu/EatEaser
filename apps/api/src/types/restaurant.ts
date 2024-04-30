@@ -17,6 +17,10 @@ export namespace NSRestaurant {
     website?: string;
     acceptsReservations?: boolean;
     menus: IMenu[];
+    ratingDetails: {
+      rating: number;
+      counts: { stars: 1 | 2 | 3 | 4 | 5; count: number }[];
+    };
   }
   export interface ICreateRestaurantPayload extends IResturant {}
   export interface IUpdateRestaurantPayload extends IResturant {}

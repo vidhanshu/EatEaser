@@ -33,14 +33,19 @@ const handelListTable = (role: NSAuth.ROLES) => {
   return async (
     req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload> &
       NSCommon.IAuthRequest,
-    res: Response,
+    res: Response
   ) => {
     try {
+      const { status } = req.query;
       const filter: FilterQuery<NSRestaurant.ICategory> = {};
       if (role === "admin") {
         filter["restaurant"] = req.restaurantId;
       } else {
-        filter["restaurant"] = req.params.restaurantId;
+        filter["restaurant"] = req.params.id;
+      }
+
+      if (status !== undefined) {
+        filter["status"] = status;
       }
 
       const { resultPerPage = 10, page = 1 } = req.query;

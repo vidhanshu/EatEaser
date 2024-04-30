@@ -22,8 +22,11 @@ export const SearchPage = (q?: string) => new PageMeta("Search", q ? `/search?q=
 export const ProfilePage = new PageMeta("Profile", "/profile", "View and edit your profile");
 export const CartPage = new PageMeta("Cart", "/cart", "View your cart and place an order");
 export const SettingsPage = new PageMeta("Settings", "/settings", "Change your app settings");
+export const OrdersPage = new PageMeta("Orders", "/orders", "Orders you have placed");
 export const RestaurantsPage = new PageMeta("Restaurants", "/restaurants", "Browse restaurants near you");
 export const RestaurantDetailsPage = (id: string) => new PageMeta("Restaurant", `/restaurants/${id}`, "View details of this restaurant");
+export const OffersPage = new PageMeta("Offers", "/offers", "Browse available offers");
+export const CheckoutPage = new PageMeta("Checkout", "/checkout", "Checkout your order");
 
 // Auth pages
 export const LoginPage = new PageMeta("Login", "/sign-in", "Login to your account");
@@ -46,4 +49,7 @@ export const PAGES = {
   RegisterPage,
   NotFoundPage,
   ErrorPage,
+  OffersPage,
+  OrdersPage,
+  CheckoutPage,
 };

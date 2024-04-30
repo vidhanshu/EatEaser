@@ -11,6 +11,7 @@ export interface IMenuFilters {
   maxPrice?: string;
   page?: number;
   q?: string;
+  sortBy?: string;
 }
 const useMenu = ({
   fetchMenuItems = true,

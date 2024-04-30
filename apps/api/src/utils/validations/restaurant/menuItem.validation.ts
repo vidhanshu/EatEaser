@@ -34,6 +34,9 @@ const listMenuItemsSchema = {
     minPrice: Joi.number().positive().optional(),
     maxPrice: Joi.number().positive().optional(),
     q: Joi.string().optional(), // search query
+    sort: Joi.string()
+      .optional()
+      .valid("price:asc", "price:desc", "createdAt:asc", "createdAt:desc"),
   }),
 };
 

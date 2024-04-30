@@ -6,7 +6,7 @@ import { PAGES } from "../utils/pages";
 import { Button, GenericDialog, Typography } from "@ui/components";
 
 const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) => {
-  const [sp, ssp] = useSearchParams();
+  const [sp] = useSearchParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const restaurantId = sp.get("restaurantId") ?? localStorage.getItem("restaurantId");
@@ -15,11 +15,9 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
   useEffect(() => {
     if (restaurantId) {
       localStorage.setItem("restaurantId", restaurantId);
-      ssp({});
     }
     if (tableId) {
       localStorage.setItem("tableId", tableId);
-      ssp({});
     }
   }, [restaurantId, pathname, tableId]);
 

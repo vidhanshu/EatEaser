@@ -4,7 +4,7 @@ import { IMenuFilters } from "../hooks/use-menu";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 
 export const menuService = {
-  getMenuItems: async ({ isAvailable, page, category, isVegan, isVegetarian, maxPrice, minPrice, q }: IMenuFilters) => {
+  getMenuItems: async ({ isAvailable, page, category, isVegan, isVegetarian, maxPrice, minPrice, q, sortBy }: IMenuFilters) => {
     const sp = new URLSearchParams();
     if (isAvailable !== undefined) sp.set("isAvailable", isAvailable.toString());
     if (page !== undefined) sp.set("page", page.toString());
@@ -14,6 +14,7 @@ export const menuService = {
     if (maxPrice !== undefined) sp.set("maxPrice", maxPrice.toString());
     if (minPrice !== undefined) sp.set("minPrice", minPrice.toString());
     if (q !== undefined && q.trim() != "") sp.set("q", q);
+    if (sortBy !== undefined && sortBy === "price") sp.set("sort", "price:asc");
 
     const resId = localStorage.getItem("restaurantId");
     if (!resId) throw new Error("Restaurant id not found in local storage");

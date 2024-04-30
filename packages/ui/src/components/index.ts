@@ -1,5 +1,6 @@
 export * from "./ui/button";
 export * from "./ui/input";
+export * from "./ui/accordion";
 export * from "./ui/label";
 export * from "./ui/sonner";
 export * from "./ui/checkbox";

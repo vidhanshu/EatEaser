@@ -23,8 +23,8 @@ export const ROUTES = {
       byId: (id: string) => `/restaurant/menu/menu-item/${id}/get`,
     },
     table: {
-      list: "/admin/restaurant/table/list",
-      byId: (id: string) => `/admin/restaurant/table/${id}/get`,
+      list: (id: string) => `/restaurant/${id}/table/list`,
+      byId: (id: string) => `/restaurant/table/${id}/get`,
     },
     order: {
       list: "/restaurant/order/list",

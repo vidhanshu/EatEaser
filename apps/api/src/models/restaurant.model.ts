@@ -59,11 +59,32 @@ const RestaurantSchema = new Schema<NSRestaurant.IResturant>(
       maxlength: 7,
       required: true,
     },
+    ratingDetails: {
+      type: {
+        rating: { type: Number, default: 0 },
+        counts: [
+          {
+            stars: { type: Number, enum: [1, 2, 3, 4, 5] },
+            count: { type: Number, default: 0 },
+          },
+        ],
+      },
+      default: {
+        rating: 0,
+        counts: [
+          { stars: 1, count: 0 },
+          { stars: 2, count: 0 },
+          { stars: 3, count: 0 },
+          { stars: 4, count: 0 },
+          { stars: 5, count: 0 },
+        ],
+      },
+    },
     googleMapLink: { type: String },
     website: { type: String },
     acceptsReservations: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export const Restaurant = model("Restaurant", RestaurantSchema);

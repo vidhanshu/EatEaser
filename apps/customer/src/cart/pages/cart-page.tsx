@@ -5,13 +5,15 @@ import Menu from "@src/menu/components/menu";
 import useCartStore from "../stores/cart-store";
 import { Separator, TableBody, TableCell, TableRow, Table, Button, GenericAlertDialog } from "@repo/ui";
 import PageMeta from "@src/common/components/page-meta";
-import { PAGES } from "@src/common/utils/pages";
+import { CheckoutPage, PAGES } from "@src/common/utils/pages";
+import { Link } from "react-router-dom";
+import { cn } from "@ui/lib/utils";
 
-const CartPage = () => {
+const CartPage = ({ showCheckout = true, noPad = false }: { showCheckout?: boolean; noPad?: boolean }) => {
   const { cart, calculateTotal, clearCart } = useCartStore();
 
   return (
-    <div className="pt-8 px-4 space-y-4">
+    <div className={cn("pt-8 space-y-4", noPad ? "px-2" : "px-4")}>
       <PageMeta title={PAGES.CartPage.title} description={PAGES.CartPage.description} />
       <Menu
         notFoundTitle="Cart is empty!"
@@ -82,9 +84,13 @@ const CartPage = () => {
               </TableRow>
             </TableBody>
           </Table>
-          <Button disabled onClick={() => {}} className="w-full" endContent={<CheckCircle size={16} />}>
-            Checkout (comming soon)
-          </Button>
+          {showCheckout && (
+            <Link to={CheckoutPage.href}>
+              <Button className="w-full" endContent={<CheckCircle size={16} />}>
+                Checkout
+              </Button>
+            </Link>
+          )}
         </>
       )}
     </div>

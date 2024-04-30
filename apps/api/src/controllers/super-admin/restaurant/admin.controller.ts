@@ -17,7 +17,7 @@ import { getClientDomain } from "../../../utils/helpers";
 
 const handleCreateAdmin = async (
   req: NSCommon.TypedRequest<NSAdmin.IAdminCreatePayload>,
-  res: Response,
+  res: Response
 ) => {
   /**
    * TODO:
@@ -30,12 +30,12 @@ const handleCreateAdmin = async (
   try {
     const admin = await User.findOne(
       { $or: [{ email }, { phone }] },
-      { _id: 1 },
+      { _id: 1 }
     );
     if (admin) {
       throw new ResponseError(
         "User already exists with this email or phone number.",
-        httpStatus.CONFLICT,
+        httpStatus.CONFLICT
       );
     }
     const restaurantExists = await Restaurant.findById(restaurantId, {
@@ -45,7 +45,20 @@ const handleCreateAdmin = async (
     if (!restaurantExists) {
       throw new ResponseError(
         "Restaurant not found with this id",
-        httpStatus.NOT_FOUND,
+        httpStatus.NOT_FOUND
+      );
+    }
+    const adminWithRestaurantExists = await User.findOne(
+      {
+        role: "admin",
+        restaurant: restaurantId,
+      },
+      { id: true }
+    );
+    if (adminWithRestaurantExists) {
+      throw new ResponseError(
+        "Admin already exists for this restaurant",
+        httpStatus.CONFLICT
       );
     }
     const newAdmin = new User({
@@ -69,7 +82,7 @@ const handleCreateAdmin = async (
       html: ADMIN_SUCCESSFUL_SIGNUP_TEMPLATE(
         name!,
         restaurantExists.name,
-        getClientDomain(req as Request),
+        getClientDomain(req as Request)
       ),
     });
     sendResponse(res, {

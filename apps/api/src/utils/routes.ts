@@ -24,8 +24,8 @@ export const ROUTES = {
         byId: "/restaurant/category/:id/get",
       },
       table: {
-        list: "/admin/restaurant/table/list",
-        byId: "/admin/restaurant/table/:id/get",
+        list: "/restaurant/:id/table/list",
+        byId: "/restaurant/table/:id/get",
       },
       order: {
         list: "/restaurant/order/list",

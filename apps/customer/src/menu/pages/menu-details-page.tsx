@@ -7,13 +7,13 @@ import SeeMoreText from "@src/common/components/see-more-text";
 import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
 import PageMeta from "@src/common/components/page-meta";
-import { PAGES } from "@src/common/utils/pages";
+import { CheckoutPage, PAGES } from "@src/common/utils/pages";
 import { FaStar, FaStarHalf } from "react-icons/fa6";
 
 const MenuDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart, addAddon, getCartItem, removeAddon, isInCart, removeFromCart } = useCartStore();
+  const { addToCart, addAddon, getCartItem, removeAddon, isInCart, removeFromCart, cart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const { getMenuItem, menuItem, isLoadingMenuItem } = useMenu({ variables: { menuItemId: id } });
 
@@ -170,10 +170,11 @@ const MenuDetailsPage = () => {
             )}
             <Button
               variant={!menuItem?.isAvailable ? "destructive" : "default"}
-              disabled={!menuItem?.isAvailable}
+              disabled={!menuItem?.isAvailable || !cart.length}
               endContent={!menuItem?.isAvailable ? <XCircle size={16} /> : <CheckCircle size={16} />}
               className="flex-1"
               size="sm"
+              onClick={menuItem?.isAvailable && cart.length ? () => navigate(CheckoutPage.href) : () => {}}
             >
               {!menuItem?.isAvailable ? "Not available" : "Place Order"}
             </Button>

@@ -26,7 +26,16 @@ const updateTableSchema = {
   }),
 };
 
+export const customerListTablesSchema = {
+  ...commonValidation.idParamPayloadSchema,
+  query: Joi.object().keys({
+    ...commonValidation.listDataSchema,
+    status: Joi.string().optional().valid("AVAILABLE", "RESERVED", "OCCUPIED"),
+  }),
+};
+
 export const tableValidation = {
   createTableSchema,
   updateTableSchema,
+  customerListTablesSchema,
 };

@@ -8,8 +8,26 @@ export const PROMOTIONAL_CARDS = [
   {
     title: "50%",
     description: "FOR NEW\nMEMBERS ONLY",
-    img: "/burger.png",
+    img: "/thali.png",
     bgImg: "/promotional-bg-black.png",
+  },
+  {
+    title: "60%",
+    description: "ON PIZZAS\nGRAB NOW!",
+    img: "/pizza.png",
+    bgImg: "/promotional-bg-yellow.png",
+  },
+  {
+    title: "15%",
+    description: "ON DESERTS\nGRAB NOW!",
+    img: "/ice-cream.png",
+    bgImg: "/promotional-bg-red.png",
+  },
+  {
+    title: "30%",
+    description: "ON SOUTH\nINDIAN FOOD",
+    img: "/idli.png",
+    bgImg: "/promotional-bg-blue.png",
   },
 ];
 

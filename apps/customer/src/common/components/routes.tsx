@@ -18,6 +18,8 @@ import RestaurantsPage from "@src/restaurants/pages/restaurants-page";
 import RestaurantDetailsPage from "@src/restaurants/pages/restaurant-details-page";
 import { PAGES } from "../utils/pages";
 import NotFoundPage from "../pages/not-found-page";
+import OffersPage from "@src/offers/pages/offers-page";
+import CheckoutPage from "@src/cart/pages/checkout-page";
 
 /**
  * ROUTES_FOR_ONLY_UNAUTHENTICATED, are accessible only to unauthenticated users
@@ -73,6 +75,10 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
         element: <MenuPage />,
       },
       {
+        path: "/offers",
+        element: <OffersPage />,
+      },
+      {
         path: "/restaurants",
         element: <RestaurantsPage />,
       },
@@ -103,6 +109,10 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
       {
         path: "/cart",
         element: <CartPage />,
+      },
+      {
+        path: "/checkout",
+        element: <CheckoutPage />,
       },
       {
         path: "/verify-email",
