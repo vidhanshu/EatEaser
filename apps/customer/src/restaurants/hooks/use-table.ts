@@ -2,11 +2,23 @@ import { useQuery } from "@tanstack/react-query";
 import { tableService } from "../services/table";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 
-const useTable = ({ fetchTables = true, variables: { tableId } = {} }: { fetchTables?: boolean; variables?: { tableId?: string } }) => {
+const useTable = ({
+  fetchTables = true,
+  variables: { tableId, filters } = {},
+}: {
+  fetchTables?: boolean;
+  variables?: {
+    tableId?: string;
+    filters?: {
+      status?: "AVAILABLE" | "OCCUPIED" | "RESERVED";
+      page?: number;
+    };
+  };
+}) => {
   // Feth tables
   const { data: tables, isLoading: isLoadingTables } = useQuery({
     queryKey: ["tables"],
-    queryFn: tableService.getTables,
+    queryFn: () => tableService.getTables(filters ?? {}),
     enabled: fetchTables,
   });
 

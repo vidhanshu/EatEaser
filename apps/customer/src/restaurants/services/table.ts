@@ -3,7 +3,7 @@ import { ROUTES } from "@src/common/utils/api-routes";
 import axiosInstance from "@src/common/utils/axios";
 
 export const tableService = {
-  async getTables({ status, page }: { status?: "AVAILABLE" | "OCCUPIED" | "RESERVED"; page: number }) {
+  async getTables({ status, page }: { status?: "AVAILABLE" | "OCCUPIED" | "RESERVED"; page?: number }) {
     const restId = localStorage.getItem("restaurantId");
     if (!restId) throw new Error("Restaurant Id is required");
     const sp = new URLSearchParams();

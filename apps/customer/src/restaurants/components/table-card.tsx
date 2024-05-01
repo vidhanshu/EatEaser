@@ -24,7 +24,7 @@ export const TableCard = ({
   status: NSRestaurant.TABLE_STATUS;
   onViewClick?: (id: string) => void;
   endRef?: Ref<HTMLDivElement>;
-  selectable: boolean;
+  selectable?: boolean;
   onClick?: () => void;
 }) => (
   <div

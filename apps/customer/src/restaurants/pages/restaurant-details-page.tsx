@@ -80,15 +80,7 @@ const RestaurantDetailsPage = () => {
               <div className="flex gap-x-4 items-center max-w-full overflow-auto no-scrollbar">
                 {!!restaurant?.tables?.length &&
                   restaurant.tables.length > 0 &&
-                  restaurant.tables.map((table, idx) => (
-                    <TableCard
-                      onViewClick={(id) => {
-                        setTableModalControl({ open: true, id });
-                      }}
-                      {...table}
-                      key={idx}
-                    />
-                  ))}
+                  restaurant.tables.map((table, idx) => <TableCard key={idx} onViewClick={(id) => setTableModalControl({ open: true, id })} {...table} />)}
               </div>
             </section>
             <Separator />
