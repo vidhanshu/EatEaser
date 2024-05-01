@@ -1,7 +1,7 @@
-import axiosInstance from "@src/common/utils/axios";
 import { ROUTES } from "@src/common/utils/api-routes";
-import { NSRestaurant } from "@src/types/restaurant.type";
+import axiosInstance from "@src/common/utils/axios";
 import { IAddonFilter } from "@src/menu/hooks/use-add-ons";
+import { NSRestaurant } from "@src/types/restaurant.type";
 
 export const addOnsService = {
   getAddOns: async ({
@@ -43,6 +43,6 @@ export const addOnsService = {
     (await axiosInstance.delete(ROUTES.restaurant.addOn.delete(id))).data,
   getById: async (
     id: string
-  ): Promise<NSCommon.ApiResponse<NSRestaurant.IAddon>> =>
+  ): Promise<NSCommon.ApiResponse<NSRestaurant.IAddon>["data"]> =>
     (await axiosInstance.get(ROUTES.restaurant.addOn.byId(id))).data.data,
 };

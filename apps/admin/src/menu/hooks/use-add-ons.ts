@@ -1,10 +1,8 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { toast } from "@ui/components";
 import { addOnsService } from "@src/menu/services/add-ons";
-import { useEffect } from "react";
+import { toast } from "@ui/components";
 
 export interface IAddonFilter {
   q?: string;
