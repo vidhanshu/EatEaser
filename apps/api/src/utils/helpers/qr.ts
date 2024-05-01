@@ -1,5 +1,4 @@
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import path from "path";
 import qr from "qrcode";
 import { config, s3Client } from "../../configs";
 
@@ -14,9 +13,6 @@ const uploadToS3 = async (filename: string, buffer: Buffer) => {
 };
 
 export const generateAndUploadQR = async (url: string, filename: string) => {
-  const pQr = path.join(__dirname, "../assets/", filename);
-  // create qr code and save it to the file
-  await qr.toFile(pQr, url);
   qr.toBuffer(url, async (err, buffer) => {
     if (!err) {
       await uploadToS3(filename, buffer);
