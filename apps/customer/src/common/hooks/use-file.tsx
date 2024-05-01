@@ -3,7 +3,7 @@ import React from "react";
 import axiosInstance from "../utils/axios";
 import { ROUTES } from "../utils/api-routes";
 import { AxiosError } from "axios";
-import { toast } from "@repo/ui";
+import { toast } from "@ui/components";
 
 const useFile = ({ onUploadSuccess, path }: { onUploadSuccess?: (url: string) => void; path: string }) => {
   const [percentage, setPercentage] = React.useState(0);

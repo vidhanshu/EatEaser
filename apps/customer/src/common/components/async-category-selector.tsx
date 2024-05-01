@@ -5,7 +5,7 @@
  */
 
 import useCategory from "@src/menu/hooks/use-categories";
-import { Button, ButtonProps, Input, InputProps, Popover, PopoverContent, PopoverTrigger, ScrollArea, Typography } from "@repo/ui";
+import { Button, ButtonProps, Input, InputProps, Popover, PopoverContent, PopoverTrigger, ScrollArea, Typography } from "@ui/components";
 import { cn } from "@ui/lib/utils";
 import { Check, ChevronsUpDown, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";

@@ -1,4 +1,4 @@
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, toast } from "@repo/ui";
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, toast } from "@ui/components";
 import { CheckCircle, ChevronLeft, Mail, Phone, User2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";

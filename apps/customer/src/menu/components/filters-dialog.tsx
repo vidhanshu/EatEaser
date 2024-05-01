@@ -5,7 +5,7 @@ import { CheckCircle, SlidersHorizontal, Undo2 } from "lucide-react";
 
 import { cn } from "@ui/lib/utils";
 import AsyncCategorySelect from "@src/common/components/async-category-selector";
-import { Button, Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger, Label, RadioGroup, RadioGroupItem, Typography } from "@repo/ui";
+import { Button, Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger, Label, RadioGroup, RadioGroupItem, Typography } from "@ui/components";
 import MinMaxPriceInput from "@src/common/components/min-max-price-input";
 import useCategory from "../hooks/use-categories";
 

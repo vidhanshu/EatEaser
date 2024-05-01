@@ -2,7 +2,7 @@ import React, { Ref } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, IndianRupee, Loader2, Minus, Plus } from "lucide-react";
 
-import { Button, ImgWithPlaceholder, Input, Typography, GenericAlertDialog, Separator } from "@repo/ui";
+import { Button, ImgWithPlaceholder, Input, Typography, GenericAlertDialog, Separator } from "@ui/components";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import CSkeleton from "@src/common/components/skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
@@ -98,7 +98,7 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
       <div className="flex">
         <Link to={MenuDetailsPage(itemId).href}>
           <div className="p-4">
-            <ImgWithPlaceholder placeholder={name} className="w-24 h-24" src={image} />
+            <ImgWithPlaceholder placeholder={name} className="w-24 h-24 object-cover" src={image} />
           </div>
         </Link>
         <div className="p-4 pl-0 flex-1 flex flex-col justify-between">

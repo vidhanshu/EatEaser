@@ -3,7 +3,7 @@ import { CheckCircle } from "lucide-react";
 
 import Menu from "@src/menu/components/menu";
 import useCartStore from "../stores/cart-store";
-import { Separator, TableBody, TableCell, TableRow, Table, Button, GenericAlertDialog } from "@repo/ui";
+import { Separator, TableBody, TableCell, TableRow, Table, Button, GenericAlertDialog } from "@ui/components";
 import PageMeta from "@src/common/components/page-meta";
 import { CheckoutPage, PAGES } from "@src/common/utils/pages";
 import { Link } from "react-router-dom";

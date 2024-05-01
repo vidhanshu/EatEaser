@@ -28,10 +28,10 @@ export const ROUTES = {
     },
     order: {
       list: "/restaurant/order/list",
-      byId: "/restaurant/order/:id/get",
+      byId: (id: string) => `/restaurant/order/${id}/get`,
       create: "/restaurant/order/create",
-      cancel: "/restaurant/order/:id/cancel",
-      update: "/restaurant/order/:id/update",
+      cancel: (id: string) => `/restaurant/order/${id}/cancel`,
+      update: (id: string) => `/restaurant/order/${id}/update`,
     },
   },
   file: {

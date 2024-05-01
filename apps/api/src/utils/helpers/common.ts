@@ -1,6 +1,7 @@
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Request } from "express";
 import { config, s3Client } from "../../configs";
+import { NSRestaurant } from "../../types";
 
 export const generateOTP = (digit: number) => {
   let otp = "";

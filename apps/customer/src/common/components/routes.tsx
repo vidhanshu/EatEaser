@@ -13,7 +13,7 @@ import SettingsPage from "@src/settings/pages/settings-page";
 import CartPage from "@src/cart/pages/cart-page";
 import MenuDetailsPage from "@src/menu/pages/menu-details-page";
 import ProfilePage from "@src/profile/pages/profile-page";
-import OrderPage from "@src/orders/pages/order-page";
+import OrderPage from "@src/orders/pages/orders-page";
 import RestaurantsPage from "@src/restaurants/pages/restaurants-page";
 import RestaurantDetailsPage from "@src/restaurants/pages/restaurant-details-page";
 import { PAGES } from "../utils/pages";

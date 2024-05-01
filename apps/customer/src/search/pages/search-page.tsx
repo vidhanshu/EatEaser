@@ -1,4 +1,4 @@
-import { Input, Separator, Typography } from "@repo/ui";
+import { Input, Separator, Typography } from "@ui/components";
 import Empty from "@src/common/components/empty";
 import PageMeta from "@src/common/components/page-meta";
 import useInfinte from "@src/common/hooks/use-infinite";

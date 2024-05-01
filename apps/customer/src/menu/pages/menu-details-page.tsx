@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import useMenu from "../hooks/use-menu";
 import { useEffect, useState } from "react";
-import { Button, ImgWithPlaceholder, Typography, Table, TableCell, TableRow, TableBody, Separator, Input } from "@repo/ui";
+import { Button, ImgWithPlaceholder, Typography, Table, TableCell, TableRow, TableBody, Separator, Input } from "@ui/components";
 import { CheckCircle, ChevronLeft, IndianRupee, Minus, Plus, ShoppingCart, XCircle } from "lucide-react";
 import SeeMoreText from "@src/common/components/see-more-text";
 import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";

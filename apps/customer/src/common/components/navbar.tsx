@@ -23,7 +23,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/ui";
+} from "@ui/components";
 import useAuthStore from "../stores/auth-store";
 import { CartPage, LoginPage, MenuPage, OrdersPage, ProfilePage, RestaurantsPage, SettingsPage } from "../utils/pages";
 import SignOutBtn from "./sign-out-btn";

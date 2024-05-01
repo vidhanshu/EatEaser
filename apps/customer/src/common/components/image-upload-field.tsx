@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Pencil, UploadCloud, X } from "lucide-react";
 
 import useFile from "@src/common/hooks/use-file";
-import { Button, ImgWithPlaceholder, Progress, toast } from "@repo/ui";
+import { Button, ImgWithPlaceholder, Progress, toast } from "@ui/components";
 import { getInitials, isS3Url } from "@ui/helpers";
 import { cn } from "@ui/lib/utils";
 

@@ -1,11 +1,13 @@
-import { GenericAlertDialog, Switch, useTheme } from "@repo/ui";
+import { GenericAlertDialog, ImgWithPlaceholder, Switch, Typography, useTheme } from "@ui/components";
 import PageMeta from "@src/common/components/page-meta";
 import SignOutBtn from "@src/common/components/sign-out-btn";
+import useAuthStore from "@src/common/stores/auth-store";
 import { PAGES, ProfilePage } from "@src/common/utils/pages";
-import { ChevronRight, LogOut, Palette, Truck, User2 } from "lucide-react";
+import { ChevronRight, LogOut, Palette, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SettingsPage = () => {
+  const { user } = useAuthStore();
   const { toggleTheme, theme } = useTheme();
   return (
     <main className="px-4 pt-8">
@@ -15,9 +17,15 @@ const SettingsPage = () => {
       </div>
       <Link to={ProfilePage.href}>
         <button className="flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
-          <span className="flex gap-x-4 items-center">
-            <User2 size={16} /> Profile
-          </span>{" "}
+          <div className="flex gap-x-4 items-center">
+            <ImgWithPlaceholder className="size-14 rounded-full" src={user?.image} placeholder={user?.name} />
+            <div>
+              <Typography>{user?.name}</Typography>
+              <Typography className="text-left" variant="muted">
+                +91-{user?.phone}
+              </Typography>
+            </div>
+          </div>{" "}
           <ChevronRight />
         </button>
       </Link>

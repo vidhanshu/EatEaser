@@ -1,4 +1,4 @@
-import { Typography } from "@repo/ui";
+import { Typography } from "@ui/components";
 import { cn } from "@ui/lib/utils";
 import { useState } from "react";
 

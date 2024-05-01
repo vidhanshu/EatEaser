@@ -5,7 +5,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaPhone, FaStar, FaStarHalf } from "react-icons/fa";
 
-import { Button, ImgWithPlaceholder, Typography, Separator, Progress, GenericDialog, toast } from "@repo/ui";
+import { Button, ImgWithPlaceholder, Typography, Separator, Progress, GenericDialog, toast } from "@ui/components";
 import SeeMoreText from "@src/common/components/see-more-text";
 import RestaurantDetailsPageSkeleton from "../components/skeletons/restaurant-details-page-skeleton";
 import PageMeta from "@src/common/components/page-meta";

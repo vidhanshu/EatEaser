@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, User, Mail, Phone } from "lucide-react";
 import ReactHelmet from "react-helmet";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Button, Card, Typography, toast } from "@repo/ui";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Button, Card, Typography, toast } from "@ui/components";
 import { signUpFormSchema } from "../utils/validations";
 import axiosInstance from "@src/common/utils/axios";
 import { ROUTES } from "@src/common/utils/api-routes";

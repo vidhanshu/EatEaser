@@ -1,4 +1,4 @@
-import { Button, ImgWithPlaceholder, Input, Typography } from "@repo/ui";
+import { Button, ImgWithPlaceholder, Input, Typography } from "@ui/components";
 import { ArrowDown, ArrowRight, Info, Search } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import useInfinte from "@src/common/hooks/use-infinite";

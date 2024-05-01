@@ -7,7 +7,7 @@ import Menu from "@src/menu/components/menu";
 import { PROMOTIONAL_CARDS } from "@src/menu/utils/constants";
 import { IMenuFilters } from "@src/menu/hooks/use-menu";
 import CategoriesTabs from "@src/menu/components/categories-tabs";
-import { Button, Typography, Carousel, CarouselContent, CarouselItem, CarouselApi } from "@repo/ui";
+import { Button, Typography, Carousel, CarouselContent, CarouselItem, CarouselApi } from "@ui/components";
 import useAuthStore from "@src/common/stores/auth-store";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@src/common/utils/axios";

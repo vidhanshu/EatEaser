@@ -1,5 +1,5 @@
 import { PRICES } from "@src/menu/utils/constants";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ui/components";
 import { useMemo } from "react";
 
 const MinMaxPriceInput = ({

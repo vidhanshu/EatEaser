@@ -14,7 +14,7 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
   const { _id } = req;
   const { restaurantId, tableId } = req.query;
   const { items, paymentMethod } = req.body as {
-    items: NSRestaurant.IOrderItem[];
+    items: { item: string; quantity: number; addons: string[] }[];
     paymentMethod: any;
   };
   try {
@@ -35,6 +35,13 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
 
     // calculate total
     const itemIds = items.map((item) => item.item);
+    const itemIdToQtyMap = items.reduce(
+      (acc, item) => {
+        acc[item.item] = item.quantity;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
     const addOnIds = items.map((item) => item.addons).flat();
     const menuItems = await MenuItem.find(
       { _id: { $in: itemIds } },
@@ -54,9 +61,13 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
     if (addOns.length !== addOnIds.length) {
       throw new ResponseError("Invalid addOn(s)", 400);
     }
-    const total =
-      menuItems.reduce((acc, item) => acc + item.price, 0) +
-      addOns.reduce((acc, item) => acc + item.price, 0);
+    let total = 0;
+    menuItems.forEach(({ price, _id }) => {
+      total += price * itemIdToQtyMap[_id.toString()];
+    });
+    addOns.forEach(({ price }) => {
+      total += price;
+    });
 
     // create order
     const order = new Order({
@@ -187,13 +198,32 @@ const listOrders = async (
 ) => {
   const { _id } = req;
   try {
-    const filter = { customer: _id };
-    const { resultPerPage = 10, page = 1 } = req.query;
+    const filter: Record<string, any> = { customer: _id };
+    const {
+      resultPerPage = 10,
+      page = 1,
+      startTime,
+      endTime,
+      status,
+    } = req.query;
+    if (startTime) {
+      filter.createdAt = { $gte: new Date(startTime as string) };
+    }
+    if (endTime) {
+      filter.createdAt = { $lte: new Date(endTime as string) };
+    }
+    if (status) {
+      filter.status = status;
+    }
+
     const limit = resultPerPage;
     const skip = resultPerPage * (page - 1);
     const resultCount = await Order.countDocuments(filter);
     const totalPages = Math.ceil(resultCount / resultPerPage);
-    const result = await Order.find(filter, {}, { limit, skip });
+    const result = await Order.find(filter, {}, { limit, skip }).populate(
+      "items.item",
+      { image: 1, name: 1 }
+    );
 
     sendResponse(res, {
       data: {

@@ -69,4 +69,31 @@ export namespace NSRestaurant {
     description?: string;
     restaurant: string;
   }
+
+  export interface IOrder {
+    restaurant: string;
+    table: string;
+    items: IOrderItem[];
+    total: number;
+    status: ORDER_STATUS;
+    payment: IPayment;
+    customer: string;
+  }
+
+  export interface IOrderItem {
+    item: string;
+    quantity: number;
+    addons: string[];
+  }
+
+  export type ORDER_STATUS = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+
+  export interface IPayment {
+    method: PAYMENT_METHOD;
+    status: PAYMENT_STATUS;
+    transactionId: string;
+  }
+
+  export type PAYMENT_METHOD = "CASH" | "CARD" | "NETBANKING" | "UPI";
+  export type PAYMENT_STATUS = "PENDING" | "COMPLETED" | "FAILED";
 }

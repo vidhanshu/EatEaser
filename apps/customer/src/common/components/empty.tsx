@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 
-import { Typography, useTheme } from "@repo/ui";
+import { Typography, useTheme } from "@ui/components";
 import { cn } from "@ui/lib/utils";
 
 const Empty = ({

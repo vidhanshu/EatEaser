@@ -9,8 +9,12 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
   const [sp] = useSearchParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const restaurantId = sp.get("restaurantId") ?? localStorage.getItem("restaurantId");
-  const tableId = sp.get("tableId") ?? localStorage.getItem("tableId");
+  const rid = sp.get("restaurantId");
+  const lRid = localStorage.getItem("restaurantId");
+  const restaurantId = rid ?? lRid;
+  const tid = sp.get("tableId");
+  const lTid = localStorage.getItem("tableId");
+  const tableId = rid && rid !== lRid ? undefined : tid ?? lTid;
 
   useEffect(() => {
     if (restaurantId) {
@@ -18,8 +22,10 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
     }
     if (tableId) {
       localStorage.setItem("tableId", tableId);
+    } else {
+      localStorage.removeItem("tableId");
     }
-  }, [restaurantId, pathname, tableId]);
+  }, [restaurantId, tableId]);
 
   // route the user to the /restaurant page, iff either tableId doesn't exists or restaurant Id doesn't exists,
   // if restaurantId exists then route to that particular restaurant page, and also make sure don't route if the user is on the page that starts with /restaurants

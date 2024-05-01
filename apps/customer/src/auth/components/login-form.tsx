@@ -1,20 +1,7 @@
 import { AxiosError } from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  Button,
-  Card,
-  Typography,
-  Checkbox,
-  toast,
-} from "@repo/ui";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Button, Card, Typography, Checkbox, toast } from "@ui/components";
 import * as z from "zod";
 import { Mail, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";

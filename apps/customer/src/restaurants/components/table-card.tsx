@@ -3,6 +3,7 @@ import { Button, Typography } from "@ui/components";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { TableStatusBadge, getClassNameByStatus } from "./status-badge";
 import { Ref } from "react";
+import { CheckCircle } from "lucide-react";
 
 export const TableCard = ({
   _id,
@@ -13,6 +14,8 @@ export const TableCard = ({
   onViewClick,
   endRef,
   className,
+  // while using table card as btn
+  selectedTableId,
   selectable = false,
   onClick,
 }: {
@@ -25,13 +28,19 @@ export const TableCard = ({
   onViewClick?: (id: string) => void;
   endRef?: Ref<HTMLDivElement>;
   selectable?: boolean;
+  selectedTableId?: string;
   onClick?: () => void;
 }) => (
   <div
     key={_id}
     ref={endRef}
     onClick={() => onClick?.()}
-    className={cn("border-2 rounded-md flex min-w-[160px] h-[150px] items-center justify-center", getClassNameByStatus(status, true), className, onClick ? "cursor-pointer" : "")}
+    className={cn(
+      "border-2 rounded-md flex min-w-[160px] h-[150px] items-center justify-center relative",
+      getClassNameByStatus(status, true),
+      className,
+      onClick ? "cursor-pointer" : "",
+    )}
   >
     <div className="space-y-3 flex flex-col items-center">
       <Typography className="text-center" variant="h4">
@@ -53,5 +62,6 @@ export const TableCard = ({
         </Button>
       )}
     </div>
+    {selectable && selectedTableId === _id && <CheckCircle className="absolute top-4 right-4 text-primary" />}
   </div>
 );

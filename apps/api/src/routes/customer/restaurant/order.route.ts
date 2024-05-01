@@ -4,6 +4,7 @@ import { RBACMiddleware, authMiddleware, validate } from "../../../middlewares";
 import {
   commonValidation,
   customerOrderValidation,
+  orderValidation,
 } from "../../../utils/validations";
 import {
   commonOrderController,
@@ -30,7 +31,7 @@ customerOrderRouter.get(
   ROUTES.customer.restaurant.order.list,
   authMiddleware,
   RBACMiddleware(["customer"]),
-  validate(commonValidation.listDataSchema),
+  validate(orderValidation.listOrderSchema),
   customerOrderController.listOrders
 );
 customerOrderRouter.get(

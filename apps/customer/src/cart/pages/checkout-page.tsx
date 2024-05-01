@@ -1,94 +1,116 @@
+import { ArrowRight, CheckCircle, ChevronLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { CheckCircle, Loader2 } from "lucide-react";
-import { BsCashStack } from "react-icons/bs";
+import { BsBank, BsCashStack } from "react-icons/bs";
 import { FaRegCreditCard } from "react-icons/fa6";
 
-import CartPage from "./cart-page";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Button, Typography } from "@repo/ui";
-import { cn } from "@ui/lib/utils";
-import { TableCard } from "@src/restaurants/components/table-card";
+import Empty from "@src/common/components/empty";
+import PageMeta from "@src/common/components/page-meta";
 import useInfinte from "@src/common/hooks/use-infinite";
+import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { MenuPage, OrdersPage, PAGES } from "@src/common/utils/pages";
+import { TableCard } from "@src/restaurants/components/table-card";
 import { tableService } from "@src/restaurants/services/table";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Button, Typography } from "@ui/components";
+import { cn } from "@ui/lib/utils";
+import { IconType } from "react-icons";
+import { Link, useNavigate } from "react-router-dom";
+import useOrder from "../hooks/use-order";
 import useCartStore from "../stores/cart-store";
+import CartPage from "./cart-page";
 
-const accordionData = ({
-  table,
-  setTable,
-  setPaymentMethod,
-  paymentMethod,
-}: {
-  table: string;
-  setTable: (table: string) => void;
-  paymentMethod: "online" | "cash";
-  setPaymentMethod: (method: "online" | "cash") => void;
-}) => [
+const PAYMENT_METHODS: { method: NSRestaurant.PAYMENT_METHOD; icon?: IconType; img?: string }[] = [
   {
-    title: "Confirm delivery table",
-    content: <TableSelect tableId={table} setTableId={setTable} />,
-    value: "confirm-delivery-table",
+    method: "UPI",
+    img: "/upi.png",
   },
   {
-    title: "Order Summary",
-    content: <CartPage noPad showCheckout={false} />,
-    value: "order-summary",
+    method: "CASH",
+    icon: BsCashStack,
   },
   {
-    title: "Payment options",
-    content: (
-      <div className="p-4 flex gap-x-4 justify-center">
-        <button
-          onClick={() => setPaymentMethod("cash")}
-          className={cn(
-            "flex-col gap-4 border border-input size-28 text-gray-600 bg-white flex items-center justify-center rounded-md",
-            paymentMethod === "cash" && "border-primary bg-primary/10 text-primary",
-          )}
-        >
-          <BsCashStack className="size-8" />
-          <Typography>Cash</Typography>
-        </button>
-        <button
-          onClick={() => setPaymentMethod("online")}
-          className={cn(
-            "flex-col gap-4 border border-input size-28 text-gray-600 bg-white flex items-center justify-center rounded-md",
-            paymentMethod === "online" && "border-primary bg-primary/10 text-primary",
-          )}
-        >
-          <FaRegCreditCard className="size-8" />
-          <Typography>Online</Typography>
-        </button>
-      </div>
-    ),
-    value: "payment-options",
+    method: "CARD",
+    icon: FaRegCreditCard,
+  },
+  {
+    method: "NETBANKING",
+    icon: BsBank,
   },
 ];
+
+///-------------------------------------------------------------------------------------
+
 const CheckoutPage = () => {
+  const navigate = useNavigate();
+  const { cart, clearCart } = useCartStore();
   const [step, setStep] = useState("confirm-delivery-table");
   const [table, setTable] = useState(localStorage.getItem("tableId") || "");
-  const { cart } = useCartStore();
-  const [paymentMethod, setPaymentMethod] = useState<"online" | "cash">("online");
+  const [paymentMethod, setPaymentMethod] = useState<NSRestaurant.PAYMENT_METHOD>("UPI");
+
+  const { createOrder, isCreating } = useOrder({
+    fetchMenuItems: false,
+    onSuccess: () => {
+      clearCart();
+      navigate(OrdersPage.href);
+    },
+  });
+
+  const handleCreateOrder = () => {
+    const payload = {
+      paymentMethod,
+      items: cart.map((item) => {
+        return {
+          item: item._id,
+          quantity: item.quantity,
+          addons: item.addOns.map((addon) => addon._id),
+        };
+      }),
+    };
+    createOrder(payload);
+  };
 
   return (
     <main className="pt-8 px-4 space-y-4">
-      <Accordion value={step} onValueChange={(val) => setStep(val)} type="single" collapsible className="w-full space-y-2">
-        {accordionData({
-          table,
-          setTable,
-          paymentMethod,
-          setPaymentMethod,
-        }).map(({ value, title, content }, idx) => (
-          <AccordionItem key={idx} value={value}>
-            <AccordionTrigger className="bg-input">
-              <div className="text-sm">
-                <span className="text-muted-foreground w-fit mr-4">step: {idx + 1}</span> {title}
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>{content}</AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-      <Button disabled={!cart.length} size="sm" endContent={<CheckCircle className="w-4" />} className="w-full">
-        Confirm Order
-      </Button>
+      <PageMeta title={PAGES.CheckoutPage.title} description={PAGES.CheckoutPage.description} />
+      <div className="flex gap-x-4 items-center mb-4">
+        <button onClick={() => navigate(-1)}>
+          <ChevronLeft />
+        </button>
+        <h1 className="text-base font-medium">Checkout</h1>
+      </div>
+      {cart.length > 0 ? (
+        <>
+          <Accordion disabled={isCreating} value={step} onValueChange={(val) => setStep(val)} type="single" collapsible className="w-full space-y-2">
+            {accordionData({
+              table,
+              setTable,
+              paymentMethod,
+              setPaymentMethod,
+            }).map(({ value, title, content }, idx) => (
+              <AccordionItem key={idx} value={value}>
+                <AccordionTrigger className="bg-input">
+                  <div className="text-sm">
+                    <span className="text-muted-foreground w-fit mr-4">step: {idx + 1}</span> {title}
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>{content}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+          <Button onClick={handleCreateOrder} loading={isCreating} disabled={!cart.length || isCreating} size="sm" endContent={<CheckCircle className="w-4" />} className="w-full">
+            Confirm Order
+          </Button>
+        </>
+      ) : (
+        <>
+          <Empty notFoundTitle="Cart is empty!" notFoundDescription="Start exploring and add items to the cart you like!">
+            <Link to={MenuPage.href} className="max-w-fit mx-auto">
+              <Button size="sm" endContent={<ArrowRight size={16} />}>
+                Explore
+              </Button>
+            </Link>
+          </Empty>
+        </>
+      )}
     </main>
   );
 };
@@ -115,6 +137,7 @@ const TableSelect = ({ tableId, setTableId }: { tableId: string; setTableId: (id
                 setTableId(table._id);
                 localStorage.setItem("tableId", table._id);
               }}
+              selectedTableId={tableId}
               endRef={idx === data.length - 1 ? ref : undefined}
               className={cn(tableId === table._id ? "" : "bg-input border-gray-300")}
               {...table}
@@ -125,3 +148,48 @@ const TableSelect = ({ tableId, setTableId }: { tableId: string; setTableId: (id
     </section>
   );
 };
+
+const accordionData = ({
+  table,
+  setTable,
+  setPaymentMethod,
+  paymentMethod,
+}: {
+  table: string;
+  setTable: (table: string) => void;
+  paymentMethod: NSRestaurant.PAYMENT_METHOD;
+  setPaymentMethod: (method: NSRestaurant.PAYMENT_METHOD) => void;
+}) => [
+  {
+    title: "Confirm delivery table",
+    content: <TableSelect tableId={table} setTableId={setTable} />,
+    value: "confirm-delivery-table",
+  },
+  {
+    title: "Order Summary",
+    content: <CartPage noPad showCheckout={false} />,
+    value: "order-summary",
+  },
+  {
+    title: "Payment options",
+    content: (
+      <div className="p-4 flex gap-x-4 overflow-x-auto no-scrollbar">
+        {PAYMENT_METHODS.map(({ method, icon: Icon, img }, idx) => (
+          <button
+            key={idx}
+            onClick={() => setPaymentMethod(method)}
+            className={cn(
+              "flex-col gap-4 border border-input min-w-28 h-28 text-gray-600 bg-input flex items-center justify-center rounded-md",
+              paymentMethod === method && "border-primary bg-primary/10 text-primary",
+            )}
+          >
+            {Icon && <Icon className="size-8" />}
+            {img && <img src={img} alt={img} className="size-8 object-contain" />}
+            <Typography className="lowercase">{method}</Typography>
+          </button>
+        ))}
+      </div>
+    ),
+    value: "payment-options",
+  },
+];
