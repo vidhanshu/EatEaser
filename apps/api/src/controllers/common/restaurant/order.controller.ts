@@ -1,11 +1,11 @@
 import { Response } from "express";
+import { Order } from "../../../models";
 import { NSAuth, NSCommon } from "../../../types";
 import {
   ResponseError,
   sendErrorResponse,
   sendResponse,
 } from "../../../utils/response";
-import { Order } from "../../../models";
 
 const handleGetById =
   (role: NSAuth.ROLES) => async (req: NSCommon.IAuthRequest, res: Response) => {

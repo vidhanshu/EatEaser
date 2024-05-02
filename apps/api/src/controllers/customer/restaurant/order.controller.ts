@@ -1,14 +1,13 @@
 import { Response } from "express";
+import httpStatus from "http-status";
+import { FilterQuery } from "mongoose";
+import { AddOn, MenuItem, Order, Restaurant, Table } from "../../../models";
 import { NSCommon, NSRestaurant } from "../../../types";
 import {
   ResponseError,
   sendErrorResponse,
   sendResponse,
 } from "../../../utils/response";
-import { AddOn, MenuItem, Order, Restaurant, Table } from "../../../models";
-import { FilterQuery } from "mongoose";
-import httpStatus from "http-status";
-import { razorPay } from "../../../configs/rzrpay";
 
 const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
   const { _id } = req;
@@ -220,10 +219,11 @@ const listOrders = async (
     const skip = resultPerPage * (page - 1);
     const resultCount = await Order.countDocuments(filter);
     const totalPages = Math.ceil(resultCount / resultPerPage);
-    const result = await Order.find(filter, {}, { limit, skip }).populate(
-      "items.item",
-      { image: 1, name: 1 }
-    );
+    const result = await Order.find(
+      filter,
+      {},
+      { limit, skip, sort: { createdAt: -1 } }
+    ).populate("items.item", { image: 1, name: 1 });
 
     sendResponse(res, {
       data: {

@@ -1,3 +1,11 @@
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { ChevronLeft, IndianRupee, Loader2, XCircle } from "lucide-react";
+import { Ref } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+
+dayjs.extend(relativeTime);
+
 import useOrder from "@src/cart/hooks/use-order";
 import { orderService } from "@src/cart/services/order";
 import Empty from "@src/common/components/empty";
@@ -7,11 +15,8 @@ import StatusChip from "@src/common/components/status-chip";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { PAGES } from "@src/common/utils/pages";
-import { Button, ImgWithPlaceholder, Separator, Typography } from "@ui/components";
+import { Button, GenericAlertDialog, ImgWithPlaceholder, Separator, Typography } from "@ui/components";
 import { cn } from "@ui/lib/utils";
-import { ChevronLeft, IndianRupee, Loader2, XCircle } from "lucide-react";
-import { Ref } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 const TABS = [
   {
@@ -87,6 +92,7 @@ const OrdersPage = () => {
                 status={order.status}
                 paymentStatus={order.payment.status}
                 endRef={idx + 1 === data.length ? ref : null}
+                createdAt={order.createdAt}
               />
             ))
           )}
@@ -106,6 +112,7 @@ const OrderCard = ({
   items,
   endRef,
   status,
+  createdAt,
 }: {
   orderId: string;
   total: number;
@@ -113,6 +120,7 @@ const OrderCard = ({
   items: { item: { _id: string; name: string; image: string } }[];
   status: NSRestaurant.IOrder["status"];
   endRef?: Ref<HTMLDivElement>;
+  createdAt: string;
 }) => {
   const { cancelOrder, isCancelingOrder } = useOrder({ fetchMenuItems: false });
   const images = items
@@ -122,10 +130,10 @@ const OrderCard = ({
   let itemsNames = items.map(({ item }) => item.name);
   const orderName = (
     <>
-      <Typography variant="md" className="flex gap-x-2 items-center max-w-[300px] whitespace-nowrap truncate">
-        {itemsNames.slice(0, 2).join(", ")}{" "}
-        <Typography variant="muted" className="text-xs font-normal" title={itemsNames.slice(2).join(", ")}>
-          {itemsNames.length > 2 ? ` +${itemsNames.length - 2} more` : ""}
+      <Typography variant="md" className="flex gap-x-2 items-center max-w-full whitespace-nowrap truncate">
+        {itemsNames.slice(0, 1).join(", ")}{" "}
+        <Typography variant="muted" className="text-xs font-normal" title={itemsNames.slice(1).join(", ")}>
+          {itemsNames.length > 1 ? ` +${itemsNames.length - 1} more` : ""}
         </Typography>
       </Typography>
     </>
@@ -134,6 +142,12 @@ const OrderCard = ({
   return (
     <div ref={endRef} className="rounded-md bg-white shadow-sm dark:bg-input p-4">
       <Link to="/">
+        <div className="pb-2 flex justify-between items-center">
+          <Typography className="text-xs" variant="muted">
+            {dayjs(createdAt).fromNow()}
+          </Typography>
+          <StatusChip text={status} variant={status === "PENDING" ? "warning" : status === "CONFIRMED" ? "info" : status === "CANCELLED" ? "destructive" : "success"} />
+        </div>
         <div className="flex gap-x-4">
           <ImgWithPlaceholder placeholder={itemsNames.slice(0, 2).join(", ")} className="size-20 rounded-sm" src={images?.[0]} />
           <div className="flex flex-col justify-between">
@@ -143,20 +157,30 @@ const OrderCard = ({
               <Typography variant="md" className="flex text-lg gap-x-2 items-center text-primary pr-2">
                 <IndianRupee size={20} /> {total}
               </Typography>
-              <div className="flex pl-2 gap-x-2 items-center text-xs">
-                Payment: <StatusChip text={paymentStatus} variant={paymentStatus === "PENDING" ? "warning" : paymentStatus === "FAILED" ? "destructive" : "success"} />
-              </div>
             </div>
           </div>
         </div>
       </Link>
-      {status === "PENDING" && (
+      {status !== "CANCELLED" && (
         <>
           <Separator className="mt-4 mb-2 dark:bg-gray-800" />
-          <div className="flex justify-end gap-x-4">
-            <Button onClick={() => cancelOrder(orderId)} loading={isCancelingOrder} endContent={<XCircle size={16} />} variant="destructive" size="xs">
-              Cancel
-            </Button>
+          <div className="flex justify-between gap-x-4">
+            <div className="flex pl-2 gap-x-2 items-center text-xs">
+              Payment: <StatusChip text={paymentStatus} variant={paymentStatus === "PENDING" ? "warning" : paymentStatus === "FAILED" ? "destructive" : "success"} />
+            </div>
+            {status === "PENDING" && (
+              <GenericAlertDialog
+                className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
+                onOk={() => cancelOrder(orderId)}
+                okBtnTitle="Yes"
+                title="Are you sure?"
+                description="Are you sure you want to cancel this order?"
+              >
+                <Button loading={isCancelingOrder} endContent={<XCircle size={16} />} variant="destructive" size="xs">
+                  Cancel
+                </Button>
+              </GenericAlertDialog>
+            )}
           </div>
         </>
       )}

@@ -1,7 +1,7 @@
-import { cn } from "@ui/lib/utils";
-import { BOTTOM_TABS } from "../utils/constants";
-import { Link, useLocation } from "react-router-dom";
 import useCartStore from "@src/cart/stores/cart-store";
+import { cn } from "@ui/lib/utils";
+import { Link, useLocation } from "react-router-dom";
+import { BOTTOM_TABS } from "../utils/constants";
 
 const activeMap = {
   Settings: ["/settings", "/profile", "/orders"],
@@ -14,7 +14,7 @@ const BottomTabs = () => {
   const cart = useCartStore((store) => store.cart);
 
   return (
-    <aside className="bg-white dark:bg-background border-t dark:border-input px-4 py-2 border sticky bottom-0 inset-x-0 flex justify-between items-center">
+    <aside className="bg-white dark:bg-background border-t dark:border-input px-4 py-2 sticky bottom-0 inset-x-0 flex justify-between items-center">
       {BOTTOM_TABS.map(({ label, href, icon }) => {
         const mp = activeMap[label as "Settings" | "Home" | "Search" | "Cart"];
         const active = pathname.startsWith("/menu") ? label === "Home" : mp.includes(pathname);

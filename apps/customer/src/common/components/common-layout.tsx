@@ -1,9 +1,9 @@
-import { Outlet, useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { Button, GenericDialog, Typography } from "@ui/components";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { PAGES } from "../utils/pages";
 import BottomTabs from "./bottom-tabs";
 import Navbar from "./navbar";
-import { useEffect } from "react";
-import { PAGES } from "../utils/pages";
-import { Button, GenericDialog, Typography } from "@ui/components";
 
 const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) => {
   const [sp] = useSearchParams();
@@ -69,7 +69,7 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
   return (
     <main className="bg-background">
       <Navbar />
-      <div className="pb-4 min-h-[calc(100vh-125px)]">
+      <div className="pb-4 min-h-[calc(100vh-120px)]">
         <Outlet />
       </div>
       {!showBottomTabs || !restaurantId ? null : <BottomTabs />}
