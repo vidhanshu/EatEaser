@@ -139,7 +139,7 @@ const TableSelect = ({ tableId, setTableId }: { tableId: string; setTableId: (id
               }}
               selectedTableId={tableId}
               endRef={idx === data.length - 1 ? ref : undefined}
-              className={cn(tableId === table._id ? "" : "bg-input border-gray-300")}
+              className={cn(tableId === table._id ? "" : "bg-input border-gray-300 dark:border-input")}
               {...table}
             />
           ))}

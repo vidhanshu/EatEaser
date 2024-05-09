@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
 import { Pencil, UploadCloud, X } from "lucide-react";
+import { useRef, useState } from "react";
 
 import useFile from "@src/common/hooks/use-file";
-import { Button, ImgWithPlaceholder, Progress, toast } from "@ui/components";
+import { Button, Progress, toast } from "@ui/components";
 import { getInitials, isS3Url } from "@ui/helpers";
 import { cn } from "@ui/lib/utils";
+import CImageWithPlaceholder from "./cimg-with-placeholder";
 
 const ImageUploadField = ({
   image,
@@ -62,7 +63,11 @@ const ImageUploadField = ({
       <div className="w-[160px] h-[160px] overflow-hidden rounded-md">
         <label className={cn("cursor-pointer", disabled ? "cursor-auto" : "")} htmlFor="avatar_profile">
           <div className="group w-[160px] h-[160px] relative rounded-md">
-            <ImgWithPlaceholder src={imgToConsider ? URL.createObjectURL(imgToConsider) : image ? image : ""} placeholder={getInitials(name ?? "")} {...imgWithPlaceholderProps} />
+            <CImageWithPlaceholder
+              src={imgToConsider ? URL.createObjectURL(imgToConsider) : image ? image : ""}
+              placeholder={getInitials(name ?? "")}
+              {...imgWithPlaceholderProps}
+            />
             {!disabled && (
               <div className="inset-0 transition-colors group-hover:bg-black/40 w-full h-full rounded-md absolute flex justify-center items-center">
                 <Pencil className="w-5 h-5 hidden group-hover:block text-white" />

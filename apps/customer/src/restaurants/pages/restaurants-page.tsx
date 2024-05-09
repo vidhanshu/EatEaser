@@ -1,13 +1,14 @@
-import { Button, ImgWithPlaceholder, Input, Typography } from "@ui/components";
-import { ArrowDown, ArrowRight, Info, Search } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
+import Empty from "@src/common/components/empty";
+import PageMeta from "@src/common/components/page-meta";
+import CSkeleton from "@src/common/components/skeleton";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { PAGES, RestaurantDetailsPage } from "@src/common/utils/pages";
-import PageMeta from "@src/common/components/page-meta";
+import { Button, Input, Typography } from "@ui/components";
+import { ArrowDown, ArrowRight, Info, Search } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useDebounceValue } from "usehooks-ts";
 import { restaurantService } from "../services/restaurant";
-import Empty from "@src/common/components/empty";
-import CSkeleton from "@src/common/components/skeleton";
 
 const RestaurantsPage = () => {
   const [sp, ssp] = useSearchParams();
@@ -64,7 +65,7 @@ const RestaurantsPage = () => {
           ) : (
             data.map((restaurant, idx) => (
               <div key={idx} className="bg-input rounded-md p-4">
-                <ImgWithPlaceholder className="w-full" placeholder={restaurant.name} src={restaurant.image} />
+                <CImageWithPlaceholder className="w-full" placeholder={restaurant.name} src={restaurant.image} />
                 <div className="py-4 space-y-4">
                   <Typography variant="h5">{restaurant.name}</Typography>
                   <Typography className="max-h-[83px] truncate whitespace-pre-wrap" variant="muted">

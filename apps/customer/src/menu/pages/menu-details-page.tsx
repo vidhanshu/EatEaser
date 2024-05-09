@@ -1,14 +1,15 @@
-import { useParams, useNavigate } from "react-router-dom";
-import useMenu from "../hooks/use-menu";
-import { useEffect, useState } from "react";
-import { Button, ImgWithPlaceholder, Typography, Table, TableCell, TableRow, TableBody, Separator, Input } from "@ui/components";
-import { CheckCircle, ChevronLeft, IndianRupee, Minus, Plus, ShoppingCart, XCircle } from "lucide-react";
-import SeeMoreText from "@src/common/components/see-more-text";
-import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
+import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import PageMeta from "@src/common/components/page-meta";
+import SeeMoreText from "@src/common/components/see-more-text";
 import { CheckoutPage, PAGES } from "@src/common/utils/pages";
+import { Button, Input, Separator, Table, TableBody, TableCell, TableRow, Typography } from "@ui/components";
+import { CheckCircle, ChevronLeft, IndianRupee, Minus, Plus, ShoppingCart, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { FaStar, FaStarHalf } from "react-icons/fa6";
+import { useNavigate, useParams } from "react-router-dom";
+import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";
+import useMenu from "../hooks/use-menu";
 
 const MenuDetailsPage = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const MenuDetailsPage = () => {
         <div className="bg-black/30 py-2 absolute inset-x-0 w-full">
           <Button onClick={() => navigate(-1)} className="hover:bg-transparent" variant="ghost" endContent={<ChevronLeft className="text-white" />} size="icon-sm" />
         </div>
-        <ImgWithPlaceholder className="w-full h-60 rounded-none" placeholder={menuItem?.name} src={menuItem?.image} />
+        <CImageWithPlaceholder className="w-full h-60 rounded-none" placeholder={menuItem?.name} src={menuItem?.image} />
       </div>
       <div className="px-4 space-y-4 relative">
         {menuItem?.isVegetarian ? <img className="absolute top-0 right-4 w-6 h-6" src="/veg.png" /> : <img className="absolute top-0 right-4 w-6 h-6" src="/non-veg.png" />}
@@ -70,7 +71,7 @@ const MenuDetailsPage = () => {
             <div className="mt-4 w-full no-scrollbar overflow-auto flex gap-x-4">
               {menuItem.addOns.map(({ _id, name, price, description, image, restaurant }) => (
                 <div className="bg-input p-2 rounded-md shadow-sm border dark:border-input min-w-[calc(100%-30px)] flex gap-x-2" key={_id}>
-                  <ImgWithPlaceholder className="max-w-32 max-h-32" placeholder={name} src={image} />
+                  <CImageWithPlaceholder className="max-w-32 max-h-32" placeholder={name} src={image} />
                   <div className="flex flex-col gap-1 justify-between flex-1">
                     <Typography className="max-w-[100px] sm:max-w-[150px] truncate" variant="h5">
                       {name}

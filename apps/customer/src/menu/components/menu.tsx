@@ -1,16 +1,17 @@
+import { ArrowRight, IndianRupee, Loader2, Minus, Plus } from "lucide-react";
 import React, { Ref } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, IndianRupee, Loader2, Minus, Plus } from "lucide-react";
 
-import { Button, ImgWithPlaceholder, Input, Typography, GenericAlertDialog, Separator } from "@ui/components";
-import { NSRestaurant } from "@src/common/types/restaurant.type";
-import CSkeleton from "@src/common/components/skeleton";
 import useCartStore from "@src/cart/stores/cart-store";
+import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import Empty from "@src/common/components/empty";
-import { IoFastFoodOutline } from "react-icons/io5";
-import { cn } from "@ui/lib/utils";
-import { MenuDetailsPage, MenuPage } from "@src/common/utils/pages";
+import CSkeleton from "@src/common/components/skeleton";
 import useAuthStore from "@src/common/stores/auth-store";
+import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { MenuDetailsPage, MenuPage } from "@src/common/utils/pages";
+import { Button, GenericAlertDialog, Input, Separator, Typography } from "@ui/components";
+import { cn } from "@ui/lib/utils";
+import { IoFastFoodOutline } from "react-icons/io5";
 
 const Menu = ({
   menuItems,
@@ -98,7 +99,7 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
       <div className="flex">
         <Link to={MenuDetailsPage(itemId).href}>
           <div className="p-4">
-            <ImgWithPlaceholder placeholder={name} className="w-24 h-24 object-cover" src={image} />
+            <CImageWithPlaceholder placeholder={name} className="w-24 h-24 object-cover" src={image} />
           </div>
         </Link>
         <div className="p-4 pl-0 flex-1 flex flex-col justify-between">
@@ -188,7 +189,7 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
               {addOns.map(({ _id, name, price, image }) => (
                 <div key={_id} className="bg-white dark:bg-input border border-input dark:border-gray-800 p-2 rounded-md justify-between flex gap-x-4">
                   <div className="flex gap-x-4">
-                    <ImgWithPlaceholder placeholder={name} src={image} className="w-16 h-16" />
+                    <CImageWithPlaceholder placeholder={name} src={image} className="w-16 h-16" />
                     <div>
                       <Typography>{name}</Typography>
                       <Typography className="flex gap-x-2 items-center text-primary">

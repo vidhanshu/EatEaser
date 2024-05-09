@@ -1,8 +1,9 @@
-import { GenericAlertDialog, ImgWithPlaceholder, Switch, Typography, useTheme } from "@ui/components";
+import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import PageMeta from "@src/common/components/page-meta";
 import SignOutBtn from "@src/common/components/sign-out-btn";
 import useAuthStore from "@src/common/stores/auth-store";
 import { PAGES, ProfilePage } from "@src/common/utils/pages";
+import { GenericAlertDialog, Switch, Typography, useTheme } from "@ui/components";
 import { ChevronRight, LogOut, Palette, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -18,7 +19,7 @@ const SettingsPage = () => {
       <Link to={ProfilePage.href}>
         <button className="flex py-4 justify-between items-center w-full border-b dark:border-gray-800">
           <div className="flex gap-x-4 items-center">
-            <ImgWithPlaceholder className="size-14 rounded-full" src={user?.image} placeholder={user?.name} />
+            <CImageWithPlaceholder className="size-14 rounded-full" src={user?.image} placeholder={user?.name} />
             <div>
               <Typography>{user?.name}</Typography>
               <Typography className="text-left" variant="muted">

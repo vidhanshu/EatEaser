@@ -1,7 +1,7 @@
 import { Bell, Coins, LogIn, LogOut, Settings, ShoppingCart, User2, UtensilsCrossed } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { getInitials } from "@ui/helpers";
+import useCartStore from "@src/cart/stores/cart-store";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,10 +24,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@ui/components";
+import { getInitials } from "@ui/helpers";
 import useAuthStore from "../stores/auth-store";
 import { CartPage, LoginPage, MenuPage, OrdersPage, ProfilePage, RestaurantsPage, SettingsPage } from "../utils/pages";
 import SignOutBtn from "./sign-out-btn";
-import useCartStore from "@src/cart/stores/cart-store";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button size="icon" variant="secondary">
-                      <Avatar>
+                      <Avatar className="border">
                         <AvatarImage src={user?.image} alt="name" />
                         <AvatarFallback>{getInitials(user?.name ? user.name : "U K")}</AvatarFallback>
                       </Avatar>

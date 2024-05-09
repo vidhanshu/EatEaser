@@ -8,6 +8,7 @@ dayjs.extend(relativeTime);
 
 import useOrder from "@src/cart/hooks/use-order";
 import { orderService } from "@src/cart/services/order";
+import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import Empty from "@src/common/components/empty";
 import PageMeta from "@src/common/components/page-meta";
 import CSkeleton from "@src/common/components/skeleton";
@@ -15,7 +16,7 @@ import StatusChip from "@src/common/components/status-chip";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { PAGES } from "@src/common/utils/pages";
-import { Button, GenericAlertDialog, ImgWithPlaceholder, Separator, Typography } from "@ui/components";
+import { Button, GenericAlertDialog, Separator, Typography } from "@ui/components";
 import { cn } from "@ui/lib/utils";
 
 const TABS = [
@@ -149,7 +150,7 @@ const OrderCard = ({
           <StatusChip text={status} variant={status === "PENDING" ? "warning" : status === "CONFIRMED" ? "info" : status === "CANCELLED" ? "destructive" : "success"} />
         </div>
         <div className="flex gap-x-4">
-          <ImgWithPlaceholder placeholder={itemsNames.slice(0, 2).join(", ")} className="size-20 rounded-sm" src={images?.[0]} />
+          <CImageWithPlaceholder placeholder={itemsNames.slice(0, 2).join(", ")} className="size-20 rounded-sm" src={images?.[0]} />
           <div className="flex flex-col justify-between">
             {orderName}
             <Typography variant="muted">{items.length} Items</Typography>

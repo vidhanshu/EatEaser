@@ -1,8 +1,9 @@
-import { Typography, TypographyProps } from "@ui/components";
+import { Skeleton, Typography, TypographyProps } from "@ui/components";
 import { getInitials } from "@ui/helpers";
 import { cn } from "@ui/lib/utils";
+import { useState } from "react";
 
-interface ImgWithPlaceholderProps
+export interface ImgWithPlaceholderProps
   extends React.ImgHTMLAttributes<HTMLImageElement> {
   placeholder?: string;
   placeHolderProps?: TypographyProps;
@@ -17,8 +18,10 @@ export const ImgWithPlaceholder = ({
   } = {},
   ...imgProps
 }: ImgWithPlaceholderProps) => {
+  const [loading, setLoading] = useState(src ? true : false);
+
   return (
-    <>
+    <div className="relative">
       {src ? (
         <img
           src={src}
@@ -26,6 +29,7 @@ export const ImgWithPlaceholder = ({
             "w-[160px] h-[160px] object-cover rounded-md",
             className
           )}
+          onLoad={setLoading.bind(null, false)}
           {...imgProps}
         />
       ) : (
@@ -44,7 +48,10 @@ export const ImgWithPlaceholder = ({
           </Typography>
         </div>
       )}
-    </>
+      {loading && (
+        <Skeleton className={cn("absolute w-full inset-0 h-full", className)} />
+      )}
+    </div>
   );
 };
 

@@ -1,19 +1,24 @@
-import { MdMail } from "react-icons/md";
 import { ChevronLeft, MousePointerSquare } from "lucide-react";
-import { RiReservedFill } from "react-icons/ri";
-import { FaLocationDot } from "react-icons/fa6";
-import { useParams, useNavigate } from "react-router-dom";
 import { FaPhone, FaStar, FaStarHalf } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
+import { MdMail } from "react-icons/md";
+import { RiReservedFill } from "react-icons/ri";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Button, ImgWithPlaceholder, Typography, Separator, Progress, GenericDialog, toast } from "@ui/components";
-import SeeMoreText from "@src/common/components/see-more-text";
-import RestaurantDetailsPageSkeleton from "../components/skeletons/restaurant-details-page-skeleton";
+import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import PageMeta from "@src/common/components/page-meta";
+import SeeMoreText from "@src/common/components/see-more-text";
 import { PAGES } from "@src/common/utils/pages";
-import useRestaurant from "../hooks/use-restaurant";
-import { TableCard } from "../components/table-card";
-import { TableStatusBadge } from "../components/status-badge";
+import { Button, GenericDialog, Progress, Separator, Typography, toast } from "@ui/components";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useState } from "react";
+import RestaurantDetailsPageSkeleton from "../components/skeletons/restaurant-details-page-skeleton";
+import { TableStatusBadge } from "../components/status-badge";
+import { TableCard } from "../components/table-card";
+import useRestaurant from "../hooks/use-restaurant";
+
+dayjs.extend(customParseFormat);
 
 // -----------------------------------------------------------------------------------------------
 const dayFullMap = {
@@ -53,7 +58,7 @@ const RestaurantDetailsPage = () => {
             <div className="bg-black/30 py-2 absolute inset-x-0 w-full">
               <Button onClick={() => navigate(-1)} className="hover:bg-transparent" variant="ghost" endContent={<ChevronLeft className="text-white" />} size="icon-sm" />
             </div>
-            <ImgWithPlaceholder className="w-full h-60 rounded-none" placeholder={restaurant?.name} src={restaurant?.image} />
+            <CImageWithPlaceholder className="w-full h-60 rounded-none" placeholder={restaurant?.name} src={restaurant?.image} />
           </div>
           <div className="px-4 space-y-4">
             <section>
@@ -69,7 +74,9 @@ const RestaurantDetailsPage = () => {
                   <div key={idx} className="flex gap-x-4">
                     <Typography className="w-24 font-semibold">{dayFullMap[day as dfmKeyType]}</Typography>
                     <Typography className="text-primary font-medium">
-                      {opening}-{closing}
+                      {dayjs(opening, "HH:mm").format("hh:mm A")}
+                      {" - "}
+                      {dayjs(closing, "HH:mm").format("hh:mm A")}
                     </Typography>
                   </div>
                 ))}
@@ -99,7 +106,7 @@ const RestaurantDetailsPage = () => {
               <Typography variant="h4">Contact Information</Typography>
               <Typography variant="muted">
                 <FaPhone size={16} className="text-primary inline mr-2" />
-                {restaurant?.phone}
+                +91-{restaurant?.phone}
               </Typography>
               <Typography variant="muted">
                 <MdMail size={16} className="text-primary inline mr-2" />
@@ -158,7 +165,7 @@ const RestaurantDetailsPage = () => {
           dialogTitle={`Table: ${table?.name}`}
           content={
             <div className="space-y-4">
-              <img className="w-24 h-24 mx-auto" alt="qr" src={table?.qrCode} />
+              <CImageWithPlaceholder className="w-24 h-24 mx-auto" placeholder={table?.name} src={table?.qrCode} />
               <div>
                 <Typography>Name: {table?.name}</Typography>
               </div>
