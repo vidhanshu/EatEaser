@@ -1,41 +1,34 @@
 import React from "react";
-import { Outlet, useLocation, Link } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@ui/components";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "@ui/components";
 
+import useSidebarStore from "@src/common/stores/sidebar-store";
+import { cn } from "@ui/lib/utils";
+import { SocketContextProvider } from "../contexts/socket";
 import Navbar from "./navbar";
 import Sidebar from "./sidebar";
-import { cn } from "@ui/lib/utils";
-import useSidebarStore from "@src/common/stores/sidebar-store";
 
 const CommonLayout = () => {
   const open = useSidebarStore((state) => state.open);
 
   return (
-    <main className="min-h-screen bg-gray-100 dark:bg-[#0c1116]">
-      <Navbar />
-      <Sidebar iconOnly={!open} />
-      {/* placeholder for navbar */}
-      <div className="w-full h-[56px]" />
-      <div className="flex">
-        {/* placeholder for sidebar */}
-        <div className={cn(open ? "w-[250px]" : "w-[85px]")} />
-        <div
-          className={cn(
-            "px-4 md:px-8 py-6 flex-grow",
-            open ? "max-w-[calc(100vw-270px)]" : "max-w-[calc(100vw-85px)]"
-          )}
-        >
-          <BreadCrumbs />
-          <Outlet />
+    <SocketContextProvider>
+      <main className="min-h-screen bg-gray-100 dark:bg-[#0c1116]">
+        <Navbar />
+        <Sidebar iconOnly={!open} />
+        {/* placeholder for navbar */}
+        <div className="w-full h-[56px]" />
+        <div className="flex">
+          {/* placeholder for sidebar */}
+          <div className={cn(open ? "w-[250px]" : "w-[85px]")} />
+          <div className={cn("px-4 md:px-8 py-6 flex-grow", open ? "max-w-[calc(100vw-270px)]" : "max-w-[calc(100vw-85px)]")}>
+            <BreadCrumbs />
+            <Outlet />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </SocketContextProvider>
   );
 };
 
@@ -67,9 +60,7 @@ export const BreadCrumbs = () => {
               </Link>
             </BreadcrumbItem>
             {/* Have separator if either it's not a last link or there is only one link */}
-            {(idx < breadcrumbs.length - 1 || breadcrumbs.length == 1) && (
-              <BreadcrumbSeparator>/</BreadcrumbSeparator>
-            )}
+            {(idx < breadcrumbs.length - 1 || breadcrumbs.length == 1) && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
           </React.Fragment>
         ))}
       </BreadcrumbList>

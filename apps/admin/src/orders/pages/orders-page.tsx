@@ -1,18 +1,22 @@
 import { GenericTable } from "@src/common/components/generic-table";
+import { useSocketContext } from "@src/common/contexts/socket";
 import { NSRestaurant } from "@src/types/restaurant.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button, ImgWithPlaceholder, LimitedNameViewer, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Typography } from "@ui/components";
+import { SOCKET_EVENTS } from "@ui/lib/socket-events";
 import { ArrowUpDown, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { Socket } from "socket.io-client";
 import useOrder from "../hooks/use-order";
 import { K_ORDER_STATUS_OPTIONS, K_PAYMENT_STATUS_OPTIONS, k_PAYMENT_METHOD_OPTIONS } from "../utils/constants";
 
 //--------------------------------------------------------------------------------------------
 
-export const columns: ({ updateOrder, loading }: { updateOrder: (payload: NSRestaurant.IUpadetOrderPayload) => void; loading: boolean }) => ColumnDef<NSRestaurant.IOrder>[] = ({
-  updateOrder,
-  loading,
-}) => [
+export const columns: (props: {
+  updateOrder: (payload: NSRestaurant.IUpadetOrderPayload) => void;
+  loading: boolean;
+  socket: Socket | null;
+}) => ColumnDef<NSRestaurant.IOrder>[] = ({ updateOrder, loading, socket }) => [
   {
     header: "Item",
     cell: ({ row }) => {
@@ -32,16 +36,13 @@ export const columns: ({ updateOrder, loading }: { updateOrder: (payload: NSRest
   {
     id: "Status",
     header: "Status",
-    cell: ({
-      row: {
-        original: { _id, status },
-      },
-    }) => {
+    cell: ({ row: { original } }) => {
       return (
         <Select
-          value={status}
+          value={original.status}
           onValueChange={(status: NSRestaurant.ORDER_STATUS) => {
-            updateOrder({ id: _id, payload: { status } });
+            updateOrder({ id: original._id, payload: { status } });
+            socket?.emit(SOCKET_EVENTS.ORDER_UPDATED, { to: original.customer?._id, payload: { ...original, status }, notify: true });
           }}
         >
           <SelectTrigger disabled={loading} className="w-32 h-8 text-xs">
@@ -61,19 +62,13 @@ export const columns: ({ updateOrder, loading }: { updateOrder: (payload: NSRest
   {
     header: "Payment status",
     accessorKey: "payment",
-    cell: ({
-      row: {
-        original: {
-          payment: { status },
-          _id,
-        },
-      },
-    }) => {
+    cell: ({ row: { original } }) => {
       return (
         <Select
-          value={status}
+          value={original.payment.status}
           onValueChange={(paymentStatus: NSRestaurant.PAYMENT_STATUS) => {
-            updateOrder({ id: _id, payload: { paymentStatus } });
+            updateOrder({ id: original._id, payload: { paymentStatus } });
+            socket?.emit(SOCKET_EVENTS.ORDER_UPDATED, { to: original.customer?._id, payload: { ...original, payment: { ...original.payment, status: paymentStatus } } });
           }}
         >
           <SelectTrigger disabled={loading} className="w-32 h-8 text-xs">
@@ -170,6 +165,7 @@ export const columns: ({ updateOrder, loading }: { updateOrder: (payload: NSRest
 
 const OrdersPage = () => {
   const [page, setPage] = useState(1);
+  const { socket } = useSocketContext();
 
   const { orders, isLoadingOrders, updateOrder, isUpdating, isFetchingOrders } = useOrder({
     variables: { filters: { page } },
@@ -187,7 +183,7 @@ const OrdersPage = () => {
         hideSearch
         page={page}
         setPage={setPage}
-        columns={columns({ updateOrder, loading: isUpdating || isFetchingOrders })}
+        columns={columns({ updateOrder, loading: isUpdating || isFetchingOrders, socket })}
         totalPages={orders?.totalPages ?? 1}
         data={orders?.result ?? []}
       />

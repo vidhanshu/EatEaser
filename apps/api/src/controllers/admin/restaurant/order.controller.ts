@@ -30,6 +30,7 @@ const handleListOrder = async (
     const resultCount = await Order.countDocuments(filter);
     const totalPages = Math.ceil(resultCount / resultPerPage);
     const result = await Order.find(filter, {}, { limit, skip })
+      .populate("customer", { _id: 1 })
       .populate("items.item", {
         name: 1,
         image: 1,

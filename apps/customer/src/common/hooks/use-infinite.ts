@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { useInView } from "react-intersection-observer";
 
 const useInfinte = ({ fetcher, queryKey, filters }: { fetcher: Function; filters?: Record<string, any>; queryKey: string[] }) => {
   const { ref, inView } = useInView();
@@ -24,7 +24,7 @@ const useInfinte = ({ fetcher, queryKey, filters }: { fetcher: Function; filters
     },
   });
 
-  const data = d?.pages.filter(Boolean).flat() ?? [];
+  const data = useMemo(() => d?.pages.filter(Boolean).flat() ?? [], [d]);
 
   useEffect(() => {
     if (inView && hasNextPage) {

@@ -1,8 +1,8 @@
-import { BsCartFill, BsCart } from "react-icons/bs";
+import { CartPage, MenuPage, SearchPage, SettingsPage } from "@src/common/utils/pages";
+import { BsCart, BsCartFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
-import { RiSearchFill, RiSearchLine } from "react-icons/ri";
 import { IoSettings, IoSettingsOutline } from "react-icons/io5";
-import { MenuPage, SearchPage, CartPage, SettingsPage } from "@src/common/utils/pages";
+import { RiSearchFill, RiSearchLine } from "react-icons/ri";
 
 export const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -36,3 +36,6 @@ export const BOTTOM_TABS = [
     href: SettingsPage.href,
   },
 ];
+
+export const K_RESTAURANT_ID = "restaurantId";
+export const K_TABLE_ID = "tableId";

@@ -1,10 +1,11 @@
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { ROUTES } from "@src/common/utils/api-routes";
 import axiosInstance from "@src/common/utils/axios";
+import { K_RESTAURANT_ID } from "@src/common/utils/constants";
 
 export const tableService = {
   async getTables({ status, page }: { status?: NSRestaurant.ITable["status"]; page?: number }) {
-    const restId = localStorage.getItem("restaurantId");
+    const restId = localStorage.getItem(K_RESTAURANT_ID);
     if (!restId) throw new Error("Restaurant Id is required");
     const sp = new URLSearchParams();
     if (status !== undefined) sp.append("status", status);

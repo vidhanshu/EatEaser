@@ -1,25 +1,26 @@
 import { Navigate, RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import ErrorPage from "../pages/error-page";
-import ProtectedRoute from "./protected-route";
 import SignInPage from "@src/auth/pages/sign-in";
 import SignUpPage from "@src/auth/pages/sign-up";
-import MenuPage from "@src/menu/pages/menu-page";
-import useAuthStore from "@src/common/stores/auth-store";
 import VerifyEmail from "@src/auth/pages/verify-email";
-import CommonLayout from "./common-layout";
+import CartPage from "@src/cart/pages/cart-page";
+import CheckoutPage from "@src/cart/pages/checkout-page";
+import useAuthStore from "@src/common/stores/auth-store";
+import MenuDetailsPage from "@src/menu/pages/menu-details-page";
+import MenuPage from "@src/menu/pages/menu-page";
+import OffersPage from "@src/offers/pages/offers-page";
+import OrderDetailsPage from "@src/orders/pages/order-details-page";
+import OrderPage from "@src/orders/pages/orders-page";
+import ProfilePage from "@src/profile/pages/profile-page";
+import RestaurantDetailsPage from "@src/restaurants/pages/restaurant-details-page";
+import RestaurantsPage from "@src/restaurants/pages/restaurants-page";
 import SearchPage from "@src/search/pages/search-page";
 import SettingsPage from "@src/settings/pages/settings-page";
-import CartPage from "@src/cart/pages/cart-page";
-import MenuDetailsPage from "@src/menu/pages/menu-details-page";
-import ProfilePage from "@src/profile/pages/profile-page";
-import OrderPage from "@src/orders/pages/orders-page";
-import RestaurantsPage from "@src/restaurants/pages/restaurants-page";
-import RestaurantDetailsPage from "@src/restaurants/pages/restaurant-details-page";
-import { PAGES } from "../utils/pages";
+import ErrorPage from "../pages/error-page";
 import NotFoundPage from "../pages/not-found-page";
-import OffersPage from "@src/offers/pages/offers-page";
-import CheckoutPage from "@src/cart/pages/checkout-page";
+import { PAGES } from "../utils/pages";
+import CommonLayout from "./common-layout";
+import ProtectedRoute from "./protected-route";
 
 /**
  * ROUTES_FOR_ONLY_UNAUTHENTICATED, are accessible only to unauthenticated users
@@ -105,6 +106,10 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
       {
         path: "/orders",
         element: <OrderPage />,
+      },
+      {
+        path: "/orders/:id",
+        element: <OrderDetailsPage />,
       },
       {
         path: "/cart",

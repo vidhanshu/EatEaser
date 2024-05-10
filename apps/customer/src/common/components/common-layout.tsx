@@ -1,6 +1,8 @@
 import { Button, GenericDialog, Typography } from "@ui/components";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { SocketContextProvider } from "../contexts/socket";
+import { K_RESTAURANT_ID, K_TABLE_ID } from "../utils/constants";
 import { PAGES } from "../utils/pages";
 import BottomTabs from "./bottom-tabs";
 import Navbar from "./navbar";
@@ -9,21 +11,21 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
   const [sp] = useSearchParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const rid = sp.get("restaurantId");
-  const lRid = localStorage.getItem("restaurantId");
+  const rid = sp.get(K_RESTAURANT_ID);
+  const lRid = localStorage.getItem(K_RESTAURANT_ID);
   const restaurantId = rid ?? lRid;
-  const tid = sp.get("tableId");
-  const lTid = localStorage.getItem("tableId");
+  const tid = sp.get(K_TABLE_ID);
+  const lTid = localStorage.getItem(K_TABLE_ID);
   const tableId = rid && rid !== lRid ? undefined : tid ?? lTid;
 
   useEffect(() => {
     if (restaurantId) {
-      localStorage.setItem("restaurantId", restaurantId);
+      localStorage.setItem(K_RESTAURANT_ID, restaurantId);
     }
     if (tableId) {
-      localStorage.setItem("tableId", tableId);
+      localStorage.setItem(K_TABLE_ID, tableId);
     } else {
-      localStorage.removeItem("tableId");
+      localStorage.removeItem(K_TABLE_ID);
     }
   }, [restaurantId, tableId]);
 
@@ -67,14 +69,16 @@ const CommonLayout = ({ showBottomTabs = true }: { showBottomTabs?: boolean }) =
   }
 
   return (
-    <main className="bg-background">
-      <Navbar />
-      <div className="pb-4 min-h-[calc(100vh-120px)]">
-        <Outlet />
-      </div>
-      {!showBottomTabs || !restaurantId ? null : <BottomTabs />}
-      {conditionalContent}
-    </main>
+    <SocketContextProvider>
+      <main className="bg-background">
+        <Navbar />
+        <div className="pb-4 min-h-[calc(100vh-120px)]">
+          <Outlet />
+        </div>
+        {!showBottomTabs || !restaurantId ? null : <BottomTabs />}
+        {conditionalContent}
+      </main>
+    </SocketContextProvider>
   );
 };
 

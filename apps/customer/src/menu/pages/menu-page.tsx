@@ -1,31 +1,32 @@
-import { Search } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link, useSearchParams } from "react-router-dom";
+import { Search } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 
-import Menu from "@src/menu/components/menu";
-import { PROMOTIONAL_CARDS } from "@src/menu/utils/constants";
-import { IMenuFilters } from "@src/menu/hooks/use-menu";
-import CategoriesTabs from "@src/menu/components/categories-tabs";
-import { Button, Typography, Carousel, CarouselContent, CarouselItem, CarouselApi } from "@ui/components";
-import useAuthStore from "@src/common/stores/auth-store";
-import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "@src/common/utils/axios";
-import { ROUTES } from "@src/common/utils/api-routes";
+import PageMeta from "@src/common/components/page-meta";
 import CSkeleton from "@src/common/components/skeleton";
+import useInfinte from "@src/common/hooks/use-infinite";
+import useAuthStore from "@src/common/stores/auth-store";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { ROUTES } from "@src/common/utils/api-routes";
+import axiosInstance from "@src/common/utils/axios";
+import { K_RESTAURANT_ID } from "@src/common/utils/constants";
+import { PAGES, RestaurantDetailsPage, SearchPage } from "@src/common/utils/pages";
+import CategoriesTabs from "@src/menu/components/categories-tabs";
+import Menu from "@src/menu/components/menu";
+import { IMenuFilters } from "@src/menu/hooks/use-menu";
+import { PROMOTIONAL_CARDS } from "@src/menu/utils/constants";
+import { useQuery } from "@tanstack/react-query";
+import { Button, Carousel, CarouselApi, CarouselContent, CarouselItem, Typography } from "@ui/components";
 import { getGreeting } from "@ui/helpers";
 import { categoryService } from "../services/category";
-import useInfinte from "@src/common/hooks/use-infinite";
 import { menuService } from "../services/menu";
-import { PAGES, RestaurantDetailsPage, SearchPage } from "@src/common/utils/pages";
-import PageMeta from "@src/common/components/page-meta";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();
 
   const user = useAuthStore((store) => store.user);
-  const restaurantId = localStorage.getItem("restaurantId");
+  const restaurantId = localStorage.getItem(K_RESTAURANT_ID);
 
   const category = sp.get("category") ?? undefined;
   const minPrice = sp.get("minPrice") ?? undefined;

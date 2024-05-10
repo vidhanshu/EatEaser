@@ -71,13 +71,14 @@ export namespace NSRestaurant {
   }
 
   export interface IOrder {
+    _id: string;
     restaurant: string;
     table: string;
     items: IOrderItem[];
     total: number;
     status: ORDER_STATUS;
     payment: IPayment;
-    customer: string;
+    customer: { _id: string };
   }
 
   export interface IOrderItem {
@@ -96,4 +97,12 @@ export namespace NSRestaurant {
 
   export type PAYMENT_METHOD = "CASH" | "CARD" | "NETBANKING" | "UPI";
   export type PAYMENT_STATUS = "PENDING" | "COMPLETED" | "FAILED";
+
+  export interface INotification {
+    id: string;
+    notId: string;
+    message: string;
+    type: "ORDER";
+    timestamp: Date;
+  }
 }

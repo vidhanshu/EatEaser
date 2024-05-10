@@ -7,6 +7,7 @@ import Empty from "@src/common/components/empty";
 import PageMeta from "@src/common/components/page-meta";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { K_TABLE_ID } from "@src/common/utils/constants";
 import { MenuPage, OrdersPage, PAGES } from "@src/common/utils/pages";
 import { TableCard } from "@src/restaurants/components/table-card";
 import { tableService } from "@src/restaurants/services/table";
@@ -43,7 +44,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { cart, clearCart } = useCartStore();
   const [step, setStep] = useState("confirm-delivery-table");
-  const [table, setTable] = useState(localStorage.getItem("tableId") || "");
+  const [table, setTable] = useState(localStorage.getItem(K_TABLE_ID) || "");
   const [paymentMethod, setPaymentMethod] = useState<NSRestaurant.PAYMENT_METHOD>("UPI");
 
   const { createOrder, isCreating } = useOrder({
@@ -135,7 +136,7 @@ const TableSelect = ({ tableId, setTableId }: { tableId: string; setTableId: (id
               selectable
               onClick={() => {
                 setTableId(table._id);
-                localStorage.setItem("tableId", table._id);
+                localStorage.setItem(K_TABLE_ID, table._id);
               }}
               selectedTableId={tableId}
               endRef={idx === data.length - 1 ? ref : undefined}

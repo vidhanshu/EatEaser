@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ChevronLeft, IndianRupee, Loader2, XCircle } from "lucide-react";
-import { Ref } from "react";
+import { Ref, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 dayjs.extend(relativeTime);
@@ -11,12 +11,14 @@ import Empty from "@src/common/components/empty";
 import PageMeta from "@src/common/components/page-meta";
 import CSkeleton from "@src/common/components/skeleton";
 import StatusChip from "@src/common/components/status-chip";
+import { useSocketContext } from "@src/common/contexts/socket";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { PAGES } from "@src/common/utils/pages";
 import useOrder from "@src/orders/hooks/use-order";
 import { orderService } from "@src/orders/services/order";
 import { Button, GenericAlertDialog, LimitedNameViewer, Separator, Typography } from "@ui/components";
+import { SOCKET_EVENTS } from "@ui/lib/socket-events";
 import { cn } from "@ui/lib/utils";
 
 const TABS = [
@@ -42,6 +44,8 @@ const TABS = [
   },
 ];
 const OrdersPage = () => {
+  const [orders, setOrders] = useState<any[]>([]);
+  const { socket } = useSocketContext();
   const navigate = useNavigate();
   const [sp, ssp] = useSearchParams();
   const status = sp.get("status");
@@ -53,6 +57,26 @@ const OrdersPage = () => {
       status,
     },
   });
+
+  useEffect(() => {
+    if (!data) return;
+    setOrders(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    // handlers
+    const updateOrderHandler = (payload: NSRestaurant.IOrder) => {
+      setOrders((prev) => prev.map((order) => (order._id === payload._id ? payload : order)));
+    };
+
+    socket.on(SOCKET_EVENTS.ORDER_UPDATED, updateOrderHandler);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.ORDER_UPDATED, updateOrderHandler);
+    };
+  }, [socket]);
 
   return (
     <main className="pt-8 px-4">
@@ -82,17 +106,17 @@ const OrdersPage = () => {
                 <CSkeleton className="h-28 rounded-md" />
               ))}
             </div>
-          ) : data.length === 0 && !isLoading ? (
+          ) : orders.length === 0 && !isLoading ? (
             <Empty className="mt-8" notFoundTitle={`No ${status === "all" ? "" : status?.toLocaleLowerCase()} Orders found!`} notFoundDescription="" />
           ) : (
-            data.map((order, idx) => (
+            orders.map((order, idx) => (
               <OrderCard
                 orderId={order._id}
                 items={order.items}
                 total={order.total}
                 status={order.status}
                 paymentStatus={order.payment.status}
-                endRef={idx + 1 === data.length ? ref : null}
+                endRef={idx + 1 === orders.length ? ref : null}
                 createdAt={order.createdAt}
               />
             ))

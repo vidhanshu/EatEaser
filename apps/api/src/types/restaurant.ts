@@ -85,13 +85,14 @@ export namespace NSRestaurant {
 
   // Order
   export interface IOrder {
+    _id: string;
     restaurant: string | Schema.Types.ObjectId;
     table: string | Schema.Types.ObjectId;
     items: IOrderItem[];
     total: number;
     status: ORDER_STATUS;
     payment: IPayment;
-    customer: string | Schema.Types.ObjectId;
+    customer: string | Schema.Types.ObjectId | { _id: string };
   }
 
   export interface IOrderItem {

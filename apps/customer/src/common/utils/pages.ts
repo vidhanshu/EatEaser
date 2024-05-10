@@ -23,6 +23,7 @@ export const ProfilePage = new PageMeta("Profile", "/profile", "View and edit yo
 export const CartPage = new PageMeta("Cart", "/cart", "View your cart and place an order");
 export const SettingsPage = new PageMeta("Settings", "/settings", "Change your app settings");
 export const OrdersPage = new PageMeta("Orders", "/orders", "Orders you have placed");
+export const OrdersDetailsPage = (id: string) => new PageMeta("Orders Details", `/orders/${id}`, "Order details page");
 export const RestaurantsPage = new PageMeta("Restaurants", "/restaurants", "Browse restaurants near you");
 export const RestaurantDetailsPage = (id: string) => new PageMeta("Restaurant", `/restaurants/${id}`, "View details of this restaurant");
 export const OffersPage = new PageMeta("Offers", "/offers", "Browse available offers");
@@ -51,5 +52,6 @@ export const PAGES = {
   ErrorPage,
   OffersPage,
   OrdersPage,
+  OrdersDetailsPage,
   CheckoutPage,
 };

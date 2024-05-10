@@ -1,7 +1,8 @@
+import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { ROUTES } from "@src/common/utils/api-routes";
 import axiosInstance from "@src/common/utils/axios";
+import { K_RESTAURANT_ID } from "@src/common/utils/constants";
 import { IMenuFilters } from "../hooks/use-menu";
-import { NSRestaurant } from "@src/common/types/restaurant.type";
 
 export const menuService = {
   getMenuItems: async ({ isAvailable, page, category, isVegan, isVegetarian, maxPrice, minPrice, q, sortBy }: IMenuFilters) => {
@@ -16,7 +17,7 @@ export const menuService = {
     if (q !== undefined && q.trim() != "") sp.set("q", q);
     if (sortBy !== undefined && sortBy === "price") sp.set("sort", "price:asc");
 
-    const resId = localStorage.getItem("restaurantId");
+    const resId = localStorage.getItem(K_RESTAURANT_ID);
     if (!resId) throw new Error("Restaurant id not found in local storage");
 
     return ((await axiosInstance.get(`${ROUTES.restaurant.menuItem.list(resId)}?${sp.toString()}`)).data.data ?? []) as NSCommon.IListRespone<NSRestaurant.IMenuItem>["data"];

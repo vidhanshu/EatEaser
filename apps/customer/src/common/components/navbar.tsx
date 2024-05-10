@@ -23,11 +23,28 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Typography,
 } from "@ui/components";
 import { getInitials } from "@ui/helpers";
+import { SOCKET_EVENTS } from "@ui/lib/socket-events";
+import dayjs from "dayjs";
+import { useEffect } from "react";
+import { useSocketContext } from "../contexts/socket";
 import useAuthStore from "../stores/auth-store";
+import useNotificationStore from "../stores/notification-store";
+import { NSRestaurant } from "../types/restaurant.type";
 import { CartPage, LoginPage, MenuPage, OrdersPage, ProfilePage, RestaurantsPage, SettingsPage } from "../utils/pages";
 import SignOutBtn from "./sign-out-btn";
+
+///-------------------------------------------------------------------------------------------------
+const getNotificationLink = (type: "ORDER", id: string) => {
+  if (type === "ORDER") return `/orders/${id}`;
+  return "/";
+};
+///-------------------------------------------------------------------------------------------------
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -45,12 +62,7 @@ const Navbar = () => {
           {(signOut) => (
             <AlertDialog>
               <div className="flex gap-x-4">
-                {isAuth && (
-                  <Button className="relative" size="icon" variant="secondary">
-                    <Bell className="dark:text-white" size={20} />
-                    <div className="w-2 h-2 rounded-full bg-primary absolute top-0 right-0" />
-                  </Button>
-                )}
+                {isAuth && <Notification />}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button size="icon" variant="secondary">
@@ -132,3 +144,63 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+const Notification = () => {
+  const { socket } = useSocketContext();
+  const { addNotification, notifications, clearNotifications } = useNotificationStore();
+
+  useEffect(() => {
+    if (!socket) return;
+    const updateNotification = (payload: NSRestaurant.INotification) => {
+      addNotification(payload);
+    };
+    socket.on(SOCKET_EVENTS.NOTIFICATION, updateNotification);
+    return () => {
+      socket.off(SOCKET_EVENTS.NOTIFICATION, updateNotification);
+    };
+  }, [socket]);
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button className="relative" size="icon" variant="secondary">
+          <Bell className="dark:text-white" size={20} />
+          {notifications.length > 0 && (
+            <div className="w-5 h-5 flex items-center justify-center rounded-full bg-primary absolute -top-1 -right-1 text-xs">{notifications.length}</div>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-2 bg-input">
+        <>
+          {notifications.length === 0 ? (
+            <p className="text-center text-gray-500">No notifications</p>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex justify-end text-muted-foreground">
+                <Typography>Notifications</Typography>
+                <span className="ml-auto text-sm underline cursor-pointer" onClick={clearNotifications}>
+                  clear
+                </span>
+              </div>
+              <div className="max-h-[300px] space-y-2 overflow-y-auto no-scrollbar">
+                {notifications.map(({ type, message, notId, id, timestamp }) => (
+                  <div className="bg-background hover:bg-background/70 w-full rounded-sm p-2 cursor-pointer" key={notId}>
+                    <Link to={getNotificationLink(type, id)} className="w-full h-full">
+                      <div className="flex justify-between items-center mb-2">
+                        🎁
+                        <Typography variant="muted" className="text-[12px]">
+                          {dayjs(timestamp).format("DD MMM, hh:mm A")}
+                        </Typography>
+                      </div>
+                      <Typography className="text-sm font-normal">{message}</Typography>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      </PopoverContent>
+    </Popover>
+  );
+};
