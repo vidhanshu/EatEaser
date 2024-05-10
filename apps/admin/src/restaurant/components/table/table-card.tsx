@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
-import { NSRestaurant } from "@src/types/restaurant.type";
-import { TableStatusBadge, getClassNameByStatus } from ".";
-import { cn } from "@ui/lib/utils";
-import { Button, Typography } from "@ui/components";
-import { Eye, Pencil, Trash2 } from "lucide-react";
-import GenericAlertDialog from "@ui/components/custom/generic-alert-dialog";
 import { APP_ROUTES } from "@src/common/utils/app-routes";
+import { NSRestaurant } from "@src/types/restaurant.type";
+import { Button, Typography } from "@ui/components";
+import GenericAlertDialog from "@ui/components/custom/generic-alert-dialog";
+import { cn } from "@ui/lib/utils";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { TableStatusBadge, getClassNameByStatus } from "./status-badge";
 
 export const TableCard = ({
   _id,

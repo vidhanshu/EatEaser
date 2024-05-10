@@ -1,12 +1,10 @@
-import { AxiosError } from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { NSRestaurant } from "@src/types/restaurant.type";
 import { toast } from "@ui/components";
 import { orderService } from "../services/order";
-import { NSRestaurant } from "@src/common/types/restaurant.type";
 
-export interface IMenuFilters {
+export interface IOrderFilters {
   status?: NSRestaurant.IOrder["status"];
   page?: number;
   q?: string;
@@ -17,7 +15,7 @@ const useOrder = ({
   onSuccess,
 }: {
   fetchMenuItems?: boolean;
-  variables?: { orderId?: string; filters?: IMenuFilters };
+  variables?: { orderId?: string; filters?: IOrderFilters };
   onSuccess?: () => void;
 }) => {
   const queryClient = useQueryClient();
@@ -41,40 +39,6 @@ const useOrder = ({
     mutationFn: orderService.updateOrder,
     onSuccess: () => {
       toast.success("order updated successfully");
-      queryClient.invalidateQueries({
-        queryKey: ["orders"],
-      });
-      onSuccess?.();
-    },
-    onError: (error) => {
-      toast.error(error?.message);
-    },
-  });
-
-  // create order
-  const { isPending: isCreating, mutate: createOrder } = useMutation({
-    mutationFn: orderService.createOrder,
-    onSuccess: () => {
-      toast.success("order created successfully");
-      queryClient.invalidateQueries({
-        queryKey: ["orders"],
-      });
-      onSuccess?.();
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toast.error(error?.response?.data?.error);
-      } else {
-        toast.error(error?.message);
-      }
-    },
-  });
-
-  // cancel order
-  const { isPending: isCancelingOrder, mutate: cancelOrder } = useMutation({
-    mutationFn: orderService.cancelOrder,
-    onSuccess: () => {
-      toast.success("Order cancelled successfully");
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
@@ -111,10 +75,6 @@ const useOrder = ({
     isLoadingOrder,
     isRefetchingOrder,
     isUpdating,
-    isCancelingOrder,
-    isCreating,
-    cancelOrder,
-    createOrder,
     updateOrder,
     // Orders stuff
     getOrders,

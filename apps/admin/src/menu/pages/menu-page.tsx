@@ -1,33 +1,24 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDebounceValue } from "usehooks-ts";
 import { ListRestart, Plus, Search, SlidersHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useDebounceValue } from "usehooks-ts";
 
-import {
-  Button,
-  Checkbox,
-  Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@ui/components";
-import { MenuItemCard } from "@src/menu/components/menu";
-import useMenu, { IMenuFilters } from "@src/menu/hooks/use-menu";
-import { GridSkeleton } from "@src/common/components/skeletons";
-import { EmptyData } from "@src/common/components/empty-data";
-import { APP_ROUTES } from "@src/common/utils/app-routes";
-import CustomPagination from "@ui/components/custom/custom-pagination";
-import MinMaxPriceInput from "@src/menu/components/menu/min-max-price-input";
 import AsyncCategorySelect from "@src/common/components/async-category-select";
+import { EmptyData } from "@src/common/components/empty-data";
+import { GridSkeleton } from "@src/common/components/skeletons";
+import { APP_ROUTES } from "@src/common/utils/app-routes";
+import { MenuItemCard } from "@src/menu/components/menu";
+import MinMaxPriceInput from "@src/menu/components/menu/min-max-price-input";
+import useMenu, { IMenuFilters } from "@src/menu/hooks/use-menu";
+import { Button, Checkbox, Input, Popover, PopoverContent, PopoverTrigger } from "@ui/components";
+import CustomPagination from "@ui/components/custom/custom-pagination";
 
 const checkBoxOptions = ["isAvailable", "isVegan", "isVegetarian"];
 const MenuPage = () => {
   const [q, setQ] = useDebounceValue("", 500);
-  const [cat, setCat] = useState<{ id: string; name: string } | undefined>(
-    undefined
-  );
+  const [cat, setCat] = useState<{ id: string; name: string } | undefined>(undefined);
   const [filters, setFilters] = useState<IMenuFilters>({});
-  const { menuItems, isFetchingMenuItems } = useMenu({
+  const { menuItems, isLoadingMenuItems } = useMenu({
     variables: { filters },
   });
   const { result = [], totalPages } = menuItems ?? {};
@@ -57,25 +48,12 @@ const MenuPage = () => {
         <div>
           <div className="flex justify-between pb-4">
             <div className="flex items-center gap-x-2">
-              <Input
-                sizeVariant="sm"
-                startIcon={Search}
-                placeholder="Search Menu"
-                onChange={(e) => setQ(e.target.value)}
-                containerProps={{ className: "w-[200px]" }}
-              />
+              <Input sizeVariant="sm" startIcon={Search} placeholder="Search Menu" onChange={(e) => setQ(e.target.value)} containerProps={{ className: "w-[200px]" }} />
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button
-                    size="sm"
-                    startContent={<SlidersHorizontal size={16} />}
-                  />
+                  <Button size="sm" startContent={<SlidersHorizontal size={16} />} />
                 </PopoverTrigger>
-                <PopoverContent
-                  className="w-[250px] px-4 py-2 space-y-2"
-                  align="start"
-                  side="bottom"
-                >
+                <PopoverContent className="w-[250px] px-4 py-2 space-y-2" align="start" side="bottom">
                   {checkBoxOptions.map((opt, index) => (
                     <div key={opt} className="flex gap-x-2 items-center">
                       <Checkbox
@@ -85,16 +63,11 @@ const MenuPage = () => {
                           setFilters((prev) => ({
                             ...prev,
                             page: 1,
-                            [opt]: !prev[opt as keyof IMenuFilters]
-                              ? true
-                              : undefined,
+                            [opt]: !prev[opt as keyof IMenuFilters] ? true : undefined,
                           }))
                         }
                       />
-                      <label
-                        className="cursor-pointer text-muted-foreground"
-                        htmlFor={`s_a_o_${index}`}
-                      >
+                      <label className="cursor-pointer text-muted-foreground" htmlFor={`s_a_o_${index}`}>
                         Show {opt.replace("is", "")} only
                       </label>
                     </div>
@@ -131,12 +104,7 @@ const MenuPage = () => {
                     }}
                   />
                   {isFilterExists ? (
-                    <Button
-                      size="xs"
-                      className="w-full"
-                      onClick={handleReset}
-                      startContent={<ListRestart size={16} />}
-                    >
+                    <Button size="xs" className="w-full" onClick={handleReset} startContent={<ListRestart size={16} />}>
                       Reset
                     </Button>
                   ) : null}
@@ -151,7 +119,7 @@ const MenuPage = () => {
             </Link>
           </div>
 
-          {isFetchingMenuItems ? (
+          {isLoadingMenuItems ? (
             <GridSkeleton />
           ) : result.length === 0 ? (
             <EmptyData placeholder="No Menu items found!" link="/" />

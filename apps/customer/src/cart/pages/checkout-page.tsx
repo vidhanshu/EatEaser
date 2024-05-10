@@ -14,7 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Button, T
 import { cn } from "@ui/lib/utils";
 import { IconType } from "react-icons";
 import { Link, useNavigate } from "react-router-dom";
-import useOrder from "../hooks/use-order";
+import useOrder from "../../orders/hooks/use-order";
 import useCartStore from "../stores/cart-store";
 import CartPage from "./cart-page";
 

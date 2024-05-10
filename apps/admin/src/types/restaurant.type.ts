@@ -62,10 +62,50 @@ export namespace NSRestaurant {
 
   // Categories
   export interface ICategory {
-    _id:string;
+    _id: string;
     name: string;
     image?: string;
     description?: string;
     restaurant: string;
+  }
+
+  export interface IOrder {
+    _id: string;
+    restaurant: string;
+    table: { _id: string; name: string };
+    items: IOrderItem[];
+    total: number;
+    status: ORDER_STATUS;
+    payment: IPayment;
+    customer: string;
+  }
+
+  export interface IOrderItem {
+    item: IMenuItem;
+    quantity: number;
+    addons: string[];
+  }
+
+  export type ORDER_STATUS = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+
+  export interface IPayment {
+    method: PAYMENT_METHOD;
+    status: PAYMENT_STATUS;
+    transactionId: string;
+  }
+
+  export type PAYMENT_METHOD = "CASH" | "CARD" | "NETBANKING" | "UPI";
+  export type PAYMENT_STATUS = "PENDING" | "COMPLETED" | "FAILED";
+
+  // update  payload types
+  export interface IUpadetOrderPayload {
+    id: string;
+    payload: {
+      item?: NSRestaurant.IMenuItem;
+      paymentMethod?: NSRestaurant.PAYMENT_METHOD;
+      paymentStatus?: NSRestaurant.PAYMENT_STATUS;
+      transactionId?: string;
+      status?: NSRestaurant.ORDER_STATUS;
+    };
   }
 }

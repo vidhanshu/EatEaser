@@ -196,8 +196,12 @@ const listOrders = async (
   res: Response
 ) => {
   const { _id } = req;
+  const { id: restaurantId } = req.params;
   try {
-    const filter: Record<string, any> = { customer: _id };
+    const filter: Record<string, any> = {
+      customer: _id,
+      restaurant: restaurantId,
+    };
     const {
       resultPerPage = 10,
       page = 1,

@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { ROUTES } from "../../../utils/routes";
+import {
+  commonOrderController,
+  customerOrderController,
+} from "../../../controllers";
 import { RBACMiddleware, authMiddleware, validate } from "../../../middlewares";
+import { ROUTES } from "../../../utils/routes";
 import {
   commonValidation,
   customerOrderValidation,
   orderValidation,
 } from "../../../utils/validations";
-import {
-  commonOrderController,
-  customerOrderController,
-} from "../../../controllers";
 
 export const customerOrderRouter = Router();
 
@@ -31,7 +31,10 @@ customerOrderRouter.get(
   ROUTES.customer.restaurant.order.list,
   authMiddleware,
   RBACMiddleware(["customer"]),
-  validate(orderValidation.listOrderSchema),
+  validate({
+    ...orderValidation.listOrderSchema,
+    params: commonValidation.idParamPayloadSchema.params,
+  }),
   customerOrderController.listOrders
 );
 customerOrderRouter.get(

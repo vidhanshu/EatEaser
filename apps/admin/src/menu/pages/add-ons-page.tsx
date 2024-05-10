@@ -1,68 +1,48 @@
-import { useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import { GenericTable } from "@src/common/components/generic-table";
+import GenericUrlCruDialog from "@src/common/components/generic-url-cru-dialog";
+import { APP_ROUTES } from "@src/common/utils/app-routes";
+import { CreateAddOnForm } from "@src/menu/components/add-on";
+import useAddOns from "@src/menu/hooks/use-add-ons";
 import { NSRestaurant } from "@src/types/restaurant.type";
+import { ColumnDef } from "@tanstack/react-table";
 import {
-  Loader2,
-  MoreHorizontal,
-  Plus,
-  ArrowUpDown,
-  IndianRupee,
-} from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Button,
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-  AlertDialogTrigger,
   ImgWithPlaceholder,
 } from "@ui/components";
-import { CreateAddOnForm } from "@src/menu/components/add-on";
-import { APP_ROUTES } from "@src/common/utils/app-routes";
-import GenericUrlCruDialog from "@src/common/components/generic-url-cru-dialog";
-import useAddOns from "@src/menu/hooks/use-add-ons";
-import { GenericTable } from "@src/common/components/generic-table";
+import { ArrowUpDown, IndianRupee, Loader2, MoreHorizontal, Plus } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 //--------------------------------------------------------------------------------------------
-export const columns: ({
+export const columns: ({ deleteAddOn, setPage }: { deleteAddOn: (id: { id: string }) => void; setPage: (page: number) => void }) => ColumnDef<NSRestaurant.IAddon>[] = ({
   deleteAddOn,
   setPage,
-}: {
-  deleteAddOn: (id: { id: string }) => void;
-  setPage: (page: number) => void;
-}) => ColumnDef<NSRestaurant.IAddon>[] = ({ deleteAddOn, setPage }) => [
+}) => [
   {
     accessorKey: "image",
     header: "Image",
-    cell: (cell) => (
-      <ImgWithPlaceholder
-        className="w-[100px] h-[100px]"
-        src={cell.row.original.image}
-        placeHolderProps={{ variant: "h5" }}
-        placeholder={cell.row.original.name}
-      />
-    ),
+    cell: (cell) => <ImgWithPlaceholder className="w-[100px] h-[100px]" src={cell.row.original.image} placeHolderProps={{ variant: "h5" }} placeholder={cell.row.original.name} />,
   },
   {
     accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          className="hover:bg-gray-200 dark:hover:bg-muted/50"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
+        <Button variant="ghost" className="hover:bg-gray-200 dark:hover:bg-muted/50" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -72,23 +52,13 @@ export const columns: ({
   {
     accessorKey: "description",
     header: "Description",
-    cell: (cell) => (
-      <div className="max-w-2xl">
-        {cell.row.original.description
-          ? `${cell.row.original.description?.substring(0, 300)}...`
-          : "N/A"}
-      </div>
-    ),
+    cell: (cell) => <div className="max-w-2xl">{cell.row.original.description ? `${cell.row.original.description?.substring(0, 300)}...` : "N/A"}</div>,
   },
   {
     accessorKey: "price",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          className="hover:bg-gray-200 dark:hover:bg-muted/50"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
+        <Button variant="ghost" className="hover:bg-gray-200 dark:hover:bg-muted/50" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Price
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -118,39 +88,17 @@ export const columns: ({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate(
-                    `${APP_ROUTES.menuAddOns}?mode=view&id=${row.original._id}`
-                  )
-                }
-              >
-                View add-on
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate(
-                    `${APP_ROUTES.menuAddOns}?mode=edit&id=${row.original._id}`
-                  )
-                }
-              >
-                Edit add-on
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate(`${APP_ROUTES.menuAddOns}?mode=view&id=${row.original._id}`)}>View add-on</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate(`${APP_ROUTES.menuAddOns}?mode=edit&id=${row.original._id}`)}>Edit add-on</DropdownMenuItem>
               <AlertDialogTrigger>
-                <DropdownMenuItem className="text-rose-500">
-                  Delete add-on
-                </DropdownMenuItem>
+                <DropdownMenuItem className="text-rose-500">Delete add-on</DropdownMenuItem>
               </AlertDialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle className="flex gap-x-2 items-center">
-                Are you sure?
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone!
-              </AlertDialogDescription>
+              <AlertDialogTitle className="flex gap-x-2 items-center">Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone!</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -175,11 +123,11 @@ export const columns: ({
 
 export function AddOnsPage() {
   const [page, setPage] = useState(1);
-  const { addOns, isFetchingAddOns, deleteAddOn } = useAddOns({
+  const { addOns, isLoadingAddOns, deleteAddOn } = useAddOns({
     variables: { filters: { page: page.toString() } },
   });
 
-  if (isFetchingAddOns) {
+  if (isLoadingAddOns) {
     return <Loader2 size={25} className="animate-spin" />;
   }
   return (
@@ -191,17 +139,8 @@ export function AddOnsPage() {
           </Button>
         </Link>
       </div>
-      <GenericTable
-        page={page}
-        setPage={setPage}
-        columns={columns({ deleteAddOn, setPage })}
-        totalPages={addOns?.totalPages ?? 1}
-        data={addOns?.result ?? []}
-      />
-      <GenericUrlCruDialog
-        itemName="AddOn"
-        onCloseNavigateTo={APP_ROUTES.menuAddOns}
-      >
+      <GenericTable page={page} setPage={setPage} columns={columns({ deleteAddOn, setPage })} totalPages={addOns?.totalPages ?? 1} data={addOns?.result ?? []} />
+      <GenericUrlCruDialog itemName="AddOn" onCloseNavigateTo={APP_ROUTES.menuAddOns}>
         {(mode, id) => <CreateAddOnForm mode={mode} id={id} />}
       </GenericUrlCruDialog>
     </>

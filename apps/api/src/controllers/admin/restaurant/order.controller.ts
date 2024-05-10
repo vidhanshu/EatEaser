@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+import { FilterQuery } from "mongoose";
+import { Order } from "../../../models";
+import { NSCommon, NSRestaurant } from "../../../types";
+import { sendErrorResponse, sendResponse } from "../../../utils/response";
 import {
   IListOrderSchema,
   IUpdateOrderSchema,
 } from "../../../utils/validations";
-import { NSCommon, NSRestaurant } from "../../../types";
-import { Order } from "../../../models";
-import { sendErrorResponse, sendResponse } from "../../../utils/response";
-import { FilterQuery } from "mongoose";
 
 const handleListOrder = async (
   req: NSCommon.TypedRequest<null, IListOrderSchema> & NSCommon.IAuthRequest,
@@ -29,7 +29,12 @@ const handleListOrder = async (
     const skip = resultPerPage * (page - 1);
     const resultCount = await Order.countDocuments(filter);
     const totalPages = Math.ceil(resultCount / resultPerPage);
-    const result = await Order.find(filter, {}, { limit, skip });
+    const result = await Order.find(filter, {}, { limit, skip })
+      .populate("items.item", {
+        name: 1,
+        image: 1,
+      })
+      .populate("table", { name: 1 });
 
     sendResponse(res, {
       data: {

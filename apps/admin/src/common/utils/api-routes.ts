@@ -40,6 +40,11 @@ export const ROUTES = {
       list: "/admin/restaurant/table/list",
       byId: (id: string) => `/admin/restaurant/table/${id}/get`,
     },
+    order: {
+      list: "/admin/restaurant/order/list",
+      byId: (id: string) => `/admin/restaurant/order/${id}/get`,
+      update: (id: string) => `/admin/restaurant/order/${id}/update`,
+    },
   },
   file: {
     upload: "/file/upload",

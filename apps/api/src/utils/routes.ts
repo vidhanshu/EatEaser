@@ -28,7 +28,7 @@ export const ROUTES = {
         byId: "/restaurant/table/:id/get",
       },
       order: {
-        list: "/restaurant/order/list",
+        list: "/restaurant/:id/order/list",
         byId: "/restaurant/order/:id/get",
         create: "/restaurant/order/create",
         cancel: "/restaurant/order/:id/cancel",

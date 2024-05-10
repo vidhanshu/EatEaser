@@ -6,8 +6,6 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 dayjs.extend(relativeTime);
 
-import useOrder from "@src/cart/hooks/use-order";
-import { orderService } from "@src/cart/services/order";
 import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import Empty from "@src/common/components/empty";
 import PageMeta from "@src/common/components/page-meta";
@@ -16,7 +14,9 @@ import StatusChip from "@src/common/components/status-chip";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { PAGES } from "@src/common/utils/pages";
-import { Button, GenericAlertDialog, Separator, Typography } from "@ui/components";
+import useOrder from "@src/orders/hooks/use-order";
+import { orderService } from "@src/orders/services/order";
+import { Button, GenericAlertDialog, LimitedNameViewer, Separator, Typography } from "@ui/components";
 import { cn } from "@ui/lib/utils";
 
 const TABS = [
@@ -129,16 +129,6 @@ const OrderCard = ({
     .filter(Boolean)
     .slice(0, 3) as string[];
   let itemsNames = items.map(({ item }) => item.name);
-  const orderName = (
-    <>
-      <Typography variant="md" className="flex gap-x-2 items-center max-w-full whitespace-nowrap truncate">
-        {itemsNames.slice(0, 1).join(", ")}{" "}
-        <Typography variant="muted" className="text-xs font-normal" title={itemsNames.slice(1).join(", ")}>
-          {itemsNames.length > 1 ? ` +${itemsNames.length - 1} more` : ""}
-        </Typography>
-      </Typography>
-    </>
-  );
 
   return (
     <div ref={endRef} className="rounded-md bg-white shadow-sm dark:bg-input p-4">
@@ -152,7 +142,7 @@ const OrderCard = ({
         <div className="flex gap-x-4">
           <CImageWithPlaceholder placeholder={itemsNames.slice(0, 2).join(", ")} className="size-20 rounded-sm" src={images?.[0]} />
           <div className="flex flex-col justify-between">
-            {orderName}
+            <LimitedNameViewer names={itemsNames} />
             <Typography variant="muted">{items.length} Items</Typography>
             <div className="flex items-center divide-x-2">
               <Typography variant="md" className="flex text-lg gap-x-2 items-center text-primary pr-2">
