@@ -4,7 +4,7 @@ import { cn } from "@ui/lib/utils";
 export const getClassNameByStatus = (status: NSRestaurant.TABLE_STATUS, borderOnly: boolean = false) => {
   switch (status) {
     case "AVAILABLE":
-      return borderOnly ? "border-green-500 bg-green-300/5 w-fit" : "border text-xs w-fit mx-auto border-green-500 px-2 bg-green-500/20 rounded-full";
+      return borderOnly ? "border-primary bg-primary/5 w-fit" : "border text-xs w-fit mx-auto border-primary px-2 bg-primary/20 rounded-full";
     case "RESERVED":
       return borderOnly ? "border-rose-500 bg-red-300/5 w-fit" : "border text-xs w-fit mx-auto border-rose-500 px-2 bg-rose-500/20 rounded-full";
     case "OCCUPIED":

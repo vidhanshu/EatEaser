@@ -1,13 +1,9 @@
 import { Response } from "express";
 import httpStatus from "http-status";
 import { FilterQuery } from "mongoose";
-import { AddOn, MenuItem, Order, Restaurant, Table } from "../../../models";
+import { AddOn, MenuItem, Order, Restaurant, Table, User } from "../../../models";
 import { NSCommon, NSRestaurant } from "../../../types";
-import {
-  ResponseError,
-  sendErrorResponse,
-  sendResponse,
-} from "../../../utils/response";
+import { ResponseError, sendErrorResponse, sendResponse } from "../../../utils/response";
 
 const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
   const { _id } = req;
@@ -21,10 +17,7 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
     if (!restaurantExists) {
       throw new ResponseError("Restaurant not found", 404);
     }
-    const tableExists = await Table.findOne(
-      { _id: tableId, restaurant: restaurantId },
-      { id: 1, status: 1 }
-    );
+    const tableExists = await Table.findOne({ _id: tableId, restaurant: restaurantId }, { id: 1, status: 1 });
     if (!tableExists) {
       throw new ResponseError("Table not found", 404);
     }
@@ -39,13 +32,10 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
         acc[item.item] = item.quantity;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
     const addOnIds = items.map((item) => item.addons).flat();
-    const menuItems = await MenuItem.find(
-      { _id: { $in: itemIds } },
-      { price: 1, isAvailable: 1 }
-    );
+    const menuItems = await MenuItem.find({ _id: { $in: itemIds } }, { price: 1, isAvailable: 1 });
     if (menuItems?.length === 0 || menuItems.length !== items.length) {
       throw new ResponseError("Invalid item(s)", 400);
     }
@@ -53,10 +43,7 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
     if (menuItems.some((item) => !item.isAvailable)) {
       throw new ResponseError("One or more items are not available", 400);
     }
-    const addOns = await AddOn.find(
-      { _id: { $in: addOnIds } },
-      { price: 1, isAvailable: true }
-    );
+    const addOns = await AddOn.find({ _id: { $in: addOnIds } }, { price: 1, isAvailable: true });
     if (addOns.length !== addOnIds.length) {
       throw new ResponseError("Invalid addOn(s)", 400);
     }
@@ -89,9 +76,16 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
     //   throw new ResponseError("Failed to create order", 500);
     // }
     await order.save();
+    const newOrder = await Order.findOne({ _id: order._id })
+      .populate("restaurant", { _id: 1, name: 1 })
+      .populate("table", { _id: 1, name: 1 })
+      .populate("items.item", { _id: 1, name: 1, image: 1, price: 1 })
+      .populate("items.addons", { _id: 1, name: 1, image: 1, price: 1 })
+      .populate("customer", { _id: 1, name: 1 });
+
     sendResponse(res, {
       data: {
-        order,
+        order: newOrder,
         // rzrpayOrder,
       },
       message: "Order created successfully",
@@ -108,7 +102,7 @@ const handleUpdateOrder = async (
       paymentMethod: Pick<NSRestaurant.IOrder["payment"], "method">;
     }
   >,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { items, paymentMethod } = req.body;
@@ -127,19 +121,13 @@ const handleUpdateOrder = async (
       throw new ResponseError("Order not found", 404);
     }
     if (orderExists.status !== "PENDING") {
-      throw new ResponseError(
-        `Order is already ${orderExists.status.toLowerCase()}`,
-        400
-      );
+      throw new ResponseError(`Order is already ${orderExists.status.toLowerCase()}`, 400);
     }
 
     // re-calculating total
     let total = 0;
     const itemIds = items?.map((item) => item.item);
-    const menuItems = await MenuItem.find(
-      { _id: { $in: itemIds } },
-      { price: 1, isAvailable: 1 }
-    );
+    const menuItems = await MenuItem.find({ _id: { $in: itemIds } }, { price: 1, isAvailable: 1 });
     // check if all items are available
     if (menuItems.some((item) => !item.isAvailable)) {
       throw new ResponseError("One or more items are not available", 400);
@@ -171,16 +159,9 @@ const handleCancelOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
       throw new ResponseError("Order not found", 404);
     }
     if (orderExists.status !== "PENDING") {
-      throw new ResponseError(
-        `Order is already ${orderExists.status.toLowerCase()}, it can't be cancelled.`,
-        400
-      );
+      throw new ResponseError(`Order is already ${orderExists.status.toLowerCase()}, it can't be cancelled.`, 400);
     }
-    const order = await Order.findOneAndUpdate(
-      filter,
-      { status: "CANCELLED" },
-      { new: true }
-    );
+    const order = await Order.findOneAndUpdate(filter, { status: "CANCELLED" }, { new: true });
     sendResponse(res, {
       data: order,
       message: "Order cancelled successfully",
@@ -190,11 +171,7 @@ const handleCancelOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
   }
 };
 
-const listOrders = async (
-  req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload> &
-    NSCommon.IAuthRequest,
-  res: Response
-) => {
+const listOrders = async (req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload> & NSCommon.IAuthRequest, res: Response) => {
   const { _id } = req;
   const { id: restaurantId } = req.params;
   try {
@@ -202,13 +179,7 @@ const listOrders = async (
       customer: _id,
       restaurant: restaurantId,
     };
-    const {
-      resultPerPage = 10,
-      page = 1,
-      startTime,
-      endTime,
-      status,
-    } = req.query;
+    const { resultPerPage = 10, page = 1, startTime, endTime, status } = req.query;
     if (startTime) {
       filter.createdAt = { $gte: new Date(startTime as string) };
     }
@@ -223,11 +194,9 @@ const listOrders = async (
     const skip = resultPerPage * (page - 1);
     const resultCount = await Order.countDocuments(filter);
     const totalPages = Math.ceil(resultCount / resultPerPage);
-    const result = await Order.find(
-      filter,
-      {},
-      { limit, skip, sort: { createdAt: -1 } }
-    ).populate("items.item", { image: 1, name: 1 });
+    let result = await Order.find(filter, {}, { limit, skip, sort: { createdAt: -1 } }).populate("items.item", { image: 1, name: 1 });
+    const admin = await User.findOne({ role: "admin", restaurant: restaurantId }, { name: 1 });
+    result = result.map((order) => ({ ...order.toJSON(), admin: { _id: admin?._id, name: admin?.name } }));
 
     sendResponse(res, {
       data: {

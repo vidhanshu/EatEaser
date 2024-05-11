@@ -3,15 +3,9 @@ import { FilterQuery } from "mongoose";
 import { Order } from "../../../models";
 import { NSCommon, NSRestaurant } from "../../../types";
 import { sendErrorResponse, sendResponse } from "../../../utils/response";
-import {
-  IListOrderSchema,
-  IUpdateOrderSchema,
-} from "../../../utils/validations";
+import { IListOrderSchema, IUpdateOrderSchema } from "../../../utils/validations";
 
-const handleListOrder = async (
-  req: NSCommon.TypedRequest<null, IListOrderSchema> & NSCommon.IAuthRequest,
-  res: Response
-) => {
+const handleListOrder = async (req: NSCommon.TypedRequest<null, IListOrderSchema> & NSCommon.IAuthRequest, res: Response) => {
   const { restaurantId } = req;
   const { startTime, endTime, status } = req.query;
   try {
@@ -29,13 +23,15 @@ const handleListOrder = async (
     const skip = resultPerPage * (page - 1);
     const resultCount = await Order.countDocuments(filter);
     const totalPages = Math.ceil(resultCount / resultPerPage);
-    const result = await Order.find(filter, {}, { limit, skip })
-      .populate("customer", { _id: 1 })
+    let result = await Order.find(filter, {}, { limit, skip })
+      .populate("customer", { name: 1 })
       .populate("items.item", {
         name: 1,
         image: 1,
       })
       .populate("table", { name: 1 });
+
+    result = result.map((order) => ({ ...order.toJSON(), admin: { _id: req._id } }));
 
     sendResponse(res, {
       data: {
@@ -49,14 +45,10 @@ const handleListOrder = async (
   }
 };
 
-const handleUpdateOrder = async (
-  req: NSCommon.TypedRequest<IUpdateOrderSchema>,
-  res: Response
-) => {
+const handleUpdateOrder = async (req: NSCommon.TypedRequest<IUpdateOrderSchema>, res: Response) => {
   try {
     const { id } = req.params;
-    const { items, status, paymentMethod, paymentStatus, transactionId } =
-      req.body;
+    const { items, status, paymentMethod, paymentStatus, transactionId } = req.body;
     const order = await Order.findById(id);
     if (!order) {
       throw new Error("Order not found");

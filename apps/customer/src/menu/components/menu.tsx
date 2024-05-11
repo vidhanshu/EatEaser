@@ -23,6 +23,7 @@ const Menu = ({
   endRef,
   isFetchingNextPage,
   hasNextMenuPage,
+  viewOnly = false,
 }: {
   menuItems: NSRestaurant.IMenuItem[];
   isLoading: boolean;
@@ -33,6 +34,7 @@ const Menu = ({
   endRef?: Ref<HTMLDivElement>;
   isFetchingNextPage?: boolean;
   hasNextMenuPage?: boolean;
+  viewOnly?: boolean;
 }) => {
   return (
     <div className="space-y-2">
@@ -68,7 +70,7 @@ const Menu = ({
             else {
               return (
                 <React.Fragment key={mi._id}>
-                  <MenuItem forCart={forCart} {...mi} />
+                  <MenuItem viewOnly={viewOnly} forCart={forCart} {...mi} />
                   {idx < menuItems?.length! - 1 && <Separator />}
                 </React.Fragment>
               );
@@ -88,18 +90,18 @@ const Menu = ({
 
 export default Menu;
 
-const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: boolean; endRef?: Ref<HTMLDivElement> }) => {
+const MenuItem = ({ endRef, viewOnly, ...item }: NSRestaurant.IMenuItem & { forCart?: boolean; endRef?: Ref<HTMLDivElement>; viewOnly?: boolean }) => {
   const { name, _id: itemId, category, isAvailable, price, image, isVegetarian, forCart, addOns } = item;
   const isAuth = useAuthStore((store) => store.isAuthenticated());
   const { removeFromCart, getCartItem, addToCart, changeQuantity, isInCart, removeAddon } = useCartStore();
-  const itemQty = getCartItem(itemId)?.quantity!;
+  const itemQty = item.quantity ?? getCartItem(itemId)?.quantity!;
 
   return (
     <div className={cn("border-none shadow-sm rounded-md bg-white dark:bg-input", addOns.length && forCart && "pb-4")}>
       <div className="flex">
         <Link to={MenuDetailsPage(itemId).href}>
           <div className="p-4">
-            <CImageWithPlaceholder placeholder={name} className="w-24 h-24 object-cover" src={image} />
+            <CImageWithPlaceholder placeholder={name} className="w-24 h-24 object-fill" src={image} />
           </div>
         </Link>
         <div className="p-4 pl-0 flex-1 flex flex-col justify-between">
@@ -150,17 +152,24 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
           {forCart && (
             <div className="flex gap-x-2 items-center justify-end">
               <div className="w-fit flex gap-x-3 items-center">
-                <button
-                  disabled={itemQty < 2}
-                  onClick={() => changeQuantity(itemId, itemQty - 1)}
-                  className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground"
-                >
-                  <Minus size={15} />
-                </button>
+                {!viewOnly && (
+                  <button
+                    disabled={itemQty < 2}
+                    onClick={() => changeQuantity(itemId, itemQty - 1)}
+                    className={cn(
+                      "min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground",
+                      itemQty < 2 && "disabled:bg-primary/50 disabled:cursor-not-allowed",
+                    )}
+                  >
+                    <Minus size={15} />
+                  </button>
+                )}
+                {viewOnly && <Typography variant="muted">Quantity:</Typography>}
                 <Input
                   min={1}
                   className="max-w-16 text-center h-7 appearance-none"
                   sizeVariant="sm"
+                  disabled={viewOnly}
                   value={itemQty}
                   onChange={(e) => {
                     changeQuantity(itemId, Number(e.target.value));
@@ -168,12 +177,14 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
                   type="number"
                   placeholder="Enter quantity"
                 />
-                <button
-                  onClick={() => changeQuantity(itemId, itemQty + 1)}
-                  className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground"
-                >
-                  <Plus size={15} />
-                </button>
+                {!viewOnly && (
+                  <button
+                    onClick={() => changeQuantity(itemId, itemQty + 1)}
+                    className="min-w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground"
+                  >
+                    <Plus size={15} />
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -189,7 +200,7 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
               {addOns.map(({ _id, name, price, image }) => (
                 <div key={_id} className="bg-white dark:bg-input border border-input dark:border-gray-800 p-2 rounded-md justify-between flex gap-x-4">
                   <div className="flex gap-x-4">
-                    <CImageWithPlaceholder placeholder={name} src={image} className="w-16 h-16" />
+                    <CImageWithPlaceholder placeholder={name} src={image} className="w-16 h-16 object-fill" />
                     <div>
                       <Typography>{name}</Typography>
                       <Typography className="flex gap-x-2 items-center text-primary">
@@ -197,9 +208,11 @@ const MenuItem = ({ endRef, ...item }: NSRestaurant.IMenuItem & { forCart?: bool
                       </Typography>
                     </div>
                   </div>
-                  <Button className="w-6 h-6" onClick={() => removeAddon(itemId, _id)} variant="destructive" size="icon-sm">
-                    <Minus size={16} />
-                  </Button>
+                  {!viewOnly && (
+                    <Button className="w-6 h-6" onClick={() => removeAddon(itemId, _id)} variant="destructive" size="icon-sm">
+                      <Minus size={16} />
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>

@@ -62,6 +62,11 @@ export function ThemeProvider({
         localStorage.setItem(storageKey, updatedTheme);
         return updatedTheme;
       });
+      // set color-scheme attribute
+      document.documentElement.style.setProperty(
+        "--color-scheme",
+        theme === "dark" ? "light" : "dark"
+      );
     },
   };
 

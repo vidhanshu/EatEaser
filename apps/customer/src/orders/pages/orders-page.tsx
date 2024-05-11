@@ -43,6 +43,9 @@ const TABS = [
     value: "CANCELLED",
   },
 ];
+
+///-------------------------------------------------------------------------------------
+
 const OrdersPage = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const { socket } = useSocketContext();
@@ -66,13 +69,11 @@ const OrdersPage = () => {
   useEffect(() => {
     if (!socket) return;
 
-    // handlers
     const updateOrderHandler = (payload: NSRestaurant.IOrder) => {
       setOrders((prev) => prev.map((order) => (order._id === payload._id ? payload : order)));
     };
 
     socket.on(SOCKET_EVENTS.ORDER_UPDATED, updateOrderHandler);
-
     return () => {
       socket.off(SOCKET_EVENTS.ORDER_UPDATED, updateOrderHandler);
     };
@@ -103,18 +104,21 @@ const OrdersPage = () => {
           {isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 4 }, () => (
-                <CSkeleton className="h-28 rounded-md" />
+                <CSkeleton key={Math.random()} className="h-28 rounded-md" />
               ))}
             </div>
           ) : orders.length === 0 && !isLoading ? (
-            <Empty className="mt-8" notFoundTitle={`No ${status === "all" ? "" : status?.toLocaleLowerCase()} Orders found!`} notFoundDescription="" />
+            <Empty className="mt-8" notFoundTitle={`No ${status === "all" || !status ? "" : status?.toLocaleLowerCase()} Orders found!`} notFoundDescription="" />
           ) : (
             orders.map((order, idx) => (
               <OrderCard
+                key={idx}
                 orderId={order._id}
                 items={order.items}
                 total={order.total}
                 status={order.status}
+                loading={isLoading}
+                adminId={order?.admin?._id}
                 paymentStatus={order.payment.status}
                 endRef={idx + 1 === orders.length ? ref : null}
                 createdAt={order.createdAt}
@@ -131,6 +135,7 @@ const OrdersPage = () => {
 export default OrdersPage;
 
 const OrderCard = ({
+  adminId,
   orderId,
   total,
   paymentStatus,
@@ -138,15 +143,19 @@ const OrderCard = ({
   endRef,
   status,
   createdAt,
+  loading = false,
 }: {
+  adminId: string;
   orderId: string;
   total: number;
+  createdAt: string;
+  endRef?: Ref<HTMLDivElement>;
+  status: NSRestaurant.IOrder["status"];
   paymentStatus: NSRestaurant.PAYMENT_STATUS;
   items: { item: { _id: string; name: string; image: string } }[];
-  status: NSRestaurant.IOrder["status"];
-  endRef?: Ref<HTMLDivElement>;
-  createdAt: string;
+  loading?: boolean;
 }) => {
+  const { socket } = useSocketContext();
   const { cancelOrder, isCancelingOrder } = useOrder({ fetchMenuItems: false });
   const images = items
     .map((item) => item.item.image)
@@ -156,7 +165,7 @@ const OrderCard = ({
 
   return (
     <div ref={endRef} className="rounded-md bg-white shadow-sm dark:bg-input p-4">
-      <Link to="/">
+      <Link to={PAGES.OrdersDetailsPage(orderId).href}>
         <div className="pb-2 flex justify-between items-center">
           <Typography className="text-xs" variant="muted">
             {dayjs(createdAt).fromNow()}
@@ -185,13 +194,18 @@ const OrderCard = ({
             </div>
             {status === "PENDING" && (
               <GenericAlertDialog
+                loading={isCancelingOrder || loading}
                 className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
-                onOk={() => cancelOrder(orderId)}
+                onOk={() => {
+                  cancelOrder(orderId);
+                  console.log(adminId);
+                  socket?.emit(SOCKET_EVENTS.ORDER_CANCELLED, { to: adminId, orderId });
+                }}
                 okBtnTitle="Yes"
                 title="Are you sure?"
                 description="Are you sure you want to cancel this order?"
               >
-                <Button loading={isCancelingOrder} endContent={<XCircle size={16} />} variant="destructive" size="xs">
+                <Button loading={isCancelingOrder || loading} endContent={<XCircle size={16} />} variant="destructive" size="xs">
                   Cancel
                 </Button>
               </GenericAlertDialog>

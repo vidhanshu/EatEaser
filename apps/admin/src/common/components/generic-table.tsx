@@ -21,9 +21,20 @@ interface DataTableProps<TData, TValue> {
   totalPages: number;
   setPage: (page: number) => void;
   hideSearch?: boolean;
+  searchColumnName?: string;
+  searchPlaceholder?: string;
 }
 
-export function GenericTable<TData, TValue>({ columns, data, page, totalPages, setPage, hideSearch = false }: DataTableProps<TData, TValue>) {
+export function GenericTable<TData, TValue>({
+  columns,
+  searchColumnName,
+  data,
+  page,
+  totalPages,
+  setPage,
+  hideSearch = false,
+  searchPlaceholder = "Filter name...",
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const table = useReactTable({
@@ -48,9 +59,9 @@ export function GenericTable<TData, TValue>({ columns, data, page, totalPages, s
           <Input
             type="search"
             startIcon={Search}
-            placeholder="Filter name..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+            placeholder={searchPlaceholder}
+            value={(table.getColumn(searchColumnName ?? "name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn(searchColumnName ?? "name")?.setFilterValue(event.target.value)}
             className="max-w-sm"
           />
         </div>

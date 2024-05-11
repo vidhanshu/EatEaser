@@ -13,6 +13,7 @@ export const LimitedNameViewer = ({
   return (
     <>
       <Typography
+        as="h1"
         variant="md"
         className="flex gap-x-2 items-center max-w-full whitespace-nowrap truncate"
       >

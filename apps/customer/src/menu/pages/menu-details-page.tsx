@@ -1,15 +1,16 @@
+import { CheckCircle, ChevronLeft, IndianRupee, Minus, Plus, ShoppingCart, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { FaStar, FaStarHalf } from "react-icons/fa6";
+import { useNavigate, useParams } from "react-router-dom";
+
 import useCartStore from "@src/cart/stores/cart-store";
 import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import PageMeta from "@src/common/components/page-meta";
 import SeeMoreText from "@src/common/components/see-more-text";
 import { CheckoutPage, PAGES } from "@src/common/utils/pages";
+import MenuDetailsPageSkeleton from "@src/menu/components/skeletons/menu-detail-page-skeleton";
+import useMenu from "@src/menu/hooks/use-menu";
 import { Button, Input, Separator, Table, TableBody, TableCell, TableRow, Typography } from "@ui/components";
-import { CheckCircle, ChevronLeft, IndianRupee, Minus, Plus, ShoppingCart, XCircle } from "lucide-react";
-import { useEffect, useState } from "react";
-import { FaStar, FaStarHalf } from "react-icons/fa6";
-import { useNavigate, useParams } from "react-router-dom";
-import MenuDetailsPageSkeleton from "../components/skeletons/menu-detail-page-skeleton";
-import useMenu from "../hooks/use-menu";
 
 const MenuDetailsPage = () => {
   const { id } = useParams();
@@ -57,8 +58,8 @@ const MenuDetailsPage = () => {
             </div>
           </div>
         </div>
-        {menuItem?.description && <Separator />}
-        {menuItem?.description && (
+        {!!menuItem?.description && <Separator />}
+        {!!menuItem?.description && (
           <div>
             <Typography variant="h5">Details</Typography>
             <SeeMoreText text={menuItem.description} />

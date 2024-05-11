@@ -1,19 +1,11 @@
 import { Response } from "express";
-import { Restaurant, Table } from "../../../models";
-import { NSAuth, NSCommon, NSRestaurant } from "../../../types";
-import {
-  ResponseError,
-  sendErrorResponse,
-  sendResponse,
-} from "../../../utils/response";
 import httpStatus from "http-status";
+import { Restaurant, Table, User } from "../../../models";
+import { NSAuth, NSCommon, NSRestaurant } from "../../../types";
+import { ResponseError, sendErrorResponse, sendResponse } from "../../../utils/response";
 
 const handleListRestaurant = (role: NSAuth.ROLES) => {
-  return async (
-    req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload> &
-      NSCommon.IAuthRequest,
-    res: Response
-  ) => {
+  return async (req: NSCommon.TypedRequest<null, NSCommon.IListDataPayload> & NSCommon.IAuthRequest, res: Response) => {
     try {
       const { resultPerPage = 10, page = 1, q } = req.query;
       const limit = resultPerPage;
@@ -22,10 +14,7 @@ const handleListRestaurant = (role: NSAuth.ROLES) => {
       const totalPages = Math.ceil(resultCount / resultPerPage);
       const filters: Record<string, any> = {};
       if (q) {
-        filters["$or"] = [
-          { name: { $regex: new RegExp(q as string, "i") } },
-          { description: { $regex: new RegExp(q as string, "i") } },
-        ];
+        filters["$or"] = [{ name: { $regex: new RegExp(q as string, "i") } }, { description: { $regex: new RegExp(q as string, "i") } }];
       }
       const result = await Restaurant.find(filters, {}, { limit, skip });
       sendResponse(res, {
@@ -42,10 +31,7 @@ const handleListRestaurant = (role: NSAuth.ROLES) => {
 };
 
 const handleGetRestaurantById = (role: NSAuth.ROLES) => {
-  return async (
-    req: NSCommon.TypedRequest<NSRestaurant.IMenuItem> & NSCommon.IAuthRequest,
-    res: Response
-  ) => {
+  return async (req: NSCommon.TypedRequest<NSRestaurant.IMenuItem> & NSCommon.IAuthRequest, res: Response) => {
     try {
       const { id } = req.params;
       const { includeTables } = req.query;
@@ -55,13 +41,15 @@ const handleGetRestaurantById = (role: NSAuth.ROLES) => {
       if (!restaurant) {
         throw new ResponseError("restaurant not found", httpStatus.NOT_FOUND);
       }
+      const admin = await User.findOne({ restaurant: id, role: "admin" }, { name: 1 });
       if (includeTables) {
         responseData = { ...restaurant.toJSON() };
         const tables = await Table.find({ restaurant: id });
         responseData.tables = tables;
       } else {
-        responseData = restaurant;
+        responseData = { ...restaurant.toJSON() };
       }
+      responseData = { ...responseData, admin: admin?.toJSON() };
       sendResponse(res, {
         data: responseData,
         statusCode: 200,

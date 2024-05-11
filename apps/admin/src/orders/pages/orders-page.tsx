@@ -4,8 +4,10 @@ import { NSRestaurant } from "@src/types/restaurant.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button, ImgWithPlaceholder, LimitedNameViewer, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Typography } from "@ui/components";
 import { SOCKET_EVENTS } from "@ui/lib/socket-events";
+import dayjs from "dayjs";
 import { ArrowUpDown, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import useOrder from "../hooks/use-order";
 import { K_ORDER_STATUS_OPTIONS, K_PAYMENT_STATUS_OPTIONS, k_PAYMENT_METHOD_OPTIONS } from "../utils/constants";
@@ -18,6 +20,31 @@ export const columns: (props: {
   socket: Socket | null;
 }) => ColumnDef<NSRestaurant.IOrder>[] = ({ updateOrder, loading, socket }) => [
   {
+    accessorKey: "customer.name",
+    header: "Customer name",
+    cell: ({ row }) => {
+      return (
+        <Link className="hover:underline" to={"#"}>
+          <Typography className="w-32">{row.original.customer.name}</Typography>
+        </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    cell: ({ row }) => {
+      return <Typography>{dayjs(row.original.createdAt).format("DD MMM, YY h:mm a")}</Typography>;
+    },
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" className="hover:bg-gray-200 dark:hover:bg-muted/50" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Date time
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
     header: "Item",
     cell: ({ row }) => {
       const images = row.original.items
@@ -27,7 +54,7 @@ export const columns: (props: {
 
       return (
         <div className="flex gap-x-2 items-center">
-          <ImgWithPlaceholder className="dark:bg-gray-900 bg-gray-200 w-16 h-16" src={images?.[0]} placeHolderProps={{ variant: "h5" }} placeholder="M I" />
+          <ImgWithPlaceholder className="dark:bg-gray-900 object-contain bg-gray-200 w-16 min-w-16 h-16" src={images?.[0]} placeHolderProps={{ variant: "h5" }} placeholder="M I" />
           <LimitedNameViewer names={row.original.items.map((item) => item.item.name)} />
         </div>
       );
@@ -164,12 +191,36 @@ export const columns: (props: {
 //--------------------------------------------------------------------------------------------
 
 const OrdersPage = () => {
+  const [results, setResults] = useState<NSRestaurant.IOrder[]>([]);
   const [page, setPage] = useState(1);
   const { socket } = useSocketContext();
 
   const { orders, isLoadingOrders, updateOrder, isUpdating, isFetchingOrders } = useOrder({
     variables: { filters: { page } },
   });
+
+  useEffect(() => {
+    if (orders?.result?.length) {
+      setResults(orders.result);
+    }
+  }, [orders]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleAddNewOrder = (order: NSRestaurant.IOrder) => {
+      setResults((prev) => [order, ...prev]);
+    };
+    const handleCancelOrder = (orderId: string) => {
+      setResults((prev) => prev.map((order) => (order._id === orderId ? { ...order, status: "CANCELLED" } : order)));
+    };
+
+    socket.on(SOCKET_EVENTS.ORDER_CREATED, handleAddNewOrder);
+    socket.on(SOCKET_EVENTS.ORDER_CANCELLED, handleCancelOrder);
+    return () => {
+      socket.off(SOCKET_EVENTS.ORDER_CREATED, handleAddNewOrder);
+      socket.off(SOCKET_EVENTS.ORDER_CANCELLED, handleCancelOrder);
+    };
+  }, [socket]);
 
   if (isLoadingOrders) {
     return <Loader2 size={25} className="animate-spin" />;
@@ -180,12 +231,13 @@ const OrdersPage = () => {
         Orders
       </Typography>
       <GenericTable
-        hideSearch
         page={page}
         setPage={setPage}
-        columns={columns({ updateOrder, loading: isUpdating || isFetchingOrders, socket })}
+        data={results ?? []}
+        searchColumnName="customer_name"
         totalPages={orders?.totalPages ?? 1}
-        data={orders?.result ?? []}
+        searchPlaceholder="Filter by customer name"
+        columns={columns({ updateOrder, loading: isUpdating || isFetchingOrders, socket })}
       />
     </div>
   );

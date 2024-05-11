@@ -9,7 +9,7 @@ const StatusChip = ({ text, variant = "success", className }: { text: string; va
         : variant === "info"
           ? "bg-blue-500/30 text-blue-500 border-blue-500 border"
           : "bg-primary/30 text-primary border-primary border";
-  return <span className={cn("font-normal rounded-full flex items-center justify-center text-[10px] h-5 px-2 lowercase", varClass, className)}>{text}</span>;
+  return <span className={cn("font-normal rounded-full flex items-center justify-center text-[10px] w-fit h-5 px-2 lowercase", varClass, className)}>{text}</span>;
 };
 
 export default StatusChip;

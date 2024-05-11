@@ -1,17 +1,17 @@
-import { AxiosError } from "axios";
-import { Link, useNavigate } from "react-router-dom";
-
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Button, Card, Typography, Checkbox, toast } from "@ui/components";
-import * as z from "zod";
-import { Mail, Lock } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { Lock, Mail } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import * as z from "zod";
+
 import { loginFormSchema } from "@src/auth/utils/validations";
 import useAuthStore from "@src/common/stores/auth-store";
-import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "@src/common/utils/axios";
 import { ROUTES } from "@src/common/utils/api-routes";
+import axiosInstance from "@src/common/utils/axios";
 import { PAGES } from "@src/common/utils/pages";
+import { useMutation } from "@tanstack/react-query";
+import { Button, Card, Checkbox, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Typography, toast } from "@ui/components";
 
 const LoginForm = () => {
   const navigate = useNavigate();

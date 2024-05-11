@@ -16,6 +16,7 @@ export namespace NSRestaurant {
     website?: string;
     acceptsReservations?: boolean;
     tables?: ITable[];
+    admin: { _id: string; name: string };
   }
 
   // Table
@@ -48,6 +49,7 @@ export namespace NSRestaurant {
     menu: string;
     category: ICategory;
     restaurant: string;
+    quantity?: number;
     // TODO: more fields....
   }
 
@@ -104,5 +106,30 @@ export namespace NSRestaurant {
     message: string;
     type: "ORDER";
     timestamp: Date;
+  }
+
+  // Response types
+  export interface IROrder {
+    _id: string;
+    restaurant: string;
+    table: {
+      _id: string;
+      name: string;
+    };
+    admin: {
+      _id: string;
+      name: string;
+    };
+    items: {
+      item: IMenuItem;
+      quantity: number;
+      addons: IAddon[];
+    }[];
+    total: number;
+    status: ORDER_STATUS;
+    payment: IPayment;
+    customer: { _id: string };
+    createdAt: string;
+    updatedAt: string;
   }
 }

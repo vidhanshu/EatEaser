@@ -77,7 +77,9 @@ export namespace NSRestaurant {
     total: number;
     status: ORDER_STATUS;
     payment: IPayment;
-    customer: { _id: string };
+    customer: { _id: string; name: string };
+    createdAt: string;
+    updatedAt: string;
   }
 
   export interface IOrderItem {

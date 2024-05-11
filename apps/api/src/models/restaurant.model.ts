@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
-import { DAYS } from "../utils/constants";
 import { NSRestaurant } from "../types";
+import { DAYS } from "../utils/constants";
 
 const RestaurantSchema = new Schema<NSRestaurant.IResturant>(
   {

@@ -14,7 +14,7 @@ export const orderService = {
     if (!rid) throw new Error("Restaurant id is required");
     return (await axiosInstance.get(`${ROUTES.restaurant.order.list(rid)}/?${sp.toString()}`)).data.data ?? [];
   },
-  getOrderById: async (id: string): Promise<NSCommon.ApiResponse<NSRestaurant.IOrder>> => {
+  getOrderById: async (id: string): Promise<NSCommon.ApiResponse<NSRestaurant.IROrder>> => {
     return (await axiosInstance.get(ROUTES.restaurant.order.byId(id))).data;
   },
   cancelOrder: async (id: string) => (await axiosInstance.patch<NSCommon.ApiResponse<NSRestaurant.IMenuItem>>(ROUTES.restaurant.order.cancel(id))).data,

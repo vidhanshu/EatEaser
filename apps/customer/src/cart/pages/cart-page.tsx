@@ -1,50 +1,81 @@
-import React from "react";
 import { CheckCircle } from "lucide-react";
-
-import Menu from "@src/menu/components/menu";
-import useCartStore from "../stores/cart-store";
-import { Separator, TableBody, TableCell, TableRow, Table, Button, GenericAlertDialog } from "@ui/components";
-import PageMeta from "@src/common/components/page-meta";
-import { CheckoutPage, PAGES } from "@src/common/utils/pages";
+import React, { lazy } from "react";
 import { Link } from "react-router-dom";
+
+import useCartStore from "@src/cart/stores/cart-store";
+import PageMeta from "@src/common/components/page-meta";
+import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { CheckoutPage, PAGES } from "@src/common/utils/pages";
+import Menu from "@src/menu/components/menu";
+import { Separator, Table, TableBody, TableCell, TableRow } from "@ui/components";
 import { cn } from "@ui/lib/utils";
 
-const CartPage = ({ showCheckout = true, noPad = false }: { showCheckout?: boolean; noPad?: boolean }) => {
+const Button = lazy(() => import("@ui/components/ui/button"));
+const GenericAlertDialog = lazy(() => import("@ui/components/custom/generic-alert-dialog"));
+
+///-----------------------------------------------------------------------------------------------------------------------
+
+const CartPage = ({
+  data,
+  total,
+  noPad = false,
+  viewOnly = false,
+  showCheckout = true,
+  totalTitle = "Cart total",
+  notFoundTitle = "Cart is empty!",
+  notFoundDescription = "Please add items to cart to continue...",
+}: {
+  data?: (NSRestaurant.IMenuItem & { quantity: number })[];
+  showCheckout?: boolean;
+  noPad?: boolean;
+  viewOnly?: boolean;
+  total?: number;
+  notFoundTitle?: string;
+  notFoundDescription?: string;
+  totalTitle?: string;
+}) => {
   const { cart, calculateTotal, clearCart } = useCartStore();
+  const cData = data?.length ? data : cart;
+  const cTotal = total ?? calculateTotal();
 
   return (
     <div className={cn("pt-8 space-y-4", noPad ? "px-2" : "px-4")}>
       <PageMeta title={PAGES.CartPage.title} description={PAGES.CartPage.description} />
       <Menu
-        notFoundTitle="Cart is empty!"
-        notFoundDescription="Please add items to cart to continue..."
         forCart
         isLoading={false}
-        menuItems={cart}
+        menuItems={cData}
+        viewOnly={viewOnly}
+        notFoundTitle={notFoundTitle}
+        notFoundDescription={notFoundDescription}
         sectionTitle={
-          <div className="flex justify-between items-center">
-            <span>Cart ({cart.length} Items)</span>
-            {cart.length > 0 && (
-              <GenericAlertDialog
-                onOk={() => clearCart()}
-                className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
-                title="Are you sure?"
-                description="Do you really want to clear the cart?"
-                okBtnTitle="Yes, clear it"
-              >
-                <span className="cursor-pointer text-xs underline text-rose-500">Empty cart</span>
-              </GenericAlertDialog>
-            )}
-          </div>
+          !viewOnly ? (
+            <div className="flex justify-between items-center">
+              <span>Cart ({cData.length} Items)</span>
+              {cData.length > 0 && (
+                <React.Suspense>
+                  <GenericAlertDialog
+                    onOk={() => clearCart()}
+                    className="max-w-[95vw] w-fit min-w-[350px] rounded-md p-4 dark:border-gray-800"
+                    title="Are you sure?"
+                    description="Do you really want to clear the cart?"
+                    okBtnTitle="Yes, clear it"
+                  >
+                    <span className="cursor-pointer text-xs underline text-rose-500">Empty cart</span>
+                  </GenericAlertDialog>
+                </React.Suspense>
+              )}
+            </div>
+          ) : null
         }
       />
-      {cart.length > 0 && (
+      {cData.length > 0 && (
         <>
           <Separator />
-          <h1 className="font-medium">Cart Total</h1>
+          <h1 className="font-medium">{totalTitle}</h1>
           <Table>
             <TableBody>
-              {cart.map((item) => (
+              {cData.map((item) => (
                 <React.Fragment key={item._id}>
                   <TableRow>
                     <TableCell>{item.name}</TableCell>
@@ -80,15 +111,17 @@ const CartPage = ({ showCheckout = true, noPad = false }: { showCheckout?: boole
               <TableRow>
                 <TableCell>Total</TableCell>
                 <TableCell></TableCell>
-                <TableCell>₹{calculateTotal()}</TableCell>
+                <TableCell>₹{cTotal}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
           {showCheckout && (
             <Link to={CheckoutPage.href}>
-              <Button className="w-full" endContent={<CheckCircle size={16} />}>
-                Checkout
-              </Button>
+              <React.Suspense>
+                <Button className="w-full" endContent={<CheckCircle size={16} />}>
+                  Checkout
+                </Button>
+              </React.Suspense>
             </Link>
           )}
         </>

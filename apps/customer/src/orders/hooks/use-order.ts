@@ -17,7 +17,7 @@ const useOrder = ({
 }: {
   fetchMenuItems?: boolean;
   variables?: { orderId?: string; filters?: IMenuFilters };
-  onSuccess?: () => void;
+  onSuccess?: (data?: NSRestaurant.IROrder) => void;
 }) => {
   const queryClient = useQueryClient();
   // Feth menu items
@@ -38,12 +38,12 @@ const useOrder = ({
   // update order
   const { isPending: isUpdating, mutate: updateOrder } = useMutation({
     mutationFn: orderService.updateOrder,
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       toast.success("order updated successfully");
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-      onSuccess?.();
+      onSuccess?.(data);
     },
     onError: (error) => {
       toast.error(error?.message);
@@ -53,12 +53,12 @@ const useOrder = ({
   // create order
   const { isPending: isCreating, mutate: createOrder } = useMutation({
     mutationFn: orderService.createOrder,
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       toast.success("order created successfully");
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-      onSuccess?.();
+      onSuccess?.(data.data?.order);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

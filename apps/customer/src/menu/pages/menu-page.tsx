@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
@@ -15,12 +16,11 @@ import { PAGES, RestaurantDetailsPage, SearchPage } from "@src/common/utils/page
 import CategoriesTabs from "@src/menu/components/categories-tabs";
 import Menu from "@src/menu/components/menu";
 import { IMenuFilters } from "@src/menu/hooks/use-menu";
+import { categoryService } from "@src/menu/services/category";
+import { menuService } from "@src/menu/services/menu";
 import { PROMOTIONAL_CARDS } from "@src/menu/utils/constants";
-import { useQuery } from "@tanstack/react-query";
 import { Button, Carousel, CarouselApi, CarouselContent, CarouselItem, Typography } from "@ui/components";
 import { getGreeting } from "@ui/helpers";
-import { categoryService } from "../services/category";
-import { menuService } from "../services/menu";
 
 const MenuPage = () => {
   const [sp] = useSearchParams();

@@ -58,6 +58,9 @@
     @apply bg-background text-foreground;
     font-family: "Roboto", sans-serif;
   }
+  :root {
+    color-scheme: var(--color-scheme);
+  }
 }
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */

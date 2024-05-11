@@ -2,6 +2,7 @@ import { Bell, Coins, LogIn, LogOut, Settings, ShoppingCart, User2, UtensilsCros
 import { Link, useNavigate } from "react-router-dom";
 
 import useCartStore from "@src/cart/stores/cart-store";
+import notify from "@src/common/assets/sounds/notify.wav";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +34,7 @@ import { SOCKET_EVENTS } from "@ui/lib/socket-events";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useSocketContext } from "../contexts/socket";
+import useAudio from "../hooks/use-audio";
 import useAuthStore from "../stores/auth-store";
 import useNotificationStore from "../stores/notification-store";
 import { NSRestaurant } from "../types/restaurant.type";
@@ -147,12 +149,14 @@ export default Navbar;
 
 const Notification = () => {
   const { socket } = useSocketContext();
+  const { elm, onPlayMusic } = useAudio({ src: notify });
   const { addNotification, notifications, clearNotifications } = useNotificationStore();
 
   useEffect(() => {
     if (!socket) return;
     const updateNotification = (payload: NSRestaurant.INotification) => {
       addNotification(payload);
+      onPlayMusic();
     };
     socket.on(SOCKET_EVENTS.NOTIFICATION, updateNotification);
     return () => {
@@ -201,6 +205,7 @@ const Notification = () => {
           )}
         </>
       </PopoverContent>
+      {elm}
     </Popover>
   );
 };

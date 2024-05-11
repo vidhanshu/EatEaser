@@ -1,3 +1,5 @@
+import { cn } from "@ui/lib/utils";
+import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 import { PropsWithChildren } from "react";
 import {
   AlertDialog,
@@ -10,8 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "..";
-import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
-import { cn } from "@ui/lib/utils";
 
 interface GenericAlertDialogProps extends PropsWithChildren {
   title?: string;
@@ -20,6 +20,7 @@ interface GenericAlertDialogProps extends PropsWithChildren {
   onOk?: () => void;
   variant?: Variants;
   className?: string;
+  loading?: boolean;
 }
 
 type Variants = "success" | "error" | "warning" | "info";
@@ -62,6 +63,7 @@ export const GenericAlertDialog = ({
   variant = "error",
   onOk = () => {},
   className,
+  loading = false,
 }: GenericAlertDialogProps) => {
   const styles = getStylesByVariant(variant);
 
@@ -76,8 +78,12 @@ export const GenericAlertDialog = ({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onOk} className={cn(styles.btnClassName)}>
+          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            disabled={loading}
+            onClick={onOk}
+            className={cn(styles.btnClassName)}
+          >
             {okBtnTitle}
           </AlertDialogAction>
         </AlertDialogFooter>

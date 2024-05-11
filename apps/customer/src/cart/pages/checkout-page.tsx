@@ -1,23 +1,27 @@
 import { ArrowRight, CheckCircle, ChevronLeft, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
+import { IconType } from "react-icons";
 import { BsBank, BsCashStack } from "react-icons/bs";
 import { FaRegCreditCard } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
 
-import Empty from "@src/common/components/empty";
+import useCartStore from "@src/cart/stores/cart-store";
 import PageMeta from "@src/common/components/page-meta";
+import { useSocketContext } from "@src/common/contexts/socket";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { K_TABLE_ID } from "@src/common/utils/constants";
 import { MenuPage, OrdersPage, PAGES } from "@src/common/utils/pages";
+import useOrder from "@src/orders/hooks/use-order";
 import { TableCard } from "@src/restaurants/components/table-card";
+import useRestaurant from "@src/restaurants/hooks/use-restaurant";
 import { tableService } from "@src/restaurants/services/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Button, Typography } from "@ui/components";
+import { SOCKET_EVENTS } from "@ui/lib/socket-events";
 import { cn } from "@ui/lib/utils";
-import { IconType } from "react-icons";
-import { Link, useNavigate } from "react-router-dom";
-import useOrder from "../../orders/hooks/use-order";
-import useCartStore from "../stores/cart-store";
 import CartPage from "./cart-page";
+
+const Empty = lazy(() => import("@src/common/components/empty"));
 
 const PAYMENT_METHODS: { method: NSRestaurant.PAYMENT_METHOD; icon?: IconType; img?: string }[] = [
   {
@@ -42,15 +46,20 @@ const PAYMENT_METHODS: { method: NSRestaurant.PAYMENT_METHOD; icon?: IconType; i
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { socket } = useSocketContext();
   const { cart, clearCart } = useCartStore();
   const [step, setStep] = useState("confirm-delivery-table");
+  const { restaurant, isLoadingRestaurant } = useRestaurant({});
   const [table, setTable] = useState(localStorage.getItem(K_TABLE_ID) || "");
   const [paymentMethod, setPaymentMethod] = useState<NSRestaurant.PAYMENT_METHOD>("UPI");
 
   const { createOrder, isCreating } = useOrder({
     fetchMenuItems: false,
-    onSuccess: () => {
+    onSuccess: (data) => {
       clearCart();
+      if (data) {
+        socket?.emit(SOCKET_EVENTS.ORDER_CREATED, { to: restaurant?.data?.admin?._id, payload: data });
+      }
       navigate(OrdersPage.href);
     },
   });
@@ -97,12 +106,19 @@ const CheckoutPage = () => {
               </AccordionItem>
             ))}
           </Accordion>
-          <Button onClick={handleCreateOrder} loading={isCreating} disabled={!cart.length || isCreating} size="sm" endContent={<CheckCircle className="w-4" />} className="w-full">
+          <Button
+            size="sm"
+            className="w-full"
+            onClick={handleCreateOrder}
+            disabled={!cart.length || isCreating}
+            loading={isCreating || isLoadingRestaurant}
+            endContent={<CheckCircle className="w-4" />}
+          >
             Confirm Order
           </Button>
         </>
       ) : (
-        <>
+        <Suspense>
           <Empty notFoundTitle="Cart is empty!" notFoundDescription="Start exploring and add items to the cart you like!">
             <Link to={MenuPage.href} className="max-w-fit mx-auto">
               <Button size="sm" endContent={<ArrowRight size={16} />}>
@@ -110,7 +126,7 @@ const CheckoutPage = () => {
               </Button>
             </Link>
           </Empty>
-        </>
+        </Suspense>
       )}
     </main>
   );
@@ -186,7 +202,7 @@ const accordionData = ({
           >
             {Icon && <Icon className="size-8" />}
             {img && <img src={img} alt={img} className="size-8 object-contain" />}
-            <Typography className="lowercase">{method}</Typography>
+            <Typography className="capitalize">{method.toLowerCase()}</Typography>
           </button>
         ))}
       </div>
