@@ -36,6 +36,11 @@ io.on(SOCKET_EVENTS.CONNECTION, (socket: Socket & { handshake: any }) => {
     }
   });
 
+  socket.on(SOCKET_EVENTS.PAYMENT_SUCCESS, ({ to, payload }: { to: string; payload: string }) => {
+    const socketId = socketContext.get(to);
+    if (socketId) io.to(socketId).emit(SOCKET_EVENTS.PAYMENT_SUCCESS, payload);
+  });
+
   socket.on(SOCKET_EVENTS.ORDER_CREATED, ({ to, payload }: NSSocket.IOrderUpdatePayload) => {
     const socketId = socketContext.get(to);
     if (socketId) io.to(socketId).emit(SOCKET_EVENTS.ORDER_CREATED, payload);

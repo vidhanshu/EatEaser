@@ -1,20 +1,22 @@
-import { Input, Separator, Typography } from "@ui/components";
+import { Loader2, Search } from "lucide-react";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useDebounceValue, useLocalStorage } from "usehooks-ts";
+
 import Empty from "@src/common/components/empty";
 import PageMeta from "@src/common/components/page-meta";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { PAGES } from "@src/common/utils/pages";
 import Menu from "@src/menu/components/menu";
 import { menuService } from "@src/menu/services/menu";
-import { Loader2, Search } from "lucide-react";
-import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useDebounceValue, useLocalStorage } from "usehooks-ts";
+import { K_RECENT_SEARCHES } from "@src/search/utils/constants";
+import { Input, Separator, Typography } from "@ui/components";
 
 const SearchPage = () => {
   const [sp, ssp] = useSearchParams();
   const sq = sp.get("q") ?? "";
   const [q, setQ] = useDebounceValue("", 1000);
-  const [recentSearches, setRecentSearches] = useLocalStorage("recentSearches", []);
+  const [recentSearches, setRecentSearches] = useLocalStorage(K_RECENT_SEARCHES, []);
   const {
     status,
     ref: refMenu,

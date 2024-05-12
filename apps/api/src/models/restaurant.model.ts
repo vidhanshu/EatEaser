@@ -61,6 +61,7 @@ const RestaurantSchema = new Schema<NSRestaurant.IResturant>(
     },
     ratingDetails: {
       type: {
+        noOfReviews: { type: Number, default: 0 },
         rating: { type: Number, default: 0 },
         counts: [
           {
@@ -71,6 +72,7 @@ const RestaurantSchema = new Schema<NSRestaurant.IResturant>(
       },
       default: {
         rating: 0,
+        noOfReviews: 0,
         counts: [
           { stars: 1, count: 0 },
           { stars: 2, count: 0 },
@@ -84,7 +86,7 @@ const RestaurantSchema = new Schema<NSRestaurant.IResturant>(
     website: { type: String },
     acceptsReservations: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Restaurant = model("Restaurant", RestaurantSchema);

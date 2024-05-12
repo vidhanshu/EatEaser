@@ -65,16 +65,6 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
       patment: { method: paymentMethod },
     });
 
-    // create rzrpay order
-    // const rzrpayOrder = await razorPay.orders.create({
-    //   amount: total * 100,
-    //   currency: "INR",
-    //   receipt: order._id.toString(),
-    //   method: paymentMethod.toLowerCase(),
-    // });
-    // if (!rzrpayOrder) {
-    //   throw new ResponseError("Failed to create order", 500);
-    // }
     await order.save();
     const newOrder = await Order.findOne({ _id: order._id })
       .populate("restaurant", { _id: 1, name: 1 })
@@ -84,10 +74,7 @@ const handleCreateOrder = async (req: NSCommon.IAuthRequest, res: Response) => {
       .populate("customer", { _id: 1, name: 1 });
 
     sendResponse(res, {
-      data: {
-        order: newOrder,
-        // rzrpayOrder,
-      },
+      data: newOrder,
       message: "Order created successfully",
       statusCode: httpStatus.CREATED,
     });

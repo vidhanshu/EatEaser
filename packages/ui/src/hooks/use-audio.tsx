@@ -1,13 +1,17 @@
 import { useRef } from "react";
 
-const useAudio = ({ src }: { src: any }) => {
+export const useAudio = ({ src }: { src: any }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const elm = (
     <>
       <audio ref={audioRef} className="hidden" controls src={src} />
-      <button onClick={() => audioRef?.current?.play()} className="hidden" ref={btnRef} />
+      <button
+        onClick={() => audioRef?.current?.play()}
+        className="hidden"
+        ref={btnRef}
+      />
     </>
   );
 
@@ -19,5 +23,3 @@ const useAudio = ({ src }: { src: any }) => {
     elm,
   };
 };
-
-export default useAudio;

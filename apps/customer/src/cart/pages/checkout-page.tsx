@@ -11,8 +11,9 @@ import { useSocketContext } from "@src/common/contexts/socket";
 import useInfinte from "@src/common/hooks/use-infinite";
 import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { K_TABLE_ID } from "@src/common/utils/constants";
-import { MenuPage, OrdersPage, PAGES } from "@src/common/utils/pages";
+import { MenuPage, PAGES } from "@src/common/utils/pages";
 import useOrder from "@src/orders/hooks/use-order";
+import usePayment from "@src/orders/hooks/use-payment";
 import { TableCard } from "@src/restaurants/components/table-card";
 import useRestaurant from "@src/restaurants/hooks/use-restaurant";
 import { tableService } from "@src/restaurants/services/table";
@@ -48,19 +49,31 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { socket } = useSocketContext();
   const { cart, clearCart } = useCartStore();
+
   const [step, setStep] = useState("confirm-delivery-table");
   const { restaurant, isLoadingRestaurant } = useRestaurant({});
   const [table, setTable] = useState(localStorage.getItem(K_TABLE_ID) || "");
   const [paymentMethod, setPaymentMethod] = useState<NSRestaurant.PAYMENT_METHOD>("UPI");
+  const { isPending, showRazorpay, getRzpOrderId } = usePayment({
+    onSuccess: (orderId) => {
+      socket?.emit(SOCKET_EVENTS.PAYMENT_SUCCESS, { to: restaurant?.data?.admin?._id, payload: orderId });
+      navigate(PAGES.OrdersDetailsPage(orderId).href);
+    },
+  });
 
   const { createOrder, isCreating } = useOrder({
     fetchMenuItems: false,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       clearCart();
       if (data) {
         socket?.emit(SOCKET_EVENTS.ORDER_CREATED, { to: restaurant?.data?.admin?._id, payload: data });
+        if (paymentMethod === "CASH") {
+          navigate(PAGES.OrdersDetailsPage(data._id).href);
+          return;
+        }
+        const rzpOrderId = await getRzpOrderId({ orderId: data._id, amount: data.total });
+        await showRazorpay({ rzpOrderId, amount: data.total, dbOrderId: data._id });
       }
-      navigate(OrdersPage.href);
     },
   });
 
@@ -110,11 +123,11 @@ const CheckoutPage = () => {
             size="sm"
             className="w-full"
             onClick={handleCreateOrder}
-            disabled={!cart.length || isCreating}
-            loading={isCreating || isLoadingRestaurant}
+            loading={isCreating || isLoadingRestaurant || isPending}
             endContent={<CheckCircle className="w-4" />}
+            disabled={!cart.length || isCreating || isPending || !table || !paymentMethod}
           >
-            Confirm Order
+            {paymentMethod === "CASH" ? "Place order" : "Confirm Order"}
           </Button>
         </>
       ) : (

@@ -25,6 +25,9 @@ const orderSchema = new Schema<NSRestaurant.IOrder>(
         default: "PENDING",
       },
       transactionId: String,
+      rzpOrderId: String,
+      rzpPaymentId: String,
+      rzpSignature: String,
     },
     total: Number,
     status: {
@@ -33,7 +36,7 @@ const orderSchema = new Schema<NSRestaurant.IOrder>(
       default: "PENDING",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Order = model("Order", orderSchema);

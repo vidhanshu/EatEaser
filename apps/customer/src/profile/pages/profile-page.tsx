@@ -1,16 +1,17 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, toast } from "@ui/components";
 import { CheckCircle, ChevronLeft, Mail, Phone, User2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import axiosInstance from "@src/common/utils/axios";
-import { ROUTES } from "@src/common/utils/api-routes";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+
 import ImageUploadField from "@src/common/components/image-upload-field";
-import useAuthStore from "@src/common/stores/auth-store";
 import PageMeta from "@src/common/components/page-meta";
+import useAuthStore from "@src/common/stores/auth-store";
+import { ROUTES } from "@src/common/utils/api-routes";
+import axiosInstance from "@src/common/utils/axios";
 import { PAGES } from "@src/common/utils/pages";
 
 const formSchema = z.object({

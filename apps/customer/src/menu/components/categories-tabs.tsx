@@ -1,11 +1,11 @@
+import { Loader2 } from "lucide-react";
 import { Ref, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
-import { cn } from "@ui/lib/utils";
-import { NSRestaurant } from "@src/common/types/restaurant.type";
-import { FilterDialog } from "./filters-dialog";
 import CSkeleton from "@src/common/components/skeleton";
-import { Loader2 } from "lucide-react";
+import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { cn } from "@ui/lib/utils";
+import { FilterDialog } from "./filters-dialog";
 
 const CategoriesTabs = ({
   categories,

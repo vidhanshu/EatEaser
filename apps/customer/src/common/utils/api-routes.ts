@@ -32,6 +32,9 @@ export const ROUTES = {
       create: "/restaurant/order/create",
       cancel: (id: string) => `/restaurant/order/${id}/cancel`,
       update: (id: string) => `/restaurant/order/${id}/update`,
+      // payment verfication
+      createRzpOrder: "/restaurant/order/create-rzp-order",
+      verifyPayment: (id: string) => `/restaurant/order/${id}/verify-payment`,
     },
   },
   file: {

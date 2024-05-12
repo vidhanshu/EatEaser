@@ -124,6 +124,10 @@ const ROUTES_FOR_ONLY_AUTHENTICATED: RouteObject[] = [
         element: <VerifyEmail />,
       },
       {
+        path: "/paymentsuccess",
+        element: <div>Payment DOONE!! ✅</div>,
+      },
+      {
         path: "*",
         element: <NotFoundPage />,
       },

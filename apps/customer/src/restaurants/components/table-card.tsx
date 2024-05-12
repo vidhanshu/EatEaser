@@ -1,9 +1,10 @@
-import { cn } from "@ui/lib/utils";
-import { Button, Typography } from "@ui/components";
-import { NSRestaurant } from "@src/common/types/restaurant.type";
-import { TableStatusBadge, getClassNameByStatus } from "./status-badge";
-import { Ref } from "react";
 import { CheckCircle } from "lucide-react";
+import { Ref } from "react";
+
+import { NSRestaurant } from "@src/common/types/restaurant.type";
+import { Button, Typography } from "@ui/components";
+import { cn } from "@ui/lib/utils";
+import { TableStatusBadge, getClassNameByStatus } from "./status-badge";
 
 export const TableCard = ({
   _id,

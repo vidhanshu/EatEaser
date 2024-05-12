@@ -43,7 +43,7 @@ const useOrder = ({
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-      onSuccess?.(data);
+      onSuccess?.(data.data);
     },
     onError: (error) => {
       toast.error(error?.message);
@@ -54,11 +54,10 @@ const useOrder = ({
   const { isPending: isCreating, mutate: createOrder } = useMutation({
     mutationFn: orderService.createOrder,
     onSuccess: (data: any) => {
-      toast.success("order created successfully");
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
-      onSuccess?.(data.data?.order);
+      onSuccess?.(data.data);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

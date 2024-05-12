@@ -19,6 +19,7 @@ export namespace NSRestaurant {
     menus: IMenu[];
     ratingDetails: {
       rating: number;
+      noOfReviews: number;
       counts: { stars: 1 | 2 | 3 | 4 | 5; count: number }[];
     };
   }
@@ -101,16 +102,15 @@ export namespace NSRestaurant {
     addons: string[] | Schema.Types.ObjectId[];
   }
 
-  export type ORDER_STATUS =
-    | "PENDING"
-    | "CONFIRMED"
-    | "COMPLETED"
-    | "CANCELLED";
+  export type ORDER_STATUS = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
   export interface IPayment {
     method: PAYMENT_METHOD;
     status: PAYMENT_STATUS;
     transactionId: string;
+    rzpOrderId: string;
+    rzpPaymentId: string;
+    rzpSignature: string;
   }
 
   export type PAYMENT_METHOD = "CASH" | "CARD" | "NETBANKING" | "UPI";

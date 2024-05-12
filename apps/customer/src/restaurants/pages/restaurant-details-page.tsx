@@ -1,5 +1,5 @@
 import { ChevronLeft, MousePointerSquare } from "lucide-react";
-import { FaPhone, FaStar, FaStarHalf } from "react-icons/fa";
+import { FaPhone } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdMail } from "react-icons/md";
 import { RiReservedFill } from "react-icons/ri";
@@ -8,8 +8,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import PageMeta from "@src/common/components/page-meta";
 import SeeMoreText from "@src/common/components/see-more-text";
+import StartProgressRating from "@src/common/components/star-progress-rating";
 import { PAGES } from "@src/common/utils/pages";
-import { Button, GenericDialog, Progress, Separator, Typography, toast } from "@ui/components";
+import { Button, GenericDialog, Separator, Typography, toast } from "@ui/components";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useState } from "react";
@@ -36,15 +37,13 @@ type dfmKeyType = keyof typeof dayFullMap;
 
 const RestaurantDetailsPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [tableModalControl, setTableModalControl] = useState<{ open: boolean; id?: string }>({ open: false, id: undefined });
-
-  const navigate = useNavigate();
 
   const { restaurant: data, isLoadingRestaurant: isLoading } = useRestaurant({ id, filters: { includeTables: true } });
 
   const restaurant = data?.data;
-
   const table = restaurant?.tables?.find((table) => table._id === tableModalControl.id);
 
   return (
@@ -85,9 +84,11 @@ const RestaurantDetailsPage = () => {
             <section id="tables" className="space-y-4">
               <Typography variant="h4">Choose the table</Typography>
               <div className="flex gap-x-4 items-center max-w-full overflow-auto no-scrollbar">
-                {!!restaurant?.tables?.length &&
-                  restaurant.tables.length > 0 &&
-                  restaurant.tables.map((table, idx) => <TableCard key={idx} onViewClick={(id) => setTableModalControl({ open: true, id })} {...table} />)}
+                {restaurant?.tables?.length && restaurant.tables.length > 0 ? (
+                  restaurant.tables.map((table, idx) => <TableCard key={idx} onViewClick={(id) => setTableModalControl({ open: true, id })} {...table} />)
+                ) : (
+                  <div className="text-muted-foreground">No tables</div>
+                )}
               </div>
             </section>
             <Separator />
@@ -118,38 +119,7 @@ const RestaurantDetailsPage = () => {
               </Typography>
             </section>
             <Separator />
-            <section className="grid grid-cols-5 items-center">
-              <div className="col-span-2 space-y-2">
-                <Typography className="text-4xl font-semibold text-center">4.8</Typography>
-                <div className="flex gap-x-2 items-center w-fit mx-auto">
-                  <FaStar className="text-yellow-500" />
-                  <FaStar className="text-yellow-500" />
-                  <FaStar className="text-yellow-500" />
-                  <FaStar className="text-yellow-500" />
-                  <FaStarHalf className="text-yellow-500" />
-                </div>
-                <Typography variant="muted" className="text-center text-xs">
-                  (128k reviews)
-                </Typography>
-              </div>
-              <div className="col-span-3 border-l-2 pl-4">
-                <div className="flex gap-x-2 items-center">
-                  <span className="w-4">5</span> <Progress className="h-2" value={90} />
-                </div>
-                <div className="flex gap-x-2 items-center">
-                  <span className="w-4">4</span> <Progress className="h-2" value={78} />
-                </div>
-                <div className="flex gap-x-2 items-center">
-                  <span className="w-4">3</span> <Progress className="h-2" value={55} />
-                </div>
-                <div className="flex gap-x-2 items-center">
-                  <span className="w-4">2</span> <Progress className="h-2" value={30} />
-                </div>
-                <div className="flex gap-x-2 items-center">
-                  <span className="w-4">1</span> <Progress className="h-2" value={10} />
-                </div>
-              </div>
-            </section>
+            <StartProgressRating ratingDetails={restaurant?.ratingDetails} />
           </div>
         </>
       )}

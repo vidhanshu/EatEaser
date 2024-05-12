@@ -17,6 +17,14 @@ export namespace NSRestaurant {
     acceptsReservations?: boolean;
     tables?: ITable[];
     admin: { _id: string; name: string };
+    ratingDetails: {
+      rating: number;
+      noOfReviews: number;
+      counts: {
+        stars: number;
+        count: number;
+      }[];
+    };
   }
 
   // Table
@@ -95,6 +103,9 @@ export namespace NSRestaurant {
     method: PAYMENT_METHOD;
     status: PAYMENT_STATUS;
     transactionId: string;
+    rzpOrderId: string;
+    rzpPaymentId: string;
+    rzpSignature: string;
   }
 
   export type PAYMENT_METHOD = "CASH" | "CARD" | "NETBANKING" | "UPI";

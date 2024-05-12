@@ -3,31 +3,32 @@
  */
 
 import cors from "cors";
-import morgan from "morgan";
-import helmet from "helmet";
-import { Server } from "socket.io";
-import { createServer } from "http";
 import express, { Express, Request, Response } from "express";
+import helmet from "helmet";
+import { createServer } from "http";
+import morgan from "morgan";
+import { Server } from "socket.io";
 
 import { config } from "./configs";
 import { authLimiter } from "./middlewares";
 import {
-  s3Router,
-  superAdminAuthRouter,
-  superAdminAdminRouter,
-  superAdminRestaurantRouter,
-  adminAuthRouter,
-  adminTableRouter,
   adminAddOnRouter,
-  adminOrderRouter,
+  adminAuthRouter,
   adminCategoryRouter,
   adminMenuItemRouter,
+  adminOrderRouter,
   adminRestaurantRouter,
+  adminTableRouter,
   customerAuthRouter,
-  customerOrderRouter,
   customerCategoryRouter,
   customerMenuItemRouter,
+  customerOrderRouter,
   customerRestaurantRouter,
+  paymentRouter,
+  s3Router,
+  superAdminAdminRouter,
+  superAdminAuthRouter,
+  superAdminRestaurantRouter,
 } from "./routes";
 import { customerTableRouter } from "./routes/customer/restaurant/table.route";
 
@@ -49,7 +50,7 @@ app.use(
   cors({
     origin: String(config.cors.cors_origin).split("|"),
     credentials: true,
-  })
+  }),
 );
 
 // api routes
@@ -65,10 +66,7 @@ if (process.env.NODE_ENV === "production") {
   app.use("/api/auth", authLimiter);
 }
 // superadmin routes
-app
-  .use("/api", superAdminAuthRouter)
-  .use("/api", superAdminAdminRouter)
-  .use("/api", superAdminRestaurantRouter);
+app.use("/api", superAdminAuthRouter).use("/api", superAdminAdminRouter).use("/api", superAdminRestaurantRouter);
 
 // admin routes
 app
@@ -92,6 +90,9 @@ app
 // s3 routes
 app.use("/api/file", s3Router);
 
+// payment routes
+app.use("/api", paymentRouter);
+
 // realtime (socket) server
 const io = new Server(httpServer, {
   cors: {
@@ -101,3 +102,4 @@ const io = new Server(httpServer, {
 });
 
 export { httpServer, io };
+

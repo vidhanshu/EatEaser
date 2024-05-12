@@ -1,15 +1,17 @@
+import { ChevronRight, LogOut, Palette, Truck } from "lucide-react";
+import { Link } from "react-router-dom";
+
 import CImageWithPlaceholder from "@src/common/components/cimg-with-placeholder";
 import PageMeta from "@src/common/components/page-meta";
 import SignOutBtn from "@src/common/components/sign-out-btn";
 import useAuthStore from "@src/common/stores/auth-store";
 import { PAGES, ProfilePage } from "@src/common/utils/pages";
 import { GenericAlertDialog, Switch, Typography, useTheme } from "@ui/components";
-import { ChevronRight, LogOut, Palette, Truck } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const SettingsPage = () => {
   const { user } = useAuthStore();
   const { toggleTheme, theme } = useTheme();
+
   return (
     <main className="px-4 pt-8">
       <PageMeta title={PAGES.SettingsPage.title} description={PAGES.SettingsPage.description} />

@@ -1,8 +1,10 @@
+import paymentRecived from "@src/common/assets/sounds/payment_received.mp3";
 import { GenericTable } from "@src/common/components/generic-table";
 import { useSocketContext } from "@src/common/contexts/socket";
 import { NSRestaurant } from "@src/types/restaurant.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button, ImgWithPlaceholder, LimitedNameViewer, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Typography } from "@ui/components";
+import { useAudio } from "@ui/hooks/use-audio";
 import { SOCKET_EVENTS } from "@ui/lib/socket-events";
 import dayjs from "dayjs";
 import { ArrowUpDown, Loader2 } from "lucide-react";
@@ -191,6 +193,7 @@ export const columns: (props: {
 //--------------------------------------------------------------------------------------------
 
 const OrdersPage = () => {
+  const { elm, onPlayMusic } = useAudio({ src: paymentRecived });
   const [results, setResults] = useState<NSRestaurant.IOrder[]>([]);
   const [page, setPage] = useState(1);
   const { socket } = useSocketContext();
@@ -213,12 +216,30 @@ const OrdersPage = () => {
     const handleCancelOrder = (orderId: string) => {
       setResults((prev) => prev.map((order) => (order._id === orderId ? { ...order, status: "CANCELLED" } : order)));
     };
+    const handlePaymentSuccess = (orderId: string) => {
+      setResults((prev) =>
+        prev.map((order) =>
+          order._id === orderId
+            ? {
+                ...order,
+                payment: {
+                  ...order.payment,
+                  status: "COMPLETED",
+                },
+              }
+            : order,
+        ),
+      );
+      onPlayMusic();
+    };
 
     socket.on(SOCKET_EVENTS.ORDER_CREATED, handleAddNewOrder);
     socket.on(SOCKET_EVENTS.ORDER_CANCELLED, handleCancelOrder);
+    socket.on(SOCKET_EVENTS.PAYMENT_SUCCESS, handlePaymentSuccess);
     return () => {
       socket.off(SOCKET_EVENTS.ORDER_CREATED, handleAddNewOrder);
       socket.off(SOCKET_EVENTS.ORDER_CANCELLED, handleCancelOrder);
+      socket.off(SOCKET_EVENTS.PAYMENT_SUCCESS, handlePaymentSuccess);
     };
   }, [socket]);
 
@@ -227,6 +248,7 @@ const OrdersPage = () => {
   }
   return (
     <div>
+      {elm}
       <Typography className="my-4" variant="h4">
         Orders
       </Typography>

@@ -1,5 +1,6 @@
 import { ArrowRight, IndianRupee, Loader2, Minus, Plus } from "lucide-react";
 import React, { Ref } from "react";
+import { IoFastFoodOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 import useCartStore from "@src/cart/stores/cart-store";
@@ -11,7 +12,6 @@ import { NSRestaurant } from "@src/common/types/restaurant.type";
 import { MenuDetailsPage, MenuPage } from "@src/common/utils/pages";
 import { Button, GenericAlertDialog, Input, Separator, Typography } from "@ui/components";
 import { cn } from "@ui/lib/utils";
-import { IoFastFoodOutline } from "react-icons/io5";
 
 const Menu = ({
   menuItems,

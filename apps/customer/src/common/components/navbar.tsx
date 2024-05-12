@@ -30,11 +30,11 @@ import {
   Typography,
 } from "@ui/components";
 import { getInitials } from "@ui/helpers";
+import { useAudio } from "@ui/hooks/use-audio";
 import { SOCKET_EVENTS } from "@ui/lib/socket-events";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useSocketContext } from "../contexts/socket";
-import useAudio from "../hooks/use-audio";
 import useAuthStore from "../stores/auth-store";
 import useNotificationStore from "../stores/notification-store";
 import { NSRestaurant } from "../types/restaurant.type";

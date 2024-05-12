@@ -33,6 +33,9 @@ export const ROUTES = {
         create: "/restaurant/order/create",
         cancel: "/restaurant/order/:id/cancel",
         update: "/restaurant/order/:id/update",
+        // payment verfication
+        createRzpOrder: "/restaurant/order/create-rzp-order",
+        verifyPayment: "/restaurant/order/:id/verify-payment",
       },
     },
   },
@@ -91,8 +94,7 @@ export const ROUTES = {
       signOut: "/auth/super-admin/sign-out",
       signOutAll: "/auth/super-admin/sign-out-all",
       verifyEmail: "/auth/super-admin/verify-email",
-      resendEmailVerificationOTP:
-        "/auth/super-admin/resend-email-verification-otp",
+      resendEmailVerificationOTP: "/auth/super-admin/resend-email-verification-otp",
       profile: "/auth/super-admin/profile",
       forgotPassword: "/auth/super-admin/forgot-password",
       resetPassword: "/auth/super-admin/reset-password",

@@ -24,6 +24,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "../../packages/ui/src/hooks/use-audio.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
