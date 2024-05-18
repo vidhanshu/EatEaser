@@ -12,6 +12,7 @@ io.on(SOCKET_EVENTS.CONNECTION, (socket: Socket & { handshake: any }) => {
   if (socket.handshake.query.userId) {
     socketContext.set(socket.handshake.query.userId, socket.id);
   }
+  console.log("[USER_CONENCTED_WITH_USER_ID_&_SOCKET_ID]", socket.handshake.query.userId, socket.id);
 
   socket.on(SOCKET_EVENTS.ORDER_UPDATED, ({ to, payload, notify }: NSSocket.IOrderUpdatePayload & { notify?: boolean }) => {
     const socketId = socketContext.get(to);
@@ -27,6 +28,7 @@ io.on(SOCKET_EVENTS.CONNECTION, (socket: Socket & { handshake: any }) => {
         });
       }
     }
+    console.log("[ORDER_UPDATED]", to, payload, notify);
   });
 
   socket.on(SOCKET_EVENTS.ORDER_CANCELLED, ({ to, orderId }: { to: string; orderId: string }) => {
@@ -34,19 +36,23 @@ io.on(SOCKET_EVENTS.CONNECTION, (socket: Socket & { handshake: any }) => {
     if (socketId) {
       io.to(socketId).emit(SOCKET_EVENTS.ORDER_CANCELLED, orderId);
     }
+    console.log("[ORDER_CANCELLED]", to, orderId);
   });
 
   socket.on(SOCKET_EVENTS.PAYMENT_SUCCESS, ({ to, payload }: { to: string; payload: string }) => {
     const socketId = socketContext.get(to);
     if (socketId) io.to(socketId).emit(SOCKET_EVENTS.PAYMENT_SUCCESS, payload);
+    console.log("[PAYMENT_SUCCESS]", to, payload);
   });
 
   socket.on(SOCKET_EVENTS.ORDER_CREATED, ({ to, payload }: NSSocket.IOrderUpdatePayload) => {
     const socketId = socketContext.get(to);
     if (socketId) io.to(socketId).emit(SOCKET_EVENTS.ORDER_CREATED, payload);
+    console.log("[ORDER_CREATED]", to, payload);
   });
 
   socket.on(SOCKET_EVENTS.DISCONNECT, () => {
     socketContext.delete(socket.handshake.query.userId);
+    console.log("[USER_DISCONNECTED_WITH_USER_ID_&_SOCKET_ID]", socket.handshake.query.userId, socket.id);
   });
 });
