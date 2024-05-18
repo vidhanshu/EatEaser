@@ -18,7 +18,7 @@ export const SocketContextProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (!userId) return;
 
-    setSocketInstance(io(import.meta.env.VITE_SERVER_URL, { query: { userId }, transports: ["websocket"] }));
+    setSocketInstance(io(import.meta.env.VITE_SERVER_URL, { query: { userId } }));
   }, [userId]);
 
   useEffect(() => {

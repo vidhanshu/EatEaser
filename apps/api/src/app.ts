@@ -95,10 +95,11 @@ app.use("/api", paymentRouter);
 
 // realtime (socket) server
 const io = new Server(httpServer, {
-  cors: {
-    origin: String(config.cors.cors_origin).split("|"),
-    credentials: true,
-  },
+  // cors: {
+  //   origin: String(config.cors.cors_origin).split("|"),
+  //   credentials: true,
+  // },
+  cors: { origin: "*" },
 });
 
 export { httpServer, io };
