@@ -36,6 +36,8 @@ export const SocketContextProvider = ({ children }: PropsWithChildren) => {
     };
   }, [socketInstance]);
 
+  console.log("[SOCKET_INSTANCE]", socketInstance, isConnected);
+
   return (
     <SocketContext.Provider
       value={{
